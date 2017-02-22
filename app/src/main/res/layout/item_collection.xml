@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view
+    class="com.aashreys.walls.ui.views.CollectionView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/image_source_item_height"
+    android:background="@color/windowBackground"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="8dp" />

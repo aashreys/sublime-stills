@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/text_key"
+        style="@style/Walls.Text.Body2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/info_row_left_margin"
+        android:layout_weight=".4"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/text_value"
+        style="@style/Walls.Text.Body1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".6"
+        android:maxLines="2" />
+
+    <ImageButton
+        android:id="@+id/button_action"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginRight="@dimen/info_row_right_margin"
+        android:background="?attr/selectableItemBackgroundBorderlessCompat"
+        android:padding="16dp"
+        android:visibility="invisible" />
+
+</merge>

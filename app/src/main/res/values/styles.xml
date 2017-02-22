@@ -1,0 +1,46 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="WallsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="selectableItemBackgroundBorderlessCompat">?attr/selectableItemBackground</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Walls.TextAppearance.Tab" parent="TextAppearance.Design.Tab" />
+
+    <style name="Walls.Text.ToolbarTitle" parent="TextAppearance.AppCompat.Title" >
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Walls.Text.ToolbarTitle.NoCaps" parent="Walls.Text.ToolbarTitle" >
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Walls.Text.Subhead" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54p</item>
+        <item name="android:height">@dimen/subhead_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+    </style>
+
+    <style name="Walls.Text.Body1" parent="TextAppearance.AppCompat.Body1" />
+
+    <style name="Walls.Text.Body2" parent="TextAppearance.AppCompat.Body2" />
+
+    <style name="Walls.Text.ImageSourceItem" parent="Walls.Text.Body1">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+</resources>

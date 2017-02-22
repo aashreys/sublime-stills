@@ -1,0 +1,36 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="button_size">48dp</dimen>
+    <dimen name="subhead_height">48dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_left_margin">8dp</dimen>
+    <dimen name="toolbar_right_margin">8dp</dimen>
+    <dimen name="tablayout_height">48dp</dimen>
+    <dimen name="tablayout_start_position">20dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="loading_progress_bar_size">30dp</dimen>
+    <dimen name="image_margin">2dp</dimen>
+    <dimen name="info_row_height">48dp</dimen>
+    <dimen name="info_row_left_margin">16dp</dimen>
+    <dimen name="info_row_right_margin">8dp</dimen>
+    <dimen name="image_fragment_button_margin">30dp</dimen>
+
+    <dimen name="image_source_item_height">56dp</dimen>
+    <dimen name="image_source_icon_size">44dp</dimen>
+    <dimen name="image_drag_handle_size">48dp</dimen>
+    <dimen name="image_drag_handle_padding">12dp</dimen>
+
+    <dimen name="chip_corner_radius">16dp</dimen>
+    <dimen name="chip_padding_vertical">8dp</dimen>
+    <dimen name="chip_padding_horizontal">16dp</dimen>
+    <dimen name="chip_margin">2dp</dimen>
+
+    <dimen name="toolbar_elevation">4dp</dimen>
+
+    <dimen name="image_stream_bottom_padding">80dp</dimen>
+
+    <dimen name="share_progress_bar_padding">12dp</dimen>
+</resources>

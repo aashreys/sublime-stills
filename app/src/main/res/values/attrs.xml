@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="selectableItemBackgroundBorderlessCompat" />
+
+    <declare-styleable name="ForegroundImageView">
+        <attr name="android:foreground" />
+    </declare-styleable>
+
+    <declare-styleable name="InformationRowView">
+        <attr name="irv_key" format="string" />
+        <attr name="irv_value" format="string" />
+    </declare-styleable>
+
+</resources>
