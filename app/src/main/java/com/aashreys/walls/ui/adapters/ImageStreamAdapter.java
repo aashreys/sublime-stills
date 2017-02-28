@@ -1,10 +1,12 @@
 package com.aashreys.walls.ui.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
@@ -20,9 +22,11 @@ import static com.aashreys.walls.ui.ImageStreamFragment.ImageSelectedCallback;
  * Created by aashreys on 04/02/17.
  */
 
-public class ImageStreamAdapter extends RecyclerView.Adapter<ImageStreamAdapter.ImageViewHolder> {
+public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = ImageStreamAdapter.class.getSimpleName();
+
+    private static final int VIEW_TYPE_IMAGE = 0, VIEW_TYPE_LOADING = 1;
 
     @NonNull
     private final ImageStreamFragment fragment;
@@ -35,6 +39,9 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<ImageStreamAdapter.
     private int loadingThreshold = 5;
 
     private LoadMoreCallback loadMoreCallback;
+
+    @Nullable
+    private LoadingViewHolder loadingViewHolder;
 
     public ImageStreamAdapter(
             @NonNull ImageStreamFragment fragment,
@@ -78,26 +85,68 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<ImageStreamAdapter.
     }
 
     @Override
-    public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ImageViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false)
-        );
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case VIEW_TYPE_IMAGE:
+                return new ImageViewHolder(
+                        LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.item_image, parent, false)
+                );
+
+            case VIEW_TYPE_LOADING:
+                loadingViewHolder = new LoadingViewHolder(
+                        LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.layout_view_loading, parent, false)
+                );
+                return loadingViewHolder;
+
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(ImageViewHolder holder, int position) {
-
-        holder.bind(imageList.get(position), fragment, imageSelectedCallback);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ImageViewHolder) {
+            ((ImageViewHolder) holder).bind(
+                    imageList.get(position),
+                    fragment,
+                    imageSelectedCallback
+            );
+        }
         int currentPosition = holder.getAdapterPosition();
         int thresholdDiff = getItemCount() - currentPosition;
         if (loadingThreshold >= thresholdDiff && loadMoreCallback != null) {
             loadMoreCallback.onLoadMore();
+            if (loadingViewHolder != null) {
+                loadingViewHolder.showLoadingView();
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return imageList.size();
+        // Adding one to count the loading view.
+        return imageList.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position < getItemCount() - 1) {
+            return VIEW_TYPE_IMAGE;
+        } else {
+            return VIEW_TYPE_LOADING;
+        }
+    }
+
+    /**
+     * Tells the adapter that loading is complete and that loading progress should no longer be
+     * displayed.
+     */
+    public void onLoadComplete() {
+        if (loadingViewHolder != null) {
+            loadingViewHolder.hideLoadingView();
+        }
     }
 
     public List<Image> getImageList() {
@@ -118,7 +167,7 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<ImageStreamAdapter.
 
     }
 
-    static class ImageViewHolder extends RecyclerView.ViewHolder {
+    private static class ImageViewHolder extends RecyclerView.ViewHolder {
 
         private StreamImageView view;
 
@@ -134,6 +183,25 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<ImageStreamAdapter.
         ) {
             view.bind(fragment, image, listener);
         }
+    }
+
+    private static class LoadingViewHolder extends RecyclerView.ViewHolder {
+
+        private ProgressBar progressBar;
+
+        private LoadingViewHolder(View itemView) {
+            super(itemView);
+            this.progressBar = (ProgressBar) itemView;
+        }
+
+        private void showLoadingView() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        private void hideLoadingView() {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
     }
 
 }

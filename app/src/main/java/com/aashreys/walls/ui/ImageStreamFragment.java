@@ -175,15 +175,8 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             imageSource = sourceFactory.create(collection);
             adapter.clear();
             if (collection instanceof FavoriteCollection) {
-                // Remove bottom padding since favorites load instantly and we don't need to show
-                // the extra space to the user
-                setRecyclerViewBottomPaddingEnabled(false);
                 startListeningToFavoritesRepo();
             } else {
-                // Add bottom padding since we load images over network and it might take some
-                // time. When the images load the user will see the empty space fill up and know
-                // more images are available.
-                setRecyclerViewBottomPaddingEnabled(true);
                 stopListeningToFavoritesRepo();
             }
             if (loadImages) {
@@ -203,19 +196,6 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
                 AsyncTask.THREAD_POOL_EXECUTOR,
                 adapter.getItemCount()
         );
-    }
-
-    private void setRecyclerViewBottomPaddingEnabled(boolean isEnabled) {
-        if (recyclerView != null) {
-            int bottomPadding = getResources().getDimensionPixelOffset(isEnabled ? R.dimen
-                    .image_stream_bottom_padding : R.dimen.image_margin);
-            recyclerView.setPadding(
-                    recyclerView.getPaddingLeft(),
-                    recyclerView.getPaddingTop(),
-                    recyclerView.getPaddingRight(),
-                    bottomPadding
-            );
-        }
     }
 
     private void startListeningToFavoritesRepo() {
@@ -299,6 +279,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     @Override
     public void onImageLoadComplete(@NonNull List<Image> images) {
+        adapter.onLoadComplete();
         if (images.size() > 0) {
             boolean isFirstLoad = adapter.getItemCount() == 0;
             adapter.add(images);
