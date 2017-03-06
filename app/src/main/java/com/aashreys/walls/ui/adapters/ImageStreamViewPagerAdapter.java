@@ -16,7 +16,8 @@ import java.util.List;
 /**
  * Created by aashreys on 05/02/17.
  */
-public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter implements
+        ImageStreamFragment.CollectionProvider {
 
     private final CollectionRepository collectionRepository;
 
@@ -64,7 +65,7 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ImageStreamFragment.newInstance(collectionList.get(position));
+        return ImageStreamFragment.newInstance(position);
     }
 
     @Override
@@ -90,8 +91,7 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter {
     public int getItemPosition(Object object) {
         if (object instanceof ImageStreamFragment) {
             int index = positionFragmentArray.indexOfValue((ImageStreamFragment) object);
-            int position = index >= 0 ? positionFragmentArray.keyAt(index) : POSITION_NONE;
-            return position;
+            return index >= 0 ? positionFragmentArray.keyAt(index) : POSITION_NONE;
         }
         return super.getItemPosition(object);
     }
@@ -102,7 +102,7 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter {
             ImageStreamFragment fragment = positionFragmentArray.valueAt(i);
             int position = positionFragmentArray.keyAt(i);
             if (position < collectionList.size()) {
-                fragment.setCollection(collectionList.get(position), true);
+                fragment.setCollection(collectionList.get(position));
             }
         }
         super.notifyDataSetChanged();
@@ -110,10 +110,15 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return collectionList.get(position).name().value();
+        return collectionList.get(position).getName().value();
     }
 
     public void release() {
         collectionRepository.removeListener(repositoryCallback);
+    }
+
+    @Override
+    public Collection getCollection(int position) {
+        return collectionList.get(position);
     }
 }

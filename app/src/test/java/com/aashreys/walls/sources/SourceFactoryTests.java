@@ -1,28 +1,38 @@
 package com.aashreys.walls.sources;
 
 import com.aashreys.walls.MockitoTestCase;
+import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
+import com.aashreys.walls.domain.display.collections.FlickrRecentCollection;
+import com.aashreys.walls.domain.display.collections.FlickrTag;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.display.collections.UnsplashRecentCollection;
+import com.aashreys.walls.domain.display.sources.DiscoverSource;
 import com.aashreys.walls.domain.display.sources.FavoriteSource;
 import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
+import com.aashreys.walls.domain.display.sources.FlickrRecentSource;
+import com.aashreys.walls.domain.display.sources.FlickrRecentSourceFactory;
+import com.aashreys.walls.domain.display.sources.FlickrTagSource;
+import com.aashreys.walls.domain.display.sources.FlickrTagSourceFactory;
 import com.aashreys.walls.domain.display.sources.Source;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.domain.display.sources.UnsplashCollectionSource;
 import com.aashreys.walls.domain.display.sources.UnsplashCollectionSourceFactory;
-import com.aashreys.walls.domain.display.sources.UnsplashImageResponseParser;
 import com.aashreys.walls.domain.display.sources.UnsplashRecentSource;
 import com.aashreys.walls.domain.display.sources.UnsplashRecentSourceFactory;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
-import com.aashreys.walls.network.UnsplashNetworkService;
+import com.aashreys.walls.network.apis.FlickrApi;
+import com.aashreys.walls.network.apis.UnsplashApi;
+import com.aashreys.walls.network.parsers.FlickrPhotoArrayParser;
+import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 
 import org.junit.Test;
 
 import javax.inject.Provider;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by aashreys on 18/02/17.
@@ -32,17 +42,16 @@ public class SourceFactoryTests extends MockitoTestCase {
 
     @Test
     public void test_return_types() {
-        Provider<UnsplashNetworkService> networkServiceProvider = new Provider
-                <UnsplashNetworkService>() {
+        Provider<UnsplashApi> unsplashApiProvider = new Provider<UnsplashApi>() {
             @Override
-            public UnsplashNetworkService get() {
+            public UnsplashApi get() {
                 return null;
             }
         };
-        Provider<UnsplashImageResponseParser> unsplashImageResponseParserProvider = new Provider
-                <UnsplashImageResponseParser>() {
+        Provider<UnsplashPhotoResponseParser> unsplashImageResponseParserProvider = new Provider
+                <UnsplashPhotoResponseParser>() {
             @Override
-            public UnsplashImageResponseParser get() {
+            public UnsplashPhotoResponseParser get() {
                 return null;
             }
         };
@@ -53,22 +62,51 @@ public class SourceFactoryTests extends MockitoTestCase {
                 return null;
             }
         };
+        Provider<FlickrApi> flickrApiProvider = new Provider<FlickrApi>() {
+            @Override
+            public FlickrApi get() {
+                return null;
+            }
+        };
+        Provider<FlickrPhotoArrayParser> flickrPhotoArrayParserProvider = new Provider
+                <FlickrPhotoArrayParser>() {
+            @Override
+            public FlickrPhotoArrayParser get() {
+                return null;
+            }
+        };
+
         SourceFactory sourceFactory = new SourceFactory(
-                new UnsplashCollectionSourceFactory(networkServiceProvider, unsplashImageResponseParserProvider),
-                new UnsplashRecentSourceFactory(networkServiceProvider, unsplashImageResponseParserProvider),
-                new FavoriteSourceFactory(favoriteImageRepositoryProvider)
+                new UnsplashCollectionSourceFactory(
+                        unsplashApiProvider,
+                        unsplashImageResponseParserProvider
+                ),
+                new UnsplashRecentSourceFactory(
+                        unsplashApiProvider,
+                        unsplashImageResponseParserProvider
+                ),
+                new FavoriteSourceFactory(favoriteImageRepositoryProvider),
+                new FlickrRecentSourceFactory(flickrApiProvider, flickrPhotoArrayParserProvider),
+                new FlickrTagSourceFactory(flickrApiProvider, flickrPhotoArrayParserProvider)
         );
 
-        Source unsplashRecentSource = sourceFactory.create(new UnsplashRecentCollection());
-        ServerId serverId = new ServerId("2314");
+        Id id = new Id("2314");
         Name name = new Name("Office");
-        Source unsplashCollectionSource = sourceFactory.create(new UnsplashCollection(serverId, name));
+        Source unsplashRecentSource = sourceFactory.create(new UnsplashRecentCollection());
+        Source unsplashCollectionSource = sourceFactory.create(new UnsplashCollection(
+                id,
+                name
+        ));
+        Source discoverSource = sourceFactory.create(new DiscoverCollection());
         Source favoriteSource = sourceFactory.create(new FavoriteCollection());
+        Source flickRecentSource = sourceFactory.create(new FlickrRecentCollection());
+        Source flickTagSource = sourceFactory.create(new FlickrTag(name));
 
-        assertEquals(unsplashRecentSource instanceof UnsplashRecentSource, true);
-        assertEquals(unsplashCollectionSource instanceof UnsplashCollectionSource, true);
-        assertEquals(favoriteSource instanceof FavoriteSource, true);
+        assertTrue(unsplashRecentSource instanceof UnsplashRecentSource);
+        assertTrue(unsplashCollectionSource instanceof UnsplashCollectionSource);
+        assertTrue(discoverSource instanceof DiscoverSource);
+        assertTrue(favoriteSource instanceof FavoriteSource);
+        assertTrue(flickRecentSource instanceof FlickrRecentSource);
+        assertTrue(flickTagSource instanceof FlickrTagSource);
     }
-
-
 }

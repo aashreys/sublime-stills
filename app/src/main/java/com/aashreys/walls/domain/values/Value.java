@@ -1,18 +1,20 @@
 package com.aashreys.walls.domain.values;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Created by aashreys on 02/12/16.
  */
 
-abstract class Value<T> implements Parcelable {
+public abstract class Value<T> implements Parcelable {
 
     private static final String TAG = Value.class.getSimpleName();
 
     private final T value;
 
-    protected Value(T value) {
+    protected Value(@NonNull T value) {
         this.value = value;
     }
 
@@ -34,5 +36,10 @@ abstract class Value<T> implements Parcelable {
 
     public T value() {
         return value;
+    }
+
+    @Nullable
+    public static <T> T getNullableValue(@Nullable Value<T> value) {
+        return value != null ? value.value() : null;
     }
 }

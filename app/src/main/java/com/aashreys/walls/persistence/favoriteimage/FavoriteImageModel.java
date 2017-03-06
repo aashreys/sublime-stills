@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.WallsDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -21,11 +22,18 @@ public class FavoriteImageModel extends BaseModel {
 
     @Column
     @PrimaryKey(autoincrement = true)
-    long localId;
+    long _id;
 
+    /**
+     * Image Server ID
+     */
     @NonNull
     @Column
-    String serverId;
+    String id;
+
+    @Nullable
+    @Column
+    String title;
 
     @Nullable
     @Column
@@ -35,13 +43,13 @@ public class FavoriteImageModel extends BaseModel {
     @Column
     Integer resY;
 
-    @NonNull
+    @Nullable
     @Column
     Date createdAt;
 
     @Nullable
     @Column
-    String photographerName;
+    String userRealName;
 
     @Nullable
     @Column
@@ -53,15 +61,19 @@ public class FavoriteImageModel extends BaseModel {
 
     @NonNull
     @Column
-    String smallImageUrl;
+    String imageStreamUrl;
 
     @NonNull
     @Column
-    String regularImageUrl;
+    String imageDetailUrl;
 
     @NonNull
     @Column
-    String fullImageUrl;
+    String imageSetAsUrl;
+
+    @NonNull
+    @Column
+    String imageShareUrl;
 
     @NonNull
     @Column
@@ -71,89 +83,23 @@ public class FavoriteImageModel extends BaseModel {
     @Column
     String serviceUrl;
 
-    public long getLocalId() {
-        return localId;
-    }
-
-    @NonNull
-    String getServerId() {
-        return serverId;
-    }
-
-    @Nullable
-    Integer getResX() {
-        return resX;
-    }
-
-    @Nullable
-    Integer getResY() {
-        return resY;
-    }
-
-    @NonNull
-    Date getCreatedAt() {
-        return createdAt;
-    }
-
-    @Nullable
-    String getPhotographerName() {
-        return photographerName;
-    }
-
-    @Nullable
-    String getUserProfileUrl() {
-        return userProfileUrl;
-    }
-
-    @Nullable
-    String getUserPortfolioUrl() {
-        return userPortfolioUrl;
-    }
-
-    @NonNull
-    String getSmallImageUrl() {
-        return smallImageUrl;
-    }
-
-    @NonNull
-    String getRegularImageUrl() {
-        return regularImageUrl;
-    }
-
-    @NonNull
-    String getFullImageUrl() {
-        return fullImageUrl;
-    }
-
-    @NonNull
-    String getServiceName() {
-        return serviceName;
-    }
-
-    @Nullable
-    String getServiceUrl() {
-        return serviceUrl;
-    }
-
-    FavoriteImageModel() {}
+    public FavoriteImageModel() {}
 
     FavoriteImageModel(Image image) {
-        this.serverId = image.serverId().value();
-        this.resX = image.resX() != null ? image.resX().value() : null;
-        this.resY = image.resY() != null ? image.resY().value() : null;
-        this.createdAt = image.createdAt();
-        this.photographerName = image.userRealName() != null ? image.userRealName()
-                                                                    .value() : null;
-        this.userProfileUrl = image.userProfileUrl() != null
-                ? image.userProfileUrl().value()
-                : null;
-        this.userPortfolioUrl = image.userPortfolioUrl() != null ? image.userPortfolioUrl()
-                .value() : null;
-        this.smallImageUrl = image.smallImageUrl().value();
-        this.regularImageUrl = image.regularImageUrl().value();
-        this.fullImageUrl = image.fullImageUrl().value();
-        this.serviceName = image.serviceName().value();
-        this.serviceUrl = image.serviceUrl() != null ? image.serviceUrl().value() : null;
+        this.id = image.getId().value();
+        this.imageStreamUrl = image.getUrl(Image.UrlType.IMAGE_STREAM).value();
+        this.imageDetailUrl = image.getUrl(Image.UrlType.IMAGE_DETAIL).value();
+        this.imageSetAsUrl = image.getUrl(Image.UrlType.SET_AS).value();
+        this.imageShareUrl = image.getUrl(Image.UrlType.SHARE).value();
+        Image.Properties properties = image.getProperties();
+        this.resX = Value.getNullableValue(properties.resX);
+        this.resY = Value.getNullableValue(properties.resY);
+        this.createdAt = properties.createdAt;
+        this.userRealName = Value.getNullableValue(properties.userRealName);
+        this.userProfileUrl = Value.getNullableValue(properties.userProfileUrl);
+        this.userPortfolioUrl = Value.getNullableValue(properties.userPortfolioUrl);
+        this.serviceName = properties.serviceName.value();
+        this.serviceUrl = Value.getNullableValue(properties.serviceUrl);
     }
 
 }

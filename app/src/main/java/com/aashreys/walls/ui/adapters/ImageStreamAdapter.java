@@ -55,7 +55,11 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void add(List<Image> images) {
         int oldSize = imageList.size();
         imageList.addAll(images);
-        notifyItemRangeInserted(oldSize, images.size());
+        if (oldSize != 0) {
+            notifyItemRangeInserted(oldSize, images.size());
+        } else {
+            notifyDataSetChanged();
+        }
     }
 
     // Special method for adding favorites since they are added to

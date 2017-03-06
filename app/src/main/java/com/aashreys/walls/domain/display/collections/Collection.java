@@ -4,14 +4,16 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 
-import com.aashreys.walls.domain.display.sources.Source;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.aashreys.walls.domain.display.collections.Collection.Type.DISCOVER;
 import static com.aashreys.walls.domain.display.collections.Collection.Type.FAVORITE;
+import static com.aashreys.walls.domain.display.collections.Collection.Type.FLICKR_RECENT;
+import static com.aashreys.walls.domain.display.collections.Collection.Type.FLICKR_TAG;
 import static com.aashreys.walls.domain.display.collections.Collection.Type.UNSPLASH_COLLECTION;
 import static com.aashreys.walls.domain.display.collections.Collection.Type.UNSPLASH_RECENT;
 
@@ -19,28 +21,38 @@ import static com.aashreys.walls.domain.display.collections.Collection.Type.UNSP
  * Created by aashreys on 04/02/17.
  */
 
-public interface Collection<T extends Source> extends Parcelable {
+public interface Collection extends Parcelable {
 
     @NonNull
-    ServerId id();
+    Id getId();
 
     @NonNull
-    Name name();
+    Name getName();
 
-    boolean isRemovable();
+    @Type
+    String getType();
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
+            DISCOVER,
+            FAVORITE,
             UNSPLASH_RECENT,
             UNSPLASH_COLLECTION,
-            FAVORITE
+            FLICKR_RECENT,
+            FLICKR_TAG
     })
+
     @interface Type {
 
+        String DISCOVER            = "type_discover";
+        String FAVORITE            = "type_favorite";
         String UNSPLASH_RECENT     = "type_unsplash_recent";
         String UNSPLASH_COLLECTION = "type_unsplash_collection";
-        String FAVORITE            = "type_favorite";
+        String FLICKR_RECENT       = "type_flickr_recent";
+        String FLICKR_TAG          = "type_flickr_tag";
 
     }
+
+    boolean isRemovable();
 
 }

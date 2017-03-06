@@ -44,6 +44,10 @@ public class Url extends Value<String> {
         }
     }
 
+    public Url append(String string) {
+        return new Url(value().concat(string));
+    }
+
     private Url(Parcel in) {
         super(in.readString());
     }

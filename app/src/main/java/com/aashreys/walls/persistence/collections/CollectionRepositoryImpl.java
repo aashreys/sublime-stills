@@ -4,11 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.aashreys.walls.Utils;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -32,11 +31,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
     @Override
     public void insert(Collection collection) {
-        CollectionModel model = new CollectionModel(
-                collection.name().value(),
-                Utils.getCollectionType(collection),
-                collection.id().value()
-        );
+        CollectionModel model = new CollectionModel(collection);
         model.insert();
         _notifyInsert(collection);
     }
@@ -50,9 +45,9 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     public void update(Collection collection) {
         CollectionModel model = _getModel(collection);
         if (model != null) {
-            model.name = collection.name().value();
-            model.type = Utils.getCollectionType(collection);
-            model.collectionId = collection.id().value();
+            model.name = collection.getName().value();
+            model.type = collection.getType();
+            model.collectionId = collection.getId().value();
             model.update();
             _notifyUpdate(collection);
         } else {
@@ -75,11 +70,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     public void replace(List<Collection> collections) {
         SQLite.delete().from(CollectionModel.class).execute();
         for (Collection collection : collections) {
-            new CollectionModel(
-                    collection.name().value(),
-                    Utils.getCollectionType(collection),
-                    collection.id().value()
-            ).insert();
+            new CollectionModel(collection).insert();
         }
         _notifyReplace(collections);
     }
@@ -92,7 +83,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         for (CollectionModel model : models) {
             Collection collection = collectionFactory.create(
                     model.type,
-                    new ServerId(model.collectionId),
+                    new Id(model.collectionId),
                     new Name(model.name)
             );
             collectionList.add(collection);
@@ -127,8 +118,8 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         return SQLite.select()
                 .from(CollectionModel.class)
                 .where(
-                        CollectionModel_Table.collectionId.eq(collection.id().value()),
-                        CollectionModel_Table.type.eq(Utils.getCollectionType(collection))
+                        CollectionModel_Table.collectionId.eq(collection.getId().value()),
+                        CollectionModel_Table.type.eq(collection.getType())
                 )
                 .querySingle();
     }

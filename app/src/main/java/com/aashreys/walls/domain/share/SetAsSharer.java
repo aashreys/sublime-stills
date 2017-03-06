@@ -6,9 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.Utils;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Url;
+import com.aashreys.walls.ui.helpers.GlideHelper;
 import com.aashreys.walls.ui.utils.UiHandler;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -31,8 +31,8 @@ class SetAsSharer implements Sharer {
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
-        final Url imageUrl = image.regularImageUrl();
-        Utils.downloadImageAsync(
+        final Url imageUrl = image.getUrl(Image.UrlType.SET_AS);
+        GlideHelper.downloadImageAsync(
                 context,
                 imageUrl,
                 new SimpleTarget<File>() {
@@ -52,7 +52,8 @@ class SetAsSharer implements Sharer {
                             File resource, GlideAnimation<? super File> glideAnimation
                     ) {
                         if (!isCancelled) {
-                            // Glide uses an external cache so our files are shareable by default
+                            // Glide has been configured to use an external cache so that cached
+                            // images are shareable by default. See {@link @GlideConfiguration}.
                             Uri imageUri = Uri.fromFile(resource);
                             Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
                             intent.addCategory(Intent.CATEGORY_DEFAULT);

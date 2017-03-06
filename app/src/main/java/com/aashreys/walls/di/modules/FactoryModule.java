@@ -2,6 +2,8 @@ package com.aashreys.walls.di.modules;
 
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
+import com.aashreys.walls.domain.display.sources.FlickrRecentSourceFactory;
+import com.aashreys.walls.domain.display.sources.FlickrTagSourceFactory;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.domain.display.sources.UnsplashCollectionSourceFactory;
 import com.aashreys.walls.domain.display.sources.UnsplashRecentSourceFactory;
@@ -24,12 +26,16 @@ public class FactoryModule {
     public SourceFactory providesSourceFactory(
             UnsplashCollectionSourceFactory unsplashCollectionSourceFactory,
             UnsplashRecentSourceFactory unsplashRecentSourceFactory,
-            FavoriteSourceFactory favoriteSourceFactory
+            FavoriteSourceFactory favoriteSourceFactory,
+            FlickrRecentSourceFactory flickrRecentSourceFactory,
+            FlickrTagSourceFactory flickrTagSourceFactory
     ) {
         return new SourceFactory(
                 unsplashCollectionSourceFactory,
                 unsplashRecentSourceFactory,
-                favoriteSourceFactory
+                favoriteSourceFactory,
+                flickrRecentSourceFactory,
+                flickrTagSourceFactory
         );
     }
 

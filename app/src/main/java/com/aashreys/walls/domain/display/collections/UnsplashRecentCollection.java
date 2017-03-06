@@ -1,66 +1,58 @@
 package com.aashreys.walls.domain.display.collections;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.aashreys.walls.domain.display.sources.UnsplashRecentSource;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
 
 /**
- * Created by aashreys on 04/02/17.
+ * Created by aashreys on 03/03/17.
  */
 
-public class UnsplashRecentCollection implements Collection<UnsplashRecentSource>, Parcelable {
+public class UnsplashRecentCollection implements Collection {
 
-    public static final Parcelable.Creator<UnsplashRecentCollection> CREATOR
-            = new Parcelable.Creator<UnsplashRecentCollection>() {
-        @Override
-        public UnsplashRecentCollection createFromParcel(Parcel source) {
-            return new UnsplashRecentCollection(source);
-        }
+    public static final Creator<UnsplashRecentCollection> CREATOR =
+            new Creator<UnsplashRecentCollection>() {
+                @Override
+                public UnsplashRecentCollection createFromParcel(Parcel source) {
+                    return new UnsplashRecentCollection(source);
+                }
 
-        @Override
-        public UnsplashRecentCollection[] newArray(int size) {
-            return new
-                    UnsplashRecentCollection[size];
-        }
-    };
+                @Override
+                public UnsplashRecentCollection[] newArray(int size) {
+                    return new
+                            UnsplashRecentCollection[size];
+                }
+            };
 
-    private static final ServerId ID   = new ServerId("1");
-    private static final Name     NAME = new Name("Discover");
+    private static final Id ID = new Id("1");
+
+    private static final Name NAME = new Name("Unsplash");
 
     public UnsplashRecentCollection() {}
 
-    private UnsplashRecentCollection(Parcel in) {}
+    protected UnsplashRecentCollection(Parcel in) {}
 
     @NonNull
     @Override
-    public ServerId id() {
+    public Id getId() {
         return ID;
     }
 
     @NonNull
     @Override
-    public Name name() {
+    public Name getName() {
         return NAME;
     }
 
     @Override
+    public String getType() {
+        return Type.UNSPLASH_RECENT;
+    }
+
+    @Override
     public boolean isRemovable() {
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return ID.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) { return true; }
-        if (!(o instanceof UnsplashRecentCollection)) { return false; }
         return true;
     }
 
@@ -69,5 +61,21 @@ public class UnsplashRecentCollection implements Collection<UnsplashRecentSource
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {}
+
+    @Override
+    public int hashCode() {
+        return ID.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UnsplashRecentCollection)) {
+            return false;
+        }
+        return true;
+    }
 
 }

@@ -4,15 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.aashreys.walls.domain.display.sources.UnsplashCollectionSource;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
 
 /**
  * Created by aashreys on 04/02/17.
  */
 
-public class UnsplashCollection implements Collection<UnsplashCollectionSource>, Parcelable {
+public class UnsplashCollection implements Collection, Parcelable {
 
     public static final Parcelable.Creator<UnsplashCollection> CREATOR
             = new Parcelable.Creator<UnsplashCollection>() {
@@ -27,31 +26,36 @@ public class UnsplashCollection implements Collection<UnsplashCollectionSource>,
         }
     };
 
-    private final ServerId id;
+    private final Id id;
 
     private final Name name;
 
-    public UnsplashCollection(ServerId id, Name name) {
+    public UnsplashCollection(Id id, Name name) {
         this.id = id;
         this.name = name;
     }
 
 
     private UnsplashCollection(Parcel in) {
-        this.id = in.readParcelable(ServerId.class.getClassLoader());
+        this.id = in.readParcelable(Id.class.getClassLoader());
         this.name = in.readParcelable(Name.class.getClassLoader());
     }
 
     @NonNull
     @Override
-    public ServerId id() {
+    public Id getId() {
         return id;
     }
 
     @NonNull
     @Override
-    public Name name() {
+    public Name getName() {
         return name;
+    }
+
+    @Override
+    public String getType() {
+        return Type.UNSPLASH_COLLECTION;
     }
 
     @Override

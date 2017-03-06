@@ -28,11 +28,11 @@ public class CollectionModel extends BaseModel {
     @Column
     String collectionId;
 
-    CollectionModel() {}
+    public CollectionModel() {}
 
-    CollectionModel(String name, @Collection.Type String type, String collectionId) {
-        this.name = name;
-        this.type = type;
-        this.collectionId = collectionId;
+    public CollectionModel(Collection collection) {
+        this.name = collection.getName().value();
+        this.type = collection.getType();
+        this.collectionId = collection.getId().value();
     }
 }

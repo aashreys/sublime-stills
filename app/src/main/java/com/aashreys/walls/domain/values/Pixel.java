@@ -8,17 +8,10 @@ import android.os.Parcel;
 
 public class Pixel extends Value<Integer> {
 
-    private static final String TAG = Pixel.class.getSimpleName();
-
     public static final Creator<Pixel> CREATOR = new Creator<Pixel>() {
         @Override
         public Pixel createFromParcel(Parcel source) {
-            try {
-                return new Pixel(source);
-            } catch (IncorrectValueException e) {
-                e.printStackTrace();
-                return null;
-            }
+            return new Pixel(source);
         }
 
         @Override
@@ -34,7 +27,7 @@ public class Pixel extends Value<Integer> {
         return value() != null &&  value() >= 0;
     }
 
-    private Pixel(Parcel in) throws IncorrectValueException {
+    private Pixel(Parcel in) {
         super(in.readInt());
     }
 

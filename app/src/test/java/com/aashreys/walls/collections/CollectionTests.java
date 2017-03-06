@@ -1,25 +1,24 @@
 package com.aashreys.walls.collections;
 
-import android.os.Parcel;
-import android.support.annotation.NonNull;
-
 import com.aashreys.walls.BaseTestCase;
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.domain.display.collections.Collection.Type;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
-import com.aashreys.walls.domain.display.collections.CollectionValidator;
-import com.aashreys.walls.domain.display.collections.CollectionValidatorImpl;
+import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
+import com.aashreys.walls.domain.display.collections.FlickrRecentCollection;
+import com.aashreys.walls.domain.display.collections.FlickrTag;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.display.collections.UnsplashRecentCollection;
-import com.aashreys.walls.domain.display.sources.Source;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by aashreys on 10/02/17.
@@ -30,158 +29,103 @@ public class CollectionTests extends BaseTestCase {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
+    /** Common tests for all collections */
+    static <T extends Collection> void testCollection(
+            Collection collection,
+            String id,
+            String name,
+            String type,
+            boolean isRemovable,
+            Class<T> collectionClass
+    ) {
+        assertEquals(collection.getName().value(), name);
+        assertEquals(collection.getId().value(), id);
+        assertTrue(collection.getType() != null);
+        assertEquals(collection.getType(), type);
+        assertEquals(collection.isRemovable(), isRemovable);
+        assertEquals(collection.getClass().isAssignableFrom(collectionClass), true);
+    }
+
     @Test
     @SuppressWarnings("WrongConstant")
-    public void test_collections_factory_return_type() {
-        CollectionFactory factory = new CollectionFactory();
-
-        Collection favoriteCollection = factory.create(Collection.Type.FAVORITE, null, null);
-        assertEquals(favoriteCollection instanceof FavoriteCollection, true);
-
-        Collection unsplashRecentCollection = factory.create(
-                Collection.Type.UNSPLASH_RECENT,
-                null,
-                null
-        );
-        assertEquals(unsplashRecentCollection instanceof UnsplashRecentCollection, true);
-
+    public void test_collections() {
+        String idString = "42";
         String nameString = "Spacemonkeys!";
-        String serverIdString = "42";
+        Id id = new Id(idString);
+        Name name = new Name(nameString);
 
-        Collection unsplashCollection = factory.create(
-                Collection.Type.UNSPLASH_COLLECTION,
-                new ServerId(serverIdString),
-                new Name(nameString)
+        CollectionFactory factory = new CollectionFactory();
+        Collection unsplashRecentCollection = factory.create(Type.UNSPLASH_RECENT, null, null);
+        Collection unsplashCollection = factory.create(Type.UNSPLASH_COLLECTION, id, name);
+        Collection discoverCollection = factory.create(Type.DISCOVER, null, null);
+        Collection favoriteCollection = factory.create(Type.FAVORITE, null, null);
+        Collection flickrRecentCollection = factory.create(Type.FLICKR_RECENT, null, null);
+        Collection flickrTagCollection = factory.create(Type.FLICKR_TAG, id, name);
+
+
+        assertTrue(unsplashRecentCollection instanceof UnsplashRecentCollection);
+        assertTrue(unsplashCollection instanceof UnsplashCollection);
+        assertTrue(discoverCollection instanceof DiscoverCollection);
+        assertTrue(favoriteCollection instanceof FavoriteCollection);
+        assertTrue(flickrRecentCollection instanceof FlickrRecentCollection);
+        assertTrue(flickrTagCollection instanceof FlickrTag);
+
+        testCollection(
+                unsplashRecentCollection,
+                "1",
+                "Unsplash",
+                Type.UNSPLASH_RECENT,
+                true,
+                UnsplashRecentCollection.class
         );
-        assertEquals(unsplashCollection instanceof UnsplashCollection, true);
-        testCommonCollection(
+
+        testCollection(
                 unsplashCollection,
+                idString,
                 nameString,
-                serverIdString,
+                Type.UNSPLASH_COLLECTION,
                 true,
                 UnsplashCollection.class
         );
 
-        exception.expect(IllegalArgumentException.class);
-        factory.create("Clearly not an expected collection type", null, null);
-    }
-
-    @Test
-    public void test_collection_validator_logic() {
-        Collection validCollection = new Collection() {
-            @NonNull
-            @Override
-            public ServerId id() {
-                return new ServerId("2");
-            }
-
-            @NonNull
-            @Override
-            public Name name() {
-                return new Name("Simonella");
-            }
-
-            @Override
-            public boolean isRemovable() {
-                return false;
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-
-            }
-        };
-        Collection invalidCollection = new Collection() {
-            @NonNull
-            @Override
-            public ServerId id() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public Name name() {
-                return null;
-            }
-
-            @Override
-            public boolean isRemovable() {
-                return false;
-            }
-
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-
-            }
-        };
-
-        CollectionValidator collectionValidator = new CollectionValidatorImpl();
-
-        assertEquals(collectionValidator.isValid(validCollection), true);
-        assertEquals(collectionValidator.isValid(invalidCollection), false);
-
-    }
-
-    @Test
-    public void test_favorites_collection() {
-        testCommonCollection(
-                new FavoriteCollection(),
-                "Favorites",
+        testCollection(
+                discoverCollection,
                 "1",
+                "Discover",
+                Type.DISCOVER,
+                false,
+                DiscoverCollection.class
+        );
+
+        testCollection(
+                favoriteCollection,
+                "1",
+                "Favorites",
+                Type.FAVORITE,
                 false,
                 FavoriteCollection.class
         );
-    }
 
-    @Test
-    public void test_unsplash_recent_collection() {
-        testCommonCollection(
-                new UnsplashRecentCollection(),
-                "Discover",
+        testCollection(
+                flickrRecentCollection,
                 "1",
-                false,
-                UnsplashRecentCollection.class
-        );
-    }
-
-    @Test
-    public void test_unsplash_collection() {
-        String nameString = "Spacemagic!";
-        String serverIdString = "32";
-        Name name = new Name(nameString);
-        ServerId serverId = new ServerId(serverIdString);
-        Collection unsplashCollection = new UnsplashCollection(serverId, name);
-        testCommonCollection(
-                unsplashCollection,
-                nameString,
-                serverIdString,
+                "Flickr",
+                Type.FLICKR_RECENT,
                 true,
-                UnsplashCollection.class
+                FlickrRecentCollection.class
         );
-    }
 
-    /** Common tests for all collections */
-    static <F extends Collection, T extends Source> void testCommonCollection(
-            Collection collection,
-            String nameString,
-            String serverId,
-            boolean isRemovable,
-            Class<F> collectionClass
-    ) {
-        assertEquals(collection.name().value(), nameString);
-        assertEquals(collection.id().value(), serverId);
-        assertEquals(collection.isRemovable(), isRemovable);
-        assertEquals(collection.getClass().isAssignableFrom(collectionClass), true);
+        testCollection(
+                flickrTagCollection,
+                nameString,
+                nameString,
+                Type.FLICKR_TAG,
+                true,
+                FlickrTag.class
+        );
+
+        exception.expect(IllegalArgumentException.class);
+        factory.create("Clearly not an expected collection type string", null, null);
     }
 
     @Test

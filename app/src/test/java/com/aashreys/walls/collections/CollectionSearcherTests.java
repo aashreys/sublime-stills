@@ -1,86 +1,82 @@
 package com.aashreys.walls.collections;
 
-import com.aashreys.safeapi.SafeApi;
-import com.aashreys.walls.BuildConfig;
-import com.aashreys.walls.Config;
-import com.aashreys.walls.MockitoTestCase;
+import com.aashreys.walls.BaseTestCase;
 import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.CollectionValidatorImpl;
+import com.aashreys.walls.domain.display.collections.Collection.Type;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
-import com.aashreys.walls.domain.display.collections.UnsplashCollectionSearcher;
-import com.aashreys.walls.network.UnsplashNetworkService;
-import com.aashreys.walls.samples.CollectionSearcherSamples;
+import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
+import com.aashreys.walls.network.apis.ApiInstanceCreator;
+import com.aashreys.walls.network.apis.UnsplashApi;
+import com.aashreys.walls.responses.CollectionSearcherResponse;
 
+import org.junit.After;
 import org.junit.Test;
-import org.mockito.Mock;
 
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by aashreys on 10/02/17.
  */
 
-public class CollectionSearcherTests extends MockitoTestCase {
+public class CollectionSearcherTests extends BaseTestCase {
 
-    private static final String URL = "https://api.unsplash.com/search/collections?query=%s";
+    private MockWebServer mockWebServer;
 
-    private static final String INVALID_RESPONSE =
-            "bugs bunny doesn't like the internet, so no JSON for you.";
+    private UnsplashApi unsplashApi;
 
-    @Mock private UnsplashNetworkService unsplashNetworkService;
-
-    private UnsplashCollectionSearcher collectionSearcher;
+    private UnsplashCollectionSearchService collectionSearcher;
 
     @Override
     public void init() {
         super.init();
-        collectionSearcher = new UnsplashCollectionSearcher(
-                new CollectionValidatorImpl(),
-                unsplashNetworkService
+        mockWebServer = new MockWebServer();
+        HttpUrl baseUrl = mockWebServer.url("");
+        unsplashApi = new ApiInstanceCreator().createUnsplashApi(
+                new OkHttpClient(),
+                baseUrl.toString()
         );
+        collectionSearcher = new UnsplashCollectionSearchService(unsplashApi);
     }
 
     @Test
-    public void test_null_input_search() {
-        List<Collection> collectionList = collectionSearcher.search(null);
-        assertEquals(collectionList.size(), 0);
-    }
-
-    @Test
-    public void test_search_with_invalid_response() {
+    public void test_search_with_invalid_response() throws IOException {
         String searchString = "hallelujah";
-        when(unsplashNetworkService.get(
-                String.format(URL, searchString),
-                SafeApi.decrypt(BuildConfig.UNSPLASH_API_KEY),
-                Config.Unsplash.API_VERSION
-        )).thenReturn(INVALID_RESPONSE);
-        List<Collection> collectionList = collectionSearcher.search("hallelujah");
+        mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(""));
+        unsplashApi.searchCollections(searchString, 1, 10);
+        List<Collection> collectionList = collectionSearcher.search(searchString);
         assertEquals(collectionList.size(), 0);
     }
 
     @Test
     public void test_search_with_valid_response() {
         String searchString = "hallelujah";
-        when(unsplashNetworkService.get(
-                String.format(URL, searchString),
-                SafeApi.decrypt(BuildConfig.UNSPLASH_API_KEY),
-                Config.Unsplash.API_VERSION
-        )).thenReturn(CollectionSearcherSamples.VALID_RESPONSE);
-
-        List<Collection> collectionList = collectionSearcher.search("hallelujah");
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(CollectionSearcherResponse.VALID_RESPONSE));
+        List<Collection> collectionList = collectionSearcher.search(searchString);
         assertEquals(collectionList.size(), 1);
 
         Collection collection1 = collectionList.get(0);
-        CollectionTests.testCommonCollection(
+        CollectionTests.testCollection(
                 collection1,
-                "Office",
                 "193913",
+                "Office",
+                Type.UNSPLASH_COLLECTION,
                 true,
                 UnsplashCollection.class
         );
+    }
+
+    @After
+    public void teardown() throws IOException {
+        mockWebServer.shutdown();
     }
 
 }

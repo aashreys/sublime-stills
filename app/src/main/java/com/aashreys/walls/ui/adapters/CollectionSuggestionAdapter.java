@@ -107,7 +107,7 @@ public class CollectionSuggestionAdapter extends
         ) {
             chipView.setCollection(collection);
             if (selectedCollection != null) {
-                chipView.setChecked(selectedCollection.id().equals(collection.id()));
+                chipView.setChecked(selectedCollection.getId().equals(collection.getId()));
             } else {
                 chipView.setChecked(false);
             }

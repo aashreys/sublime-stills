@@ -5,4 +5,5 @@
     android:layout_height="@dimen/height_loading_view"
     android:padding="@dimen/padding_loading_view"
     android:indeterminate="true"
+    android:layout_gravity="center"
     android:orientation="vertical"/>

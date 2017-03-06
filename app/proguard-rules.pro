@@ -41,3 +41,9 @@
 
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
+
+# Retrofit 2
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
+-keepattributes Signature
+-keepattributes Exceptions

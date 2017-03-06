@@ -51,7 +51,7 @@ public class ChipView extends TextView {
     }
 
     public void setCollection(final Collection collection) {
-        setText(collection.name().value().toLowerCase());
+        setText(collection.getName().value().toLowerCase());
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

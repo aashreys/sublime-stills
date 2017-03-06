@@ -3,11 +3,11 @@ package com.aashreys.walls.persistence.favoriteimage;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.display.images.FavoriteImage;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.ImageImpl;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
-import com.aashreys.walls.domain.values.ServerId;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -65,7 +65,7 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
         List<Image> images = new ArrayList<>();
         List<FavoriteImageModel> models = SQLite.select()
                 .from(FavoriteImageModel.class)
-                .orderBy(FavoriteImageModel_Table.localId, false)
+                .orderBy(FavoriteImageModel_Table._id, false)
                 .offset(fromIndex)
                 .limit(count)
                 .queryList();
@@ -90,8 +90,9 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
     private FavoriteImageModel _getModel(Image image) {
         return SQLite.select()
                 .from(FavoriteImageModel.class)
-                .where(FavoriteImageModel_Table.serverId.is(image.serverId().value()))
-                .and(FavoriteImageModel_Table.serviceName.is(image.serviceName().value()))
+                .where(FavoriteImageModel_Table.id.is(image.getId().value()))
+                .and(FavoriteImageModel_Table.serviceName.is(image.getProperties().serviceName
+                        .value()))
                 .querySingle();
     }
 
@@ -104,19 +105,21 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
     }
 
     private Image createFromModel(FavoriteImageModel model) {
-        return new ImageImpl(
-                new ServerId(model.getServerId()),
-                new Pixel(model.getResX()),
-                new Pixel(model.getResY()),
-                model.getCreatedAt(),
-                new Name(model.getPhotographerName()),
-                new Url(model.getUserProfileUrl()),
-                new Url(model.getUserPortfolioUrl()),
-                new Url(model.getSmallImageUrl()),
-                new Url(model.getRegularImageUrl()),
-                new Url(model.getFullImageUrl()),
-                new Name(model.getServiceName()),
-                new Url(model.getServiceUrl())
+        return new FavoriteImage(
+                new Id(model.id),
+                model.title != null ? new Name(model.title) : null,
+                new Url(model.imageStreamUrl),
+                new Url(model.imageDetailUrl),
+                new Url(model.imageSetAsUrl),
+                new Url(model.imageShareUrl),
+                model.resX != null ? new Pixel(model.resX) : null,
+                model.resY != null ? new Pixel(model.resY) : null,
+                model.createdAt,
+                model.userRealName != null ? new Name(model.userRealName) : null,
+                model.userProfileUrl != null ? new Url(model.userProfileUrl) : null,
+                model.userPortfolioUrl != null ? new Url(model.userPortfolioUrl) : null,
+                new Name(model.serviceName),
+                model.serviceUrl != null ? new Url(model.serviceUrl) : null
         );
     }
 }

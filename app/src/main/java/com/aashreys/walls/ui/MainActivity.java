@@ -16,6 +16,7 @@ import com.aashreys.walls.di.UiComponent;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamViewPagerAdapter;
 
@@ -24,7 +25,7 @@ import javax.inject.Inject;
 import dagger.Lazy;
 
 public class MainActivity extends BaseActivity implements ImageStreamFragment
-        .ImageSelectedCallback {
+        .ImageSelectedCallback, ImageStreamFragment.CollectionProvider {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -33,6 +34,8 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
     @Inject CollectionRepository collectionRepository;
 
     @Inject Lazy<CollectionFactory> collectionFactoryLazy;
+
+    @Inject ImageCache imageCache;
 
     private ImageStreamViewPagerAdapter viewPagerAdapter;
 
@@ -85,16 +88,13 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
 
     @Override
     public void onImageSelected(Image image) {
+        imageCache.add(image);
         startActivity(ImageDetailActivity.createLaunchIntent(this, image));
     }
 
     private void populateDatabases() {
         CollectionFactory collectionFactory = collectionFactoryLazy.get();
-        collectionRepository.insert(collectionFactory.create(
-                Collection.Type.UNSPLASH_RECENT,
-                null,
-                null
-        ));
+        collectionRepository.insert(collectionFactory.create(Collection.Type.DISCOVER, null, null));
         collectionRepository.insert(collectionFactory.create(Collection.Type.FAVORITE, null, null));
     }
 
@@ -107,4 +107,8 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
         return ((WallsApplication) getApplication()).getSharedPreferences();
     }
 
+    @Override
+    public Collection getCollection(int position) {
+        return viewPagerAdapter.getCollection(position);
+    }
 }

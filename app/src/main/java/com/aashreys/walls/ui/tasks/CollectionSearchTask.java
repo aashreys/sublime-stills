@@ -3,7 +3,7 @@ package com.aashreys.walls.ui.tasks;
 import android.os.AsyncTask;
 
 import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.UnsplashCollectionSearcher;
+import com.aashreys.walls.domain.display.collections.search.CollectionSearchService;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
@@ -18,13 +18,13 @@ import javax.inject.Inject;
 @AutoFactory
 public class CollectionSearchTask extends AsyncTask<String, Void, List<Collection>> {
 
-    private UnsplashCollectionSearcher collectionSearcher;
+    private CollectionSearchService collectionSearchService;
 
     private CollectionSearchListener listener;
 
     @Inject
-    public CollectionSearchTask(@Provided UnsplashCollectionSearcher unsplashCollectionSearcher) {
-        this.collectionSearcher = unsplashCollectionSearcher;
+    public CollectionSearchTask(@Provided CollectionSearchService unsplashCollectionSearcher) {
+        this.collectionSearchService = unsplashCollectionSearcher;
     }
 
     public void setListener(CollectionSearchListener listener) {
@@ -33,7 +33,7 @@ public class CollectionSearchTask extends AsyncTask<String, Void, List<Collectio
 
     @Override
     protected List<Collection> doInBackground(String... searchStrings) {
-        return collectionSearcher.search(searchStrings[0]);
+        return collectionSearchService.search(searchStrings[0]);
     }
 
     @Override

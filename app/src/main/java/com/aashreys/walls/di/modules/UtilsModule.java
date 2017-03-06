@@ -1,11 +1,17 @@
 package com.aashreys.walls.di.modules;
 
-import com.aashreys.walls.domain.display.collections.CollectionValidator;
-import com.aashreys.walls.domain.display.collections.CollectionValidatorImpl;
-import com.aashreys.walls.domain.display.collections.UnsplashCollectionSearcher;
-import com.aashreys.walls.domain.display.images.ImageValidator;
-import com.aashreys.walls.domain.display.sources.ImageValidatorImpl;
-import com.aashreys.walls.domain.display.sources.UnsplashImageResponseParser;
+import com.aashreys.walls.domain.display.collections.search.CollectionSearchService;
+import com.aashreys.walls.domain.display.collections.search.CollectionSearchServiceImpl;
+import com.aashreys.walls.domain.display.collections.search.FlickrTagSearchService;
+import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
+import com.aashreys.walls.domain.display.images.ImagePropertiesService;
+import com.aashreys.walls.domain.display.images.ImagePropertiesServiceImpl;
+import com.aashreys.walls.network.UrlShortener;
+import com.aashreys.walls.network.UrlShortenerImpl;
+import com.aashreys.walls.network.apis.FlickrApi;
+import com.aashreys.walls.network.apis.UrlShortenerApi;
+import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
+import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
 import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
 
 import javax.inject.Provider;
@@ -23,27 +29,38 @@ public class UtilsModule {
     public UtilsModule() {}
 
     @Provides
-    public ImageValidator providesImageValidator() {
-        return new ImageValidatorImpl();
-    }
-
-    @Provides
-    public CollectionValidator providesCollectionValidator() {
-        return new CollectionValidatorImpl();
-    }
-
-    @Provides
-    public UnsplashImageResponseParser providesUnsplashImageResponseParser(
-            ImageValidator
-                    imageValidator
-    ) {
-        return new UnsplashImageResponseParser(imageValidator);
+    public UnsplashPhotoResponseParser providesUnsplashImageResponseParser() {
+        return new UnsplashPhotoResponseParser();
     }
 
     @Provides
     public CollectionSearchTaskFactory providesCollectionSearchTaskFactory
-            (Provider<UnsplashCollectionSearcher> unsplashImageResponseParserProvider) {
-        return new CollectionSearchTaskFactory(unsplashImageResponseParserProvider);
+            (Provider<CollectionSearchService> collectionSearchServiceProvider) {
+        return new CollectionSearchTaskFactory(collectionSearchServiceProvider);
+    }
+
+    @Provides
+    public UrlShortener providesUrlShortener(
+            ShortUrlRepository shortUrlRepository,
+            UrlShortenerApi urlShortenerApi
+    ) {
+        return new UrlShortenerImpl(shortUrlRepository, urlShortenerApi);
+    }
+
+    @Provides
+    public ImagePropertiesService providesImagePropertiesService(FlickrApi flickrApi) {
+        return new ImagePropertiesServiceImpl(flickrApi);
+    }
+
+    @Provides
+    public CollectionSearchService providesCollectionSearchService(
+            UnsplashCollectionSearchService unsplashCollectionSearchService,
+            FlickrTagSearchService flickrTagSearchService
+    ) {
+        return new CollectionSearchServiceImpl(
+                unsplashCollectionSearchService,
+                flickrTagSearchService
+        );
     }
 
 }

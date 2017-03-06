@@ -30,19 +30,17 @@ public class ImageUrlSharer implements Sharer {
 
     private UiHandler uiHandler = new UiHandler();
 
+    private static final int MAX_URL_LENGTH = 40;
+
     ImageUrlSharer(@Provided UrlShortener urlShortener) {
         this.urlShortener = urlShortener;
     }
 
     @Override
     public void share(final Context context, Image image, final Listener listener) {
-        Url imageUrl = image.fullImageUrl();
-        Url urlToShare = urlShortener.shortenLocal(imageUrl);
-        if (urlToShare != null) {
-            startSharingIntent(context, urlToShare);
-            listener.onShareComplete();
-        } else {
-            urlShortener.shortenAsync(
+        Url imageUrl = image.getUrl(Image.UrlType.SHARE);
+        if (imageUrl.value().length() > MAX_URL_LENGTH) {
+            urlShortener.shorten(
                     imageUrl,
                     new UrlShortener.Listener() {
                         @Override
@@ -72,12 +70,15 @@ public class ImageUrlSharer implements Sharer {
                         }
                     }
             );
+        } else {
+            startSharingIntent(context, imageUrl);
+            listener.onShareComplete();
         }
     }
 
     @Override
     public void cancel() {
-        boolean isCancelled = true;
+        this.isCancelled = true;
     }
 
     private void startSharingIntent(Context context, Url urlToShare) {

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.aashreys.walls.di.ApplicationComponent;
 import com.aashreys.walls.di.DaggerApplicationComponent;
+import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -28,6 +29,7 @@ public class WallsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Enable crash reporting for production only.
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(!BuildConfig.PRODUCTION).build())
                 .build();
@@ -37,6 +39,7 @@ public class WallsApplication extends Application {
         this.applicationComponent = DaggerApplicationComponent
                 .builder()
                 .applicationModule(new ApplicationModule(this))
+                .apiModule(new ApiModule(this))
                 .build();
         this.applicationComponent.inject(this);
     }

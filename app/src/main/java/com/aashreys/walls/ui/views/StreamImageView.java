@@ -11,12 +11,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.Utils;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.helpers.GlideHelper;
 import com.aashreys.walls.ui.utils.ForegroundImageView;
 import com.bumptech.glide.Priority;
 
@@ -108,9 +108,9 @@ public class StreamImageView extends FrameLayout {
     ) {
         this.image = image;
         favoriteButton.setVisibility(View.GONE);
-        Utils.displayImageAsync(
+        GlideHelper.displayImageAsync(
                 fragment,
-                image.smallImageUrl(),
+                image.getUrl(Image.UrlType.IMAGE_STREAM),
                 imageView,
                 fragment.isDisplayed() ? Priority.HIGH : Priority.LOW
         );

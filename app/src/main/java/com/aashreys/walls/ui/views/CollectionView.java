@@ -17,9 +17,7 @@ import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 
 import javax.inject.Inject;
-
-import static com.aashreys.walls.Utils.getCollectionType;
-import static com.aashreys.walls.Utils.getIconForCollectionType;
+import static com.aashreys.walls.ui.helpers.CollectionUiHelper.getIconForCollectionType;
 
 /**
  * Created by aashreys on 04/02/17.
@@ -83,8 +81,8 @@ public class CollectionView extends LinearLayout {
 
     public void setCollection(Collection collection) {
         this.collection = collection;
-        titleText.setText(collection.name().value());
-        iconImage.setImageResource(getIconForCollectionType(getCollectionType(collection)));
+        titleText.setText(collection.getName().value());
+        iconImage.setImageResource(getIconForCollectionType(collection.getType()));
         removeButton.setImageResource(collection.isRemovable() ? R.drawable.ic_delete_black_24dp
                 : R.drawable.ic_delete_light_24dp);
         removeButton.setEnabled(collection.isRemovable());

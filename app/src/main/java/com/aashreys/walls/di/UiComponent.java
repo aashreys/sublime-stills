@@ -2,7 +2,6 @@ package com.aashreys.walls.di;
 
 import com.aashreys.walls.di.modules.ApplicationModule;
 import com.aashreys.walls.di.modules.FactoryModule;
-import com.aashreys.walls.di.modules.NetworkModule;
 import com.aashreys.walls.di.modules.RepositoryModule;
 import com.aashreys.walls.di.modules.UtilsModule;
 import com.aashreys.walls.di.scopes.UiScoped;
@@ -25,7 +24,6 @@ import dagger.Subcomponent;
         ApplicationModule.class,
         RepositoryModule.class,
         FactoryModule.class,
-        NetworkModule.class,
         UtilsModule.class
 })
 public interface UiComponent {

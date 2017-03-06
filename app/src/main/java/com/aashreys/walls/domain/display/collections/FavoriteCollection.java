@@ -4,15 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.aashreys.walls.domain.display.sources.FavoriteSource;
+import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.ServerId;
 
 /**
  * Created by aashreys on 04/02/17.
  */
 
-public class FavoriteCollection implements Collection<FavoriteSource>, Parcelable {
+public class FavoriteCollection implements Collection, Parcelable {
 
     public static final Parcelable.Creator<FavoriteCollection> CREATOR
             = new Parcelable.Creator<FavoriteCollection>() {
@@ -25,8 +24,9 @@ public class FavoriteCollection implements Collection<FavoriteSource>, Parcelabl
         public FavoriteCollection[] newArray(int size) {return new FavoriteCollection[size];}
     };
 
-    private static final ServerId ID   = new ServerId("1");
-    private static final Name     NAME = new Name("Favorites");
+    private static final Id ID = new Id("1");
+
+    private static final Name NAME = new Name("Favorites");
 
     public FavoriteCollection() {
 
@@ -38,14 +38,19 @@ public class FavoriteCollection implements Collection<FavoriteSource>, Parcelabl
 
     @NonNull
     @Override
-    public ServerId id() {
+    public Id getId() {
         return ID;
     }
 
     @NonNull
     @Override
-    public Name name() {
+    public Name getName() {
         return NAME;
+    }
+
+    @Override
+    public String getType() {
+        return Type.FAVORITE;
     }
 
     @Override
@@ -60,8 +65,12 @@ public class FavoriteCollection implements Collection<FavoriteSource>, Parcelabl
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) { return true; }
-        if (!(o instanceof FavoriteCollection)) { return false; }
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FavoriteCollection)) {
+            return false;
+        }
         return true;
 
     }

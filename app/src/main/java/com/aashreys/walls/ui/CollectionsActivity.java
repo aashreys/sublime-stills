@@ -37,7 +37,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionAdapt
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_collections);
+        setContentView(R.layout.activity_collections);
         getUiComponent().inject(this);
         this.repositoryCallback = new CollectionRepository.CollectionRepositoryListener() {
             @Override

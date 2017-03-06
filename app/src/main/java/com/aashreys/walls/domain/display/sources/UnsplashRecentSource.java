@@ -3,16 +3,22 @@ package com.aashreys.walls.domain.display.sources;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.aashreys.safeapi.SafeApi;
-import com.aashreys.walls.BuildConfig;
 import com.aashreys.walls.Config;
-import com.aashreys.walls.Utils;
+import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.network.UnsplashNetworkService;
+import com.aashreys.walls.network.apis.UnsplashApi;
+import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by aashreys on 21/11/16.
@@ -21,17 +27,17 @@ import java.util.List;
 @AutoFactory
 public class UnsplashRecentSource implements Source {
 
-    private static final String BASE_URL = "https://api.unsplash.com/photos?page=%d&per_page=%d";
+    private static final String TAG = UnsplashRecentSource.class.getSimpleName();
 
-    private UnsplashNetworkService networkService;
+    private UnsplashApi unsplashApi;
 
-    private final UnsplashImageResponseParser responseParser;
+    private final UnsplashPhotoResponseParser responseParser;
 
     public UnsplashRecentSource(
-            @Provided UnsplashNetworkService networkService,
-            @Provided UnsplashImageResponseParser responseParser
+            @Provided UnsplashApi unsplashApi,
+            @Provided UnsplashPhotoResponseParser responseParser
     ) {
-        this.networkService = networkService;
+        this.unsplashApi = unsplashApi;
         this.responseParser = responseParser;
     }
 
@@ -39,17 +45,20 @@ public class UnsplashRecentSource implements Source {
     @WorkerThread
     @Override
     public List<Image> getImages(int fromIndex) {
-        String url = String.format(
-                BASE_URL,
-                Utils.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
-                Config.Unsplash.ITEMS_PER_PAGE
-        );
-        String response = networkService.get(
-                url,
-                SafeApi.decrypt(BuildConfig.UNSPLASH_API_KEY),
-                Config.Unsplash.API_VERSION
-        );
-        return responseParser.parse(response);
+        try {
+            Call<ResponseBody> call = unsplashApi.getRecentPhotos(
+                    UiHelper.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
+                    Config.Unsplash.ITEMS_PER_PAGE
+            );
+            Response<ResponseBody> response = call.execute();
+            if (response.isSuccessful()) {
+                return responseParser.parse(response.body().string());
+            } else {
+                throw new IOException("Unexpected error code " + response.code());
+            }
+        } catch (IOException e) {
+            LogWrapper.e(TAG, "Unable to get images", e);
+            return new ArrayList<>();
+        }
     }
-
 }

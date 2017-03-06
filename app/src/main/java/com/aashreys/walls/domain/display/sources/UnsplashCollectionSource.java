@@ -3,17 +3,23 @@ package com.aashreys.walls.domain.display.sources;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
-import com.aashreys.safeapi.SafeApi;
-import com.aashreys.walls.BuildConfig;
 import com.aashreys.walls.Config;
-import com.aashreys.walls.Utils;
+import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.values.ServerId;
-import com.aashreys.walls.network.UnsplashNetworkService;
+import com.aashreys.walls.domain.values.Id;
+import com.aashreys.walls.network.apis.UnsplashApi;
+import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by aashreys on 31/01/17.
@@ -24,21 +30,18 @@ public class UnsplashCollectionSource implements Source {
 
     private static final String TAG = UnsplashCollectionSource.class.getSimpleName();
 
-    private static final String BASE_URL
-            = "https://api.unsplash.com//collections/%s/photos?page=%d&per_page=%d";
+    private final UnsplashApi unsplashApi;
 
-    private final UnsplashNetworkService networkService;
+    private final UnsplashPhotoResponseParser responseParser;
 
-    private final UnsplashImageResponseParser responseParser;
-
-    private final ServerId collectionId;
+    private final Id collectionId;
 
     public UnsplashCollectionSource(
-            @Provided UnsplashNetworkService networkService,
-            @Provided UnsplashImageResponseParser responseParser,
-            ServerId collectionId
+            @Provided UnsplashApi unsplashApi,
+            @Provided UnsplashPhotoResponseParser responseParser,
+            Id collectionId
     ) {
-        this.networkService = networkService;
+        this.unsplashApi = unsplashApi;
         this.responseParser = responseParser;
         this.collectionId = collectionId;
     }
@@ -47,17 +50,21 @@ public class UnsplashCollectionSource implements Source {
     @SuppressLint("DefaultLocale")
     @Override
     public List<Image> getImages(int fromIndex) {
-        String url = String.format(
-                BASE_URL,
-                collectionId.value(),
-                Utils.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
-                Config.Unsplash.ITEMS_PER_PAGE
-        );
-        String response = networkService.get(
-                url,
-                SafeApi.decrypt(BuildConfig.UNSPLASH_API_KEY),
-                Config.Unsplash.API_VERSION
-        );
-        return responseParser.parse(response);
+        try {
+            Call<ResponseBody> call = unsplashApi.getCollectionPhotos(
+                    collectionId.value(),
+                    UiHelper.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
+                    Config.Unsplash.ITEMS_PER_PAGE
+            );
+            Response<ResponseBody> response = call.execute();
+            if (response.isSuccessful()) {
+                return responseParser.parse(response.body().string());
+            } else {
+                throw new IOException("Unexpected response code " + response.code());
+            }
+        } catch (IOException e) {
+            LogWrapper.e(TAG, "Unable to get images", e);
+            return new ArrayList<>();
+        }
     }
 }

@@ -21,11 +21,6 @@ public class RepositoryModule {
     public RepositoryModule() {}
 
     @Provides
-    public ShortUrlRepository providesShortUrlRepository() {
-        return new ShortUrlRepositoryImpl();
-    }
-
-    @Provides
     public CollectionRepository providesCollectionRepository(CollectionFactory collectionFactory) {
         return new CollectionRepositoryImpl(collectionFactory);
     }
@@ -33,6 +28,11 @@ public class RepositoryModule {
     @Provides
     public FavoriteImageRepository providesFavoriteImageRepository() {
         return new FavoriteImageRepositoryImpl();
+    }
+
+    @Provides
+    public ShortUrlRepository providesShortUrlRepository() {
+        return new ShortUrlRepositoryImpl();
     }
 
 }

@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.Utils;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
@@ -25,9 +24,9 @@ import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamAdapter;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.tasks.LoadImagesTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,11 +38,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     private static final String TAG = ImageStreamFragment.class.getSimpleName();
 
-    private static final String ARG_COLLECTION = "arg_collection";
-
-    private static final String SAVED_IMAGE_LIST = "saved_image_list";
-
-    private static final String SAVED_COLLECTION = "saved_collection";
+    private static final String ARG_POSITION = "arg_position";
 
     @Inject Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy;
 
@@ -53,7 +48,9 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     @Nullable private RepositoryCallback<Image> favoriteRepoListener;
 
-    private Collection argCollection;
+    private CollectionProvider collectionProvider;
+
+    private Collection collection;
 
     private Source imageSource;
 
@@ -71,12 +68,11 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ImageStreamFragment() {
-    }
+    public ImageStreamFragment() {}
 
-    public static ImageStreamFragment newInstance(Collection collection) {
+    public static ImageStreamFragment newInstance(int position) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_COLLECTION, collection);
+        args.putInt(ARG_POSITION, position);
         ImageStreamFragment fragment = new ImageStreamFragment();
         fragment.setArguments(args);
         return fragment;
@@ -94,21 +90,20 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         ((WallsApplication) context.getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
                 .inject(this);
-        if (context instanceof ImageSelectedCallback) {
+        if (context instanceof ImageSelectedCallback && context instanceof CollectionProvider) {
             this.imageSelectedListener = (ImageSelectedCallback) context;
+            this.collectionProvider = (CollectionProvider) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnImageSelectedListener and ImageSourceProvider");
+                    + " must implement OnImageSelectedListener and CollectionProvider");
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args == null || !args.containsKey(ARG_COLLECTION) || args.getParcelable
-                (ARG_COLLECTION) == null) {
-            throw new RuntimeException("Must pass a collection as an argument.");
+        if (!getArguments().containsKey(ARG_POSITION)) {
+            throw new RuntimeException("Must pass position as an argument.");
         }
     }
 
@@ -123,30 +118,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         setupRecyclerView();
         adapter = new ImageStreamAdapter(this, imageSelectedListener);
         recyclerView.setAdapter(adapter);
-
-        setCollection((Collection) getArguments().getParcelable(ARG_COLLECTION), false);
-
-        if (savedInstanceState != null) {
-            // We check if the saved collection and the collection passed via args are the same. If
-            // yes, load saved image list else discard saved data and load from network. This
-            // check is done so that we can properly respond to the user adding new collections
-            // which may change the underlying collection associated with this fragment.
-            // See ImageStreamViewPagerAdapter.java for more information.
-            Collection savedCollection = savedInstanceState.getParcelable(SAVED_COLLECTION);
-            List<Image> imageList = savedInstanceState.getParcelableArrayList(SAVED_IMAGE_LIST);
-            //noinspection ConstantConditions
-            boolean isSavedStateValid = argCollection.equals(savedCollection) && imageList != null
-                    && imageList.size() > 0;
-            if (isSavedStateValid) {
-                Log.d(TAG, argCollection.name().value() + " - loading images from saved state");
-                adapter.add(imageList);
-            } else {
-                loadImagesFromNetwork();
-            }
-        } else {
-            loadImagesFromNetwork();
-        }
-
+        setCollection(collectionProvider.getCollection(getArguments().getInt(ARG_POSITION)));
         // Start listening to scrolling load requests after we have queued the initial data to load
         adapter.setLoadMoreCallback(this);
 
@@ -154,7 +126,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     }
 
     private void setupRecyclerView() {
-        int columnCount = Utils.getStreamColumnCount(getContext());
+        int columnCount = UiHelper.getStreamColumnCount(getContext());
         if (columnCount == 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         } else {
@@ -169,9 +141,14 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         }
     }
 
-    public void setCollection(Collection collection, boolean loadImages) {
-        if (argCollection == null || !argCollection.equals(collection)) {
-            argCollection = collection;
+    /**
+     * Setter for this fragment's collection. This fragment expects its collection to be set
+     * using this method only as there are many actions which must be taken after a collection is
+     * set. This method contains code to take all associated actions.
+     */
+    public void setCollection(Collection collection) {
+        if (!collection.equals(this.collection)) {
+            this.collection = collection;
             imageSource = sourceFactory.create(collection);
             adapter.clear();
             if (collection instanceof FavoriteCollection) {
@@ -179,14 +156,12 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             } else {
                 stopListeningToFavoritesRepo();
             }
-            if (loadImages) {
-                loadImagesFromNetwork();
-            }
+            loadImages();
         }
     }
 
-    private void loadImagesFromNetwork() {
-        Log.d(TAG, argCollection.name().value() + " - loading images from network");
+    private void loadImages() {
+        Log.i(TAG, collection.getName().value() + " - loading images");
         if (loadImagesTask != null) {
             loadImagesTask.release();
             loadImagesTask = null;
@@ -234,18 +209,6 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (adapter != null && adapter.getItemCount() > 0) {
-            outState.putParcelableArrayList(
-                    SAVED_IMAGE_LIST,
-                    (ArrayList<Image>) adapter.getImageList()
-            );
-        }
-        outState.putParcelable(SAVED_COLLECTION, argCollection);
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         releaseResources();
@@ -271,9 +234,8 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     @Override
     public void onLoadMore() {
-        Log.d(TAG, "load more callback called");
         if (loadImagesTask == null || !loadImagesTask.isLoading()) {
-            loadImagesFromNetwork();
+            loadImages();
         }
     }
 
@@ -281,11 +243,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     public void onImageLoadComplete(@NonNull List<Image> images) {
         adapter.onLoadComplete();
         if (images.size() > 0) {
-            boolean isFirstLoad = adapter.getItemCount() == 0;
             adapter.add(images);
-            if (isFirstLoad) {
-                recyclerView.scrollToPosition(0);
-            }
         } else {
             // TODO: Display error message of some sort
         }
@@ -294,6 +252,12 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     public interface ImageSelectedCallback {
 
         void onImageSelected(Image image);
+
+    }
+
+    public interface CollectionProvider {
+
+        Collection getCollection(int position);
 
     }
 
