@@ -27,7 +27,7 @@ public class FlickrImage implements Image {
             "https://farm%s.staticflickr.com/%s/%s_%s_%s.jpg";
 
     // Arg: Base58 encoded id
-    private static final String SHARE_URL_TEMPLATE = "https://flic.kr/p/%s";
+    private static final String SHARE_URL_TEMPLATE = "https://flic.kr/p/%s/";
 
     public static final Name SERVICE_NAME = new Name("Flickr");
 
@@ -43,12 +43,13 @@ public class FlickrImage implements Image {
 
     private final Properties properties;
 
-    public FlickrImage(Id id, Id serverId, Id farmId, Id secret) {
+    public FlickrImage(Id id, Id ownerId, Id serverId, Id farmId, Id secret) {
         this.id = id;
         this.serverId = serverId;
         this.farmId = farmId;
         this.secret = secret;
         properties = new Properties(SERVICE_NAME);
+        properties.userId = ownerId;
         properties.serviceUrl = SERVICE_URL;
 
     }

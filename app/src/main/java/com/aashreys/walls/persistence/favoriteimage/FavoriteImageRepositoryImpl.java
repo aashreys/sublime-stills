@@ -115,6 +115,7 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
                 model.resX != null ? new Pixel(model.resX) : null,
                 model.resY != null ? new Pixel(model.resY) : null,
                 model.createdAt,
+                model.userId != null ? new Id(model.userId) : null,
                 model.userRealName != null ? new Name(model.userRealName) : null,
                 model.userProfileUrl != null ? new Url(model.userProfileUrl) : null,
                 model.userPortfolioUrl != null ? new Url(model.userPortfolioUrl) : null,

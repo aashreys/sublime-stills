@@ -49,6 +49,10 @@ public class FavoriteImageModel extends BaseModel {
 
     @Nullable
     @Column
+    String userId;
+
+    @Nullable
+    @Column
     String userRealName;
 
     @Nullable
@@ -95,6 +99,7 @@ public class FavoriteImageModel extends BaseModel {
         this.resX = Value.getNullableValue(properties.resX);
         this.resY = Value.getNullableValue(properties.resY);
         this.createdAt = properties.createdAt;
+        this.userId = Value.getNullableValue(properties.userId);
         this.userRealName = Value.getNullableValue(properties.userRealName);
         this.userProfileUrl = Value.getNullableValue(properties.userProfileUrl);
         this.userPortfolioUrl = Value.getNullableValue(properties.userPortfolioUrl);

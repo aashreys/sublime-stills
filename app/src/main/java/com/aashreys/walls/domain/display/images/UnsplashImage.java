@@ -48,6 +48,7 @@ public final class UnsplashImage implements Image {
             @NonNull Pixel resX,
             @NonNull Pixel resY,
             @NonNull Date createdAt,
+            @NonNull Id userId,
             @NonNull Name userRealName,
             @NonNull Url userProfileUrl,
             @NonNull Url userPortfolioUrl,
@@ -61,6 +62,7 @@ public final class UnsplashImage implements Image {
         this.properties.resX = resX;
         this.properties.resY = resY;
         this.properties.createdAt = createdAt;
+        this.properties.userId = userId;
         this.properties.userRealName = userRealName;
         this.properties.userProfileUrl = userProfileUrl;
         this.properties.userPortfolioUrl = userPortfolioUrl;

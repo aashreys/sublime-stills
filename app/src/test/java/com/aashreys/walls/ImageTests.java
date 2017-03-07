@@ -37,6 +37,7 @@ public class ImageTests extends BaseTestCase {
         Integer x = 35;
         Integer y = 55;
         long createAtTime = 253543;
+        String userId = "231sfDic";
         String userRealName = "The Diadact";
         String userProfileUrl = "http://composeAllTheThings.com";
         String userPortfolioUrl = "http://composerLibrary.com";
@@ -48,6 +49,7 @@ public class ImageTests extends BaseTestCase {
                 x,
                 y,
                 createAtTime,
+                userId,
                 userRealName,
                 userProfileUrl,
                 userPortfolioUrl,
@@ -74,6 +76,7 @@ public class ImageTests extends BaseTestCase {
         assertEquals(unsplashImageProperties.resX.value(), x);
         assertEquals(unsplashImageProperties.resY.value(), y);
         assertEquals(unsplashImageProperties.createdAt.getTime(), createAtTime);
+        assertEquals(unsplashImageProperties.userId.value(), userId);
         assertEquals(unsplashImageProperties.userRealName.value(), userRealName);
         assertEquals(unsplashImageProperties.userProfileUrl.value(), userProfileUrl);
         assertEquals(unsplashImageProperties.userPortfolioUrl.value(), userPortfolioUrl);
@@ -90,6 +93,7 @@ public class ImageTests extends BaseTestCase {
                 x,
                 y,
                 createAtTime,
+                userId,
                 userRealName,
                 userProfileUrl,
                 userPortfolioUrl,
@@ -108,6 +112,7 @@ public class ImageTests extends BaseTestCase {
         assertEquals(favoriteImageProperties.resX.value(), x);
         assertEquals(favoriteImageProperties.resY.value(), y);
         assertEquals(favoriteImageProperties.createdAt.getTime(), createAtTime);
+        assertEquals(favoriteImageProperties.userId.value(), userId);
         assertEquals(favoriteImageProperties.userRealName.value(), userRealName);
         assertEquals(favoriteImageProperties.userProfileUrl.value(), userProfileUrl);
         assertEquals(favoriteImageProperties.userPortfolioUrl.value(), userPortfolioUrl);
@@ -123,9 +128,9 @@ public class ImageTests extends BaseTestCase {
         imageStreamUrl = "https://farm4.staticflickr.com/3123/116_31243535_c.jpg";
         imageDetailUrl = "https://farm4.staticflickr.com/3123/116_31243535_h.jpg";
         imageSetAsUrl = "https://farm4.staticflickr.com/3123/116_31243535_h.jpg";
-        imageShareUrl = "https://flic.kr/p/" + FlickrBaseEncoder.encode(Long.valueOf(id));
-        Image flickrImage = _createFlickImage(id, serverId, farmId, secret);
-        assertEquals(unsplashImage.getId().value(), id);
+        imageShareUrl = "https://flic.kr/p/" + FlickrBaseEncoder.encode(Long.valueOf(id)) + "/";
+        Image flickrImage = _createFlickImage(id, userId, serverId, farmId, secret);
+        assertEquals(flickrImage.getId().value(), id);
         assertEquals(
                 flickrImage.getUrl(UrlType.IMAGE_STREAM).value(),
                 imageStreamUrl
@@ -141,6 +146,7 @@ public class ImageTests extends BaseTestCase {
         assertEquals(flickrImage.getUrl(UrlType.SHARE).value(), imageShareUrl);
 
         Properties flickrImageProperties = flickrImage.getProperties();
+        assertEquals(flickrImageProperties.userId.value(), userId);
         assertEquals(flickrImageProperties.serviceName.value(), "Flickr");
         assertEquals(flickrImageProperties.serviceUrl.value(), "https://flickr.com");
     }
@@ -150,6 +156,7 @@ public class ImageTests extends BaseTestCase {
             int x,
             int y,
             long createdAtTime,
+            String userId,
             String userRealName,
             String userProfileUrl,
             String userPortfolioUrl,
@@ -161,6 +168,7 @@ public class ImageTests extends BaseTestCase {
                 new Pixel(x),
                 new Pixel(y),
                 new Date(createdAtTime),
+                new Id(userId),
                 new Name(userRealName),
                 new Url(userProfileUrl),
                 new Url(userPortfolioUrl),
@@ -171,12 +179,14 @@ public class ImageTests extends BaseTestCase {
 
     public static FlickrImage _createFlickImage(
             String id,
+            String ownerId,
             String serverId,
             String farmId,
             String secret
     ) {
         return new FlickrImage(
                 new Id(id),
+                new Id(ownerId),
                 new Id(serverId),
                 new Id(farmId),
                 new Id(secret)
@@ -193,6 +203,7 @@ public class ImageTests extends BaseTestCase {
             int x,
             int y,
             long createAtTime,
+            String userId,
             String userRealName,
             String userProfileUrl,
             String userPortfolioUrl,
@@ -209,6 +220,7 @@ public class ImageTests extends BaseTestCase {
                 new Pixel(x),
                 new Pixel(y),
                 new Date(createAtTime),
+                new Id(userId),
                 new Name(userRealName),
                 new Url(userProfileUrl),
                 new Url(userPortfolioUrl),

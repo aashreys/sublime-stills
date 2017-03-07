@@ -6,7 +6,9 @@ import com.aashreys.walls.persistence.collections.CollectionModel;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageModel;
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.annotation.Migration;
+import com.raizlabs.android.dbflow.sql.SQLiteType;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -20,7 +22,7 @@ public class WallsDatabase {
 
     public static final String NAME = "walls_database";
 
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     @Migration(version = 2, database = WallsDatabase.class)
     public static class Migration2 extends BaseMigration {
@@ -46,6 +48,19 @@ public class WallsDatabase {
             favoriteCollectionModel.insert(database);
 
         }
-    }
 
+        @Migration(version = 3, database = WallsDatabase.class)
+        public static class Migration3 extends AlterTableMigration<FavoriteImageModel> {
+
+            public Migration3(Class<FavoriteImageModel> table) {
+                super(table);
+            }
+
+            @Override
+            public void onPreMigrate() {
+                super.onPreMigrate();
+                addColumn(SQLiteType.TEXT, "userId");
+            }
+        }
+    }
 }

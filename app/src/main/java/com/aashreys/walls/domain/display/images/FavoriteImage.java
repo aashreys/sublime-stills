@@ -49,6 +49,7 @@ public class FavoriteImage implements Image {
             Pixel resX,
             Pixel resY,
             Date createdAt,
+            Id userId,
             Name userRealName,
             Url userProfileUrl,
             Url userPortfolioUrl,
@@ -66,6 +67,7 @@ public class FavoriteImage implements Image {
         this.properties.resX = resX;
         this.properties.resY = resY;
         this.properties.createdAt = createdAt;
+        this.properties.userId = userId;
         this.properties.userRealName = userRealName;
         this.properties.userProfileUrl = userProfileUrl;
         this.properties.userPortfolioUrl = userPortfolioUrl;

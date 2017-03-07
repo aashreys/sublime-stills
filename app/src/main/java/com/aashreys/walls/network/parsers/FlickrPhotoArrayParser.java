@@ -43,6 +43,7 @@ public class FlickrPhotoArrayParser {
     private FlickrImage _parse(JSONObject photoJson) throws JSONException {
         FlickrImage image = new FlickrImage(
                 new Id(photoJson.getString("id")),
+                new Id(photoJson.getString("owner")),
                 new Id(photoJson.getString("server")),
                 new Id(String.valueOf(photoJson.getInt("farm"))),
                 new Id(photoJson.getString("secret"))

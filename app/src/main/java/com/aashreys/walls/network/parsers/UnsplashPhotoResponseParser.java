@@ -64,6 +64,7 @@ public class UnsplashPhotoResponseParser {
                     new Pixel(response.getInt("width")),
                     new Pixel(response.getInt("height")),
                     DATE_PARSER.parse(JSONUtils.getString(response, "created_at")),
+                    new Id(user.getString("id")),
                     new Name(JSONUtils.getString(user, "name")),
                     new Url(JSONUtils.getString(user.getJSONObject("links"), "html")),
                     new Url(JSONUtils.optString(user, "portfolio_url", null)),
