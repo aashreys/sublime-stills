@@ -14,6 +14,8 @@ def wallsPropertiesFile = rootProject.file("walls.properties");
 def wallsProperties = new Properties()
 wallsProperties.load(new FileInputStream(wallsPropertiesFile))
 
+String versionNameString = "0.8.1";
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -22,7 +24,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 4
-        versionName "0.8.1"
+        versionName versionNameString
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -41,6 +43,7 @@ android {
     String FLICKR_API_KEY = "FLICKR_API_KEY";
     String BOOLEAN = "boolean";
     String PRODUCTION = "PRODUCTION";
+    String VERSION_NAME = ""
 
     buildTypes {
         buildTypes.each {
@@ -48,6 +51,7 @@ android {
             it.buildConfigField(STRING, UNSPLASH_API_KEY, wallsProperties['unsplashApiKey'])
             it.buildConfigField(STRING, GOOGL_API_KEY, wallsProperties['googlApiKey'])
             it.buildConfigField(STRING, FLICKR_API_KEY, wallsProperties['flickrApiKey'])
+            it.resValue("string", "version_name", versionNameString)
         }
         release {
             debuggable false

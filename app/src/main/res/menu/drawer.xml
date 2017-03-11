@@ -2,16 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/stream"
+        android:id="@+id/menu_item_stream"
         android:checked="true"
         android:icon="@drawable/ic_stream_black_24dp"
         android:title="@string/title_menu_stream"/>
+
     <item
-        android:id="@+id/settings"
+        android:id="@+id/menu_item_collections"
+        android:icon="@drawable/ic_collections_black_24dp"
+        android:title="@string/title_menu_collections"/>
+    <item
+        android:id="@+id/menu_item_settings"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/title_menu_settings"/>
     <item
-        android:id="@+id/about"
+        android:id="@+id/menu_item_about"
         android:icon="@drawable/ic_about_black_24dp"
         android:title="@string/title_menu_about"/>
 

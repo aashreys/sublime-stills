@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">Walls</string>
-    <string name="title_activity_main">Walls</string>
+    <string name="walls">Walls</string>
     <string name="title_fragment_image_stream">Image Stream</string>
     <string name="title_fragment_collection">Collections</string>
 
     <string name="title_menu_stream">Stream</string>
+    <string name="title_menu_collections">Collections</string>
     <string name="title_menu_settings">Settings</string>
     <string name="title_menu_about">About</string>
 

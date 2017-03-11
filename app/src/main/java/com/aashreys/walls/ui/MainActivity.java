@@ -2,10 +2,13 @@ package com.aashreys.walls.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -51,6 +54,23 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
         }
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView
+                .OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(
+                    @NonNull MenuItem item
+            ) {
+                drawerLayout.closeDrawers();
+                if (item.getItemId() == R.id.menu_item_collections) {
+                    openCollectionsActivity();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tablayout);
         tabs.setupWithViewPager(viewPager);
@@ -71,12 +91,11 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
             }
         });
 
-        ImageButton imageSourcesButton = (ImageButton) findViewById(R.id.button_image_sources);
-        imageSourcesButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton collectionsButton = (ImageButton) findViewById(R.id.button_collections);
+        collectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CollectionsActivity.class);
-                startActivity(intent);
+                openCollectionsActivity();
             }
         });
     }
@@ -107,5 +126,10 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
     @Override
     public Collection getCollection(int position) {
         return viewPagerAdapter.getCollection(position);
+    }
+
+    private void openCollectionsActivity() {
+        Intent intent = new Intent(MainActivity.this, CollectionsActivity.class);
+        startActivity(intent);
     }
 }
