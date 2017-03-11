@@ -115,6 +115,7 @@ public class MainActivity extends BaseActivity implements StreamImageView.ImageS
                 openCollectionsActivity();
             }
         });
+        handleIntent(getIntent());
     }
 
     @Override
@@ -138,7 +139,7 @@ public class MainActivity extends BaseActivity implements StreamImageView.ImageS
     public void onImageUnfavorited(final Image image) {
         Snackbar snackbar = Snackbar
                 .make(viewPager, R.string.title_snackbar_favorite_removed, Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(UiHelper.getColor(this, R.color.red_accent));
+        snackbar.setActionTextColor(UiHelper.getColor(this, R.color.white));
         snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -152,11 +153,14 @@ public class MainActivity extends BaseActivity implements StreamImageView.ImageS
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        handleIntent();
+        handleIntent(intent);
     }
 
-    private void handleIntent() {
-
+    private void handleIntent(Intent intent) {
+        int position = intent.getIntExtra(ARG_TAB_POSITION, 0);
+        if (viewPager.getAdapter().getCount() > 0) {
+            viewPager.setCurrentItem(position, false);
+        }
     }
 
     private void populateDatabases() {

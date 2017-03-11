@@ -27,9 +27,11 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
 
     private final List<Collection> collectionList;
 
-    private boolean isMoved;
-
     private OnStartDragListener dragListener;
+
+    private View.OnClickListener onCollectionClickListener;
+
+    private boolean isCollectionListModified;
 
     public CollectionAdapter() {
         this.collectionList = new ArrayList<>();
@@ -73,7 +75,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
                 }
                 return false;
             }
-        });
+        }, onCollectionClickListener);
     }
 
     @Override
@@ -86,19 +88,37 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
         Collection collection = collectionList.remove(fromPosition);
         collectionList.add(toPosition, collection);
         notifyItemMoved(fromPosition, toPosition);
-        isMoved = true;
+        isCollectionListModified = true;
     }
 
     private void onStartDrag(RecyclerView.ViewHolder holder) {
         dragListener.onDragStarted(holder);
     }
 
-    public boolean isMoved() {
-        return isMoved;
+    public boolean isCollectionListModified() {
+        return isCollectionListModified;
     }
 
     public List<Collection> getCollectionList() {
         return collectionList;
+    }
+
+    public void setDragListener(OnStartDragListener dragListener) {
+        this.dragListener = dragListener;
+    }
+
+    public void setOnCollectionClickListener(View.OnClickListener onCollectionClickListener) {
+        this.onCollectionClickListener = onCollectionClickListener;
+    }
+
+    public void onCollectionsSaved() {
+        this.isCollectionListModified = false;
+    }
+
+    public interface OnStartDragListener {
+
+        void onDragStarted(RecyclerView.ViewHolder holder);
+
     }
 
     static class CollectionViewHolder extends RecyclerView.ViewHolder {
@@ -110,9 +130,14 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
             this.collectionView = itemView;
         }
 
-        private void bind(Collection collection, View.OnTouchListener listener) {
-            this.collectionView.setCollection(collection);
-            this.collectionView.setHandleOnTouchListener(listener);
+        private void bind(
+                Collection collection,
+                View.OnTouchListener dragHandlerOnTouchListener,
+                View.OnClickListener onClickListener
+        ) {
+            this.collectionView.setCollection(getAdapterPosition(), collection);
+            this.collectionView.setDragHandleOnTouchListener(dragHandlerOnTouchListener);
+            this.collectionView.setOnClickListener(onClickListener);
         }
 
         private void onSelected() {
@@ -167,16 +192,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
             super.onSelectedChanged(viewHolder, actionState);
 
         }
-    }
-
-    public void setDragListener(OnStartDragListener dragListener) {
-        this.dragListener = dragListener;
-    }
-
-    public interface OnStartDragListener {
-
-        void onDragStarted(RecyclerView.ViewHolder holder);
-
     }
 
 }

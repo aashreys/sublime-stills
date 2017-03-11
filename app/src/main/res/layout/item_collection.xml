@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/image_source_item_height"
-    android:background="@color/windowBackground"
+    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="8dp" />
+    android:paddingLeft="@dimen/spacing_medium"
+    android:paddingRight="@dimen/spacing_small" />

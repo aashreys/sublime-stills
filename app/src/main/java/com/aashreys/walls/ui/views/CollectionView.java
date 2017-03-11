@@ -28,6 +28,8 @@ public class CollectionView extends LinearLayout {
 
     private Collection collection;
 
+    private int position;
+
     private ImageView iconImage;
 
     private TextView titleText;
@@ -79,7 +81,8 @@ public class CollectionView extends LinearLayout {
         });
     }
 
-    public void setCollection(Collection collection) {
+    public void setCollection(int position, Collection collection) {
+        this.position = position;
         this.collection = collection;
         titleText.setText(collection.getName().value());
         iconImage.setImageResource(getIconForCollectionType(collection.getType()));
@@ -88,8 +91,11 @@ public class CollectionView extends LinearLayout {
         removeButton.setEnabled(collection.isRemovable());
     }
 
-    public void setHandleOnTouchListener(OnTouchListener listener) {
+    public void setDragHandleOnTouchListener(OnTouchListener listener) {
         handleImage.setOnTouchListener(listener);
     }
 
+    public int getPosition() {
+        return position;
+    }
 }

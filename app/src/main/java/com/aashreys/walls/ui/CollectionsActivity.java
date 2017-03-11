@@ -1,5 +1,6 @@
 package com.aashreys.walls.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.ui.adapters.CollectionAdapter;
+import com.aashreys.walls.ui.views.CollectionView;
 
 import java.util.List;
 
@@ -60,17 +62,30 @@ public class CollectionsActivity extends BaseActivity implements CollectionAdapt
                 adapter.remove(object);
             }
         };
-        RecyclerView imageSourcesList = (RecyclerView) findViewById(R.id.list_image_sources);
-        imageSourcesList.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView collectionRecyclerView = (RecyclerView) findViewById(R.id.list_image_sources);
+        collectionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CollectionAdapter();
+        adapter.setOnCollectionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CollectionView collectionView = (CollectionView) v;
+                saveCollections();
+                finish();
+                Context context = collectionView.getContext();
+                context.startActivity(MainActivity.createLaunchIntent(
+                        collectionView.getContext(),
+                        collectionView.getPosition()
+                ));
+            }
+        });
         adapter.setDragListener(this);
-        imageSourcesList.setAdapter(adapter);
+        collectionRecyclerView.setAdapter(adapter);
         adapter.add(collectionRepository.getAll());
         collectionRepository.addListener(repositoryCallback);
 
         ItemTouchHelper.Callback callback = new CollectionAdapter.ItemMoveHelperCallback(adapter);
         itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(imageSourcesList);
+        itemTouchHelper.attachToRecyclerView(collectionRecyclerView);
 
         ImageButton closeButton = (ImageButton) findViewById(R.id.button_close);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -91,11 +106,19 @@ public class CollectionsActivity extends BaseActivity implements CollectionAdapt
         });
     }
 
+    private void saveCollections() {
+        if (adapter.isCollectionListModified()) {
+            collectionRepository.replace(adapter.getCollectionList());
+        }
+        adapter.onCollectionsSaved();
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         collectionRepository.removeListener(repositoryCallback);
-        if (adapter.isMoved()) {
+        if (adapter.isCollectionListModified()) {
             collectionRepository.replace(adapter.getCollectionList());
         }
     }
