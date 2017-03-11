@@ -5,7 +5,7 @@
     android:id="@+id/recyclerview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/image_margin"
     android:clipToPadding="false"
+    android:padding="@dimen/image_margin"
     tools:context="com.aashreys.walls.ui.ImageStreamFragment"
-    tools:listitem="@layout/layout_item_image" />
+    tools:listitem="@layout/layout_item_stream_image"/>

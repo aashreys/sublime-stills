@@ -58,9 +58,14 @@
 
             </LinearLayout>
 
-            <include
+            <ProgressBar
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/progress_bar"
-                layout="@layout/layout_view_loading"/>
+                android:layout_width="@dimen/height_large"
+                android:layout_height="@dimen/height_large"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:orientation="vertical"/>
 
         </FrameLayout>
 
@@ -69,13 +74,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:paddingBottom="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingLeft="@dimen/spacing_xl"
+        android:paddingRight="@dimen/spacing_xl">
 
         <ImageButton
             android:id="@+id/button_favorite"
             android:layout_width="@dimen/button_size"
             android:layout_height="@dimen/button_size"
-            android:layout_marginLeft="@dimen/image_fragment_button_margin"
             android:background="?attr/selectableItemBackgroundBorderlessCompat"
             android:visibility="invisible"
             app:srcCompat="@drawable/ic_favorite_border_black_24dp"/>
@@ -108,8 +115,7 @@
         <FrameLayout
             android:layout_width="@dimen/button_size"
             android:layout_height="@dimen/button_size"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/image_fragment_button_margin">
+            android:layout_alignParentRight="true">
 
             <ImageButton
                 android:id="@+id/button_set_as"

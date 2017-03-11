@@ -85,7 +85,7 @@ public class StreamImageView extends FrameLayout {
         ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
                 .inject(this);
-        LayoutInflater.from(context).inflate(R.layout.layout_item_image, this, true);
+        LayoutInflater.from(context).inflate(R.layout.layout_item_stream_image, this, true);
         imageView = (ForegroundImageView) findViewById(R.id.image);
         favoriteButton = (ImageButton) findViewById(R.id.button_action);
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {

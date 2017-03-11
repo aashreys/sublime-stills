@@ -40,7 +40,7 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
     protected void onPostExecute(List<Image> images) {
         super.onPostExecute(images);
         if (!isReleased) {
-            listener.onImageLoadComplete(images);
+            listener.onLoadComplete(images);
         }
     }
 
@@ -58,7 +58,7 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
     public interface ImageLoadCallback {
 
         @MainThread
-        void onImageLoadComplete(@NonNull List<Image> images);
+        void onLoadComplete(@NonNull List<Image> images);
 
     }
 }

@@ -1,8 +1,25 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="spacing_xxs">2dp</dimen>
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+
+    <dimen name="height_xs">18dp</dimen>
+    <dimen name="height_small">24dp</dimen>
+    <dimen name="height_medium">32dp</dimen>
+    <dimen name="height_large">48dp</dimen>
+    <dimen name="height_xl">56dp</dimen>
+    <dimen name="height_xxl">72dp</dimen>
+    <dimen name="height_xxxl">120dp</dimen>
+
     <dimen name="button_size">48dp</dimen>
+
+    <dimen name="activity_horizontal_margin">@dimen/spacing_medium</dimen>
+    <dimen name="activity_vertical_margin">@dimen/spacing_medium</dimen>
     <dimen name="subhead_height">48dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
@@ -34,6 +51,4 @@
 
     <dimen name="share_progress_bar_padding">12dp</dimen>
 
-    <dimen name="height_loading_view">56dp</dimen>
-    <dimen name="padding_loading_view">12dp</dimen>
 </resources>

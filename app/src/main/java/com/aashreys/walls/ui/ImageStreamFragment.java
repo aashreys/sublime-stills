@@ -24,8 +24,10 @@ import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamAdapter;
+import com.aashreys.walls.ui.helpers.NetworkHelper;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.tasks.LoadImagesTask;
+import com.aashreys.walls.ui.views.LoadingView;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 
-public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.LoadMoreCallback,
+public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.LoadingCallback,
         LoadImagesTask.ImageLoadCallback {
 
     private static final String TAG = ImageStreamFragment.class.getSimpleName();
@@ -114,18 +116,18 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             Bundle savedInstanceState
     ) {
         View view = inflater.inflate(R.layout.fragment_image_stream, container, false);
-        recyclerView = (RecyclerView) view;
-        setupRecyclerView();
+        this.recyclerView = (RecyclerView) view;
+        setupRecyclerView(this.recyclerView);
         adapter = new ImageStreamAdapter(this, imageSelectedListener);
         recyclerView.setAdapter(adapter);
+        adapter.setLoadingCallback(this);
         setCollection(collectionProvider.getCollection(getArguments().getInt(ARG_POSITION)));
         // Start listening to scrolling load requests after we have queued the initial data to load
-        adapter.setLoadMoreCallback(this);
 
         return view;
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(RecyclerView recyclerView) {
         int columnCount = UiHelper.getStreamColumnCount(getContext());
         if (columnCount == 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -151,7 +153,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             this.collection = collection;
             imageSource = sourceFactory.create(collection);
             adapter.clear();
-            if (collection instanceof FavoriteCollection) {
+            if (isFavoritesStream()) {
                 startListeningToFavoritesRepo();
             } else {
                 stopListeningToFavoritesRepo();
@@ -171,6 +173,18 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
                 AsyncTask.THREAD_POOL_EXECUTOR,
                 adapter.getItemCount()
         );
+        Context context = getContext();
+        if (!isFavoritesStream() && context != null) {
+            if (!NetworkHelper.isConnected(context)) {
+                adapter.setLoadingState(LoadingView.ViewMode.NO_INTERNET);
+            } else if (!NetworkHelper.isFastNetworkConnected(context)) {
+                adapter.setLoadingState(LoadingView.ViewMode.SLOW_INTERNET);
+            } else {
+                adapter.setLoadingState(LoadingView.ViewMode.LOADING);
+            }
+        } else {
+            adapter.setLoadingState(LoadingView.ViewMode.LOADING);
+        }
     }
 
     private void startListeningToFavoritesRepo() {
@@ -233,19 +247,23 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     }
 
     @Override
-    public void onLoadMore() {
+    public void onLoadRequested() {
         if (loadImagesTask == null || !loadImagesTask.isLoading()) {
             loadImages();
         }
     }
 
     @Override
-    public void onImageLoadComplete(@NonNull List<Image> images) {
-        adapter.onLoadComplete();
-        if (images.size() > 0) {
-            adapter.add(images);
+    public void onLoadComplete(@NonNull List<Image> images) {
+        adapter.add(images);
+        if (isFavoritesStream()) {
+            adapter.setLoadingState(LoadingView.ViewMode.FAVORITE);
         } else {
-            // TODO: Display error message of some sort
+            if (images.size() > 0) {
+                adapter.setLoadingState(LoadingView.ViewMode.NOT_LOADING);
+            } else {
+                adapter.setLoadingState(LoadingView.ViewMode.ERROR);
+            }
         }
     }
 
@@ -261,4 +279,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     }
 
+    private boolean isFavoritesStream() {
+        return collection != null && collection instanceof FavoriteCollection;
+    }
 }

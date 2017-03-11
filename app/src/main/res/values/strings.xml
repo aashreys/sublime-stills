@@ -29,7 +29,14 @@
     <string name="action_add">Add</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_search">Search</string>
+    <string name="action_try_again">Try Again</string>
 
     <string name="hint_collection_name">collection name</string>
+
+    <string name="error_generic">Images could not be loaded.</string>
+    <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images.</string>
+    <string name="error_slow_connectivity">Your connection is poor.\nLoading images will take longer than usual.</string>
+
+    <string name="hint_add_favorites">Your favorites live here.\nTap the heart on an image to mark it as a favorite.</string>
 
 </resources>

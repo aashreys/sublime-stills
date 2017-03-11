@@ -6,11 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.views.LoadingView;
+import com.aashreys.walls.ui.views.LoadingView.ViewMode;
 import com.aashreys.walls.ui.views.StreamImageView;
 
 import java.util.ArrayList;
@@ -34,11 +35,28 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @NonNull
     private final ImageSelectedCallback imageSelectedCallback;
 
+    @NonNull
     private final List<Image> imageList;
 
+    /**
+     * To store the current loading view mode. We can't store this directly in the
+     * {@link LoadingViewHolder} since we don't have access when this adapter is created, hence
+     * storing it in the adapter. This value is delivered via
+     * {@link LoadingView#setViewMode(int)} when the {@link LoadingViewHolder} is bound in
+     * {@link #onBindViewHolder(RecyclerView.ViewHolder, int)} and via the
+     * {@link #setLoadingState(int)}.
+     */
+    @ViewMode
+    private int loadingViewMode;
+
+    /**
+     * How many items from the end of the list should the adapter request for more data to be
+     * loaded via an instance of {@link LoadingCallback} set via
+     * {@link #setLoadingCallback(LoadingCallback)}
+     */
     private int loadingThreshold = 5;
 
-    private LoadMoreCallback loadMoreCallback;
+    private LoadingCallback loadingCallback;
 
     @Nullable
     private LoadingViewHolder loadingViewHolder;
@@ -53,12 +71,14 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void add(List<Image> images) {
-        int oldSize = imageList.size();
-        imageList.addAll(images);
-        if (oldSize != 0) {
-            notifyItemRangeInserted(oldSize, images.size());
-        } else {
-            notifyDataSetChanged();
+        if (images != null && images.size() > 0) {
+            int oldSize = imageList.size();
+            imageList.addAll(images);
+            if (oldSize != 0) {
+                notifyItemRangeInserted(oldSize, images.size());
+            } else {
+                notifyDataSetChanged();
+            }
         }
     }
 
@@ -94,13 +114,14 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case VIEW_TYPE_IMAGE:
                 return new ImageViewHolder(
                         LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_image, parent, false)
+                                .inflate(R.layout.view_stream_image, parent, false)
                 );
 
             case VIEW_TYPE_LOADING:
                 loadingViewHolder = new LoadingViewHolder(
-                        LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.layout_view_loading, parent, false)
+                        LayoutInflater
+                                .from(parent.getContext())
+                                .inflate(R.layout.view_loading, parent, false)
                 );
                 return loadingViewHolder;
 
@@ -120,10 +141,13 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         int currentPosition = holder.getAdapterPosition();
         int thresholdDiff = getItemCount() - currentPosition;
-        if (loadingThreshold >= thresholdDiff && loadMoreCallback != null) {
-            loadMoreCallback.onLoadMore();
-            if (loadingViewHolder != null) {
-                loadingViewHolder.showLoadingView();
+        if (loadingThreshold >= thresholdDiff && loadingCallback != null) {
+            loadingCallback.onLoadRequested();
+            if (holder instanceof LoadingViewHolder) {
+                if (loadingViewHolder != null) {
+                    loadingViewHolder.loadingView.setLoadingCallback(loadingCallback);
+                    loadingViewHolder.loadingView.setViewMode(this.loadingViewMode);
+                }
             }
         }
     }
@@ -144,30 +168,38 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     /**
-     * Tells the adapter that loading is complete and that loading progress should no longer be
-     * displayed.
+     * Set how many items before the end of the image list should this adapter request a new load.
+     * See {@link ImageStreamAdapter#loadingThreshold}.
      */
-    public void onLoadComplete() {
-        if (loadingViewHolder != null) {
-            loadingViewHolder.hideLoadingView();
-        }
-    }
-
-    public List<Image> getImageList() {
-        return imageList;
-    }
-
     public void setLoadingThreshold(int lastNItems) {
         this.loadingThreshold = lastNItems;
     }
 
-    public void setLoadMoreCallback(LoadMoreCallback loadMoreCallback) {
-        this.loadMoreCallback = loadMoreCallback;
+    public void setLoadingCallback(LoadingCallback loadingCallback) {
+        this.loadingCallback = loadingCallback;
+        if (loadingViewHolder != null) {
+            loadingViewHolder.loadingView.setLoadingCallback(loadingCallback);
+        }
     }
 
-    public interface LoadMoreCallback {
+    /**
+     * Tells the adapter which loading state it should display.
+     *
+     * @param mode integer value from {@link LoadingView.ViewMode}
+     */
+    public void setLoadingState(@ViewMode int mode) {
+        this.loadingViewMode = mode;
+        if (loadingViewHolder != null) {
+            loadingViewHolder.loadingView.setViewMode(this.loadingViewMode);
+            if (loadingCallback != null) {
+                loadingViewHolder.loadingView.setLoadingCallback(this.loadingCallback);
+            }
+        }
+    }
 
-        void onLoadMore();
+    public interface LoadingCallback {
+
+        void onLoadRequested();
 
     }
 
@@ -191,21 +223,12 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private static class LoadingViewHolder extends RecyclerView.ViewHolder {
 
-        private ProgressBar progressBar;
+        private LoadingView loadingView;
 
         private LoadingViewHolder(View itemView) {
             super(itemView);
-            this.progressBar = (ProgressBar) itemView;
+            this.loadingView = (LoadingView) itemView;
         }
-
-        private void showLoadingView() {
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        private void hideLoadingView() {
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-
     }
 
 }
