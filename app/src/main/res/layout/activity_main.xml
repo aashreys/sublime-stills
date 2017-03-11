@@ -27,56 +27,49 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_height"
+                android:layout_height="@dimen/height_xl"
                 app:contentInsetStart="0dp"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/button_menu"
-                        android:layout_width="@dimen/button_size"
-                        android:layout_height="@dimen/button_size"
+                        android:layout_width="@dimen/height_large"
+                        android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/toolbar_left_margin"
+                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:layout_marginRight="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                        app:srcCompat="@drawable/ic_menu_black_24dp" />
+                        app:srcCompat="@drawable/ic_menu_black_24dp"/>
 
-                    <TextView
-                        android:id="@+id/text_toolbar_title"
-                        style="@style/Walls.Text.ToolbarTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="@string/title_activity_main" />
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tablayout"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:visibility="gone"
+                        app:tabMode="scrollable"
+                        app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
 
                     <ImageButton
                         android:id="@+id/button_image_sources"
-                        android:layout_width="@dimen/button_size"
-                        android:layout_height="@dimen/button_size"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/toolbar_right_margin"
+                        android:layout_width="@dimen/height_large"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="@dimen/spacing_small"
+                        android:layout_marginLeft="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                        app:srcCompat="@drawable/ic_image_sources_black_24dp" />
+                        app:srcCompat="@drawable/ic_add_black_24dp"/>
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </android.support.v7.widget.Toolbar>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tablayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tablayout_height"
-                android:clipToPadding="false"
-                android:visibility="gone"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:tabContentStart="@dimen/tablayout_start_position"
-                app:tabMode="scrollable"
-                app:tabTextAppearance="@style/Walls.TextAppearance.Tab" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -86,13 +79,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <FrameLayout
-            android:id="@+id/container_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="@dimen/toolbar_elevation" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -103,6 +90,6 @@
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextAppearance="@style/Walls.TextAppearance.Tab"
         app:itemTextColor="@color/drawer_text_color"
-        app:menu="@menu/drawer" />
+        app:menu="@menu/drawer"/>
 
 </android.support.v4.widget.DrawerLayout>
