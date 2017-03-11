@@ -28,6 +28,7 @@ import com.aashreys.walls.ui.helpers.NetworkHelper;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.tasks.LoadImagesTask;
 import com.aashreys.walls.ui.views.LoadingView;
+import com.aashreys.walls.ui.views.StreamImageView;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     private LoadImagesTask loadImagesTask;
 
-    private ImageSelectedCallback imageSelectedListener;
+    private StreamImageView.ImageSelectedCallback imageSelectedListener;
 
     private boolean isDisplayed;
 
@@ -92,8 +93,8 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         ((WallsApplication) context.getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
                 .inject(this);
-        if (context instanceof ImageSelectedCallback && context instanceof CollectionProvider) {
-            this.imageSelectedListener = (ImageSelectedCallback) context;
+        if (context instanceof StreamImageView.ImageSelectedCallback && context instanceof CollectionProvider) {
+            this.imageSelectedListener = (StreamImageView.ImageSelectedCallback) context;
             this.collectionProvider = (CollectionProvider) context;
         } else {
             throw new RuntimeException(context.toString()
@@ -173,18 +174,23 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
                 AsyncTask.THREAD_POOL_EXECUTOR,
                 adapter.getItemCount()
         );
-        Context context = getContext();
-        if (!isFavoritesStream() && context != null) {
-            if (!NetworkHelper.isConnected(context)) {
-                adapter.setLoadingState(LoadingView.ViewMode.NO_INTERNET);
-            } else if (!NetworkHelper.isFastNetworkConnected(context)) {
-                adapter.setLoadingState(LoadingView.ViewMode.SLOW_INTERNET);
+        if (!isFavoritesStream()) {
+            Context context = getContext();
+            if (context != null) {
+                if (!NetworkHelper.isConnected(context)) {
+                    adapter.setLoadingState(LoadingView.ViewMode.NO_INTERNET);
+                } else if (!NetworkHelper.isFastNetworkConnected(context)) {
+                    adapter.setLoadingState(LoadingView.ViewMode.SLOW_INTERNET);
+                } else {
+                    adapter.setLoadingState(LoadingView.ViewMode.LOADING);
+                }
             } else {
                 adapter.setLoadingState(LoadingView.ViewMode.LOADING);
             }
         } else {
-            adapter.setLoadingState(LoadingView.ViewMode.LOADING);
+            adapter.setLoadingState(LoadingView.ViewMode.FAVORITE);
         }
+
     }
 
     private void startListeningToFavoritesRepo() {
@@ -265,12 +271,6 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
                 adapter.setLoadingState(LoadingView.ViewMode.ERROR);
             }
         }
-    }
-
-    public interface ImageSelectedCallback {
-
-        void onImageSelected(Image image);
-
     }
 
     public interface CollectionProvider {

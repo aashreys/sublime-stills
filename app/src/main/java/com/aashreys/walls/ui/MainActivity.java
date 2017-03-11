@@ -1,9 +1,11 @@
 package com.aashreys.walls.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -20,17 +22,22 @@ import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
+import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamViewPagerAdapter;
 import com.aashreys.walls.ui.helpers.StartupHelper;
+import com.aashreys.walls.ui.helpers.UiHelper;
+import com.aashreys.walls.ui.views.StreamImageView;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
 
-public class MainActivity extends BaseActivity implements ImageStreamFragment
-        .ImageSelectedCallback, ImageStreamFragment.CollectionProvider {
+public class MainActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
+        ImageStreamFragment.CollectionProvider {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final String ARG_TAB_POSITION = "arg_tab_position";
 
     @Inject CollectionRepository collectionRepository;
 
@@ -38,9 +45,20 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
 
     @Inject ImageCache imageCache;
 
+    @Inject StartupHelper startupHelper;
+
     private ImageStreamViewPagerAdapter viewPagerAdapter;
 
-    @Inject StartupHelper startupHelper;
+    @Inject
+    FavoriteImageRepository favoriteImageRepository;
+
+    private ViewPager viewPager;
+
+    public static Intent createLaunchIntent(Context context, int tabPosition) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(ARG_TAB_POSITION, tabPosition);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +88,7 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
             }
         });
 
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tablayout);
         tabs.setupWithViewPager(viewPager);
         viewPagerAdapter = new ImageStreamViewPagerAdapter(
@@ -110,6 +127,36 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
     public void onImageSelected(Image image) {
         imageCache.add(image);
         startActivity(ImageDetailActivity.createLaunchIntent(this, image));
+    }
+
+    @Override
+    public void onImageFavorited(Image image) {
+
+    }
+
+    @Override
+    public void onImageUnfavorited(final Image image) {
+        Snackbar snackbar = Snackbar
+                .make(viewPager, R.string.title_snackbar_favorite_removed, Snackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(UiHelper.getColor(this, R.color.red_accent));
+        snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        favoriteImageRepository.favorite(image);
+                    }
+                });
+
+        snackbar.show();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent();
+    }
+
+    private void handleIntent() {
+
     }
 
     private void populateDatabases() {

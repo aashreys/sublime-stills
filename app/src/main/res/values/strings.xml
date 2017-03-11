@@ -31,6 +31,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_search">Search</string>
     <string name="action_try_again">Try Again</string>
+    <string name="action_undo">Undo</string>
 
     <string name="hint_collection_name">collection name</string>
 
@@ -40,9 +41,11 @@
 
     <string name="title_search_and_add_collection">Add Collection</string>
 
-    <string name="hint_add_favorites">Your favorites live here.\nTap the heart on an image to mark it as a favorite.</string>
+    <string name="hint_add_favorites">Your favorites live here.\nTap an empty heart on an image to favorite it.</string>
     <string name="hint_collection_activity">Collections are images which follow a theme. You can add new and manage your existing collections here.</string>
     <string name="hint_add_collection_dialog">To add a collection, search for it and tap on a tag from the search results.</string>
     <string name="hint_image_detail_activity">You can favorite, share or set this image as your wallpaper by tapping the icons below.</string>
+
+    <string name="title_snackbar_favorite_removed">Image removed from Favorites</string>
 
 </resources>

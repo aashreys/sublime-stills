@@ -17,7 +17,7 @@ import com.aashreys.walls.ui.views.StreamImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aashreys.walls.ui.ImageStreamFragment.ImageSelectedCallback;
+import static com.aashreys.walls.ui.views.StreamImageView.ImageSelectedCallback;
 
 /**
  * Created by aashreys on 04/02/17.

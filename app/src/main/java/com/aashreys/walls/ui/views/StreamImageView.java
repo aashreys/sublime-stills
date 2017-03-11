@@ -38,6 +38,8 @@ public class StreamImageView extends FrameLayout {
 
     private Image image;
 
+    private ImageSelectedCallback callback;
+
     private RepositoryCallback<Image> repositoryCallback = new RepositoryCallback<Image>() {
         @Override
         public void onInsert(Image object) {
@@ -104,9 +106,10 @@ public class StreamImageView extends FrameLayout {
     public void bind(
             ImageStreamFragment fragment,
             final Image image,
-            final ImageStreamFragment.ImageSelectedCallback listener
+            final ImageSelectedCallback callback
     ) {
         this.image = image;
+        this.callback = callback;
         favoriteButton.setVisibility(View.GONE);
         GlideHelper.displayImageAsync(
                 fragment,
@@ -114,11 +117,11 @@ public class StreamImageView extends FrameLayout {
                 imageView,
                 fragment.isDisplayed() ? Priority.HIGH : Priority.LOW
         );
-        if (listener != null) {
+        if (callback != null) {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onImageSelected(image);
+                    callback.onImageSelected(image);
                 }
             });
         }
@@ -144,11 +147,11 @@ public class StreamImageView extends FrameLayout {
         // Check equality since favorite state is relayed on a background thread and this view
         // may have been rebound to a different image by then.
         if (newImage.equals(image)) {
-            favoriteButton.setVisibility(View.VISIBLE);
             favoriteButton.setImageResource(isFavorite
                     ? R.drawable.ic_favorite_light_24dp
                     : R.drawable.ic_favorite_border_light_24dp
             );
+            favoriteButton.setVisibility(View.VISIBLE);
             favoriteButton.setOnClickListener(
                     new View.OnClickListener() {
                         private boolean isFavorite2 = isFavorite;
@@ -159,16 +162,28 @@ public class StreamImageView extends FrameLayout {
                                 favoriteImageRepository.unfavorite(image);
                                 favoriteButton.setImageResource(R.drawable
                                         .ic_favorite_border_light_24dp);
+                                callback.onImageUnfavorited(image);
                             } else {
                                 favoriteImageRepository.favorite(image);
                                 favoriteButton.setImageResource(R.drawable
                                         .ic_favorite_light_24dp);
+                                callback.onImageFavorited(image);
                             }
                             isFavorite2 = !isFavorite2;
                         }
                     }
             );
         }
+    }
+
+    public interface ImageSelectedCallback {
+
+        void onImageSelected(Image image);
+
+        void onImageFavorited(Image image);
+
+        void onImageUnfavorited(Image image);
+
     }
 
     private static abstract class FavoriteSyncTask extends AsyncTask<Void, Void, Boolean> {

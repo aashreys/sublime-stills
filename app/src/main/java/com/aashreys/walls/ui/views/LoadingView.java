@@ -9,7 +9,6 @@ import android.support.annotation.RequiresApi;
 import android.support.transition.AutoTransition;
 import android.support.transition.TransitionManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -46,6 +45,9 @@ public class LoadingView extends LinearLayout {
     private TextView infoText;
 
     private Button actionButton;
+
+    @ViewMode
+    private int currentMode = -1;
 
     private ImageStreamAdapter.LoadingCallback loadingCallback;
 
@@ -88,32 +90,34 @@ public class LoadingView extends LinearLayout {
     }
 
     public void setViewMode(@ViewMode int mode) {
-        Log.d("LoadingView", "Setting mode to " + mode);
-        switch (mode) {
+        if (currentMode != mode) {
+            currentMode = mode;
+            switch (mode) {
 
-            case NOT_LOADING:
-                displayNotLoadingState();
-                break;
+                case NOT_LOADING:
+                    displayNotLoadingState();
+                    break;
 
-            case LOADING:
-                displayLoadingState();
-                break;
+                case LOADING:
+                    displayLoadingState();
+                    break;
 
-            case ERROR:
-                displayErrorState();
-                break;
+                case ERROR:
+                    displayErrorState();
+                    break;
 
-            case SLOW_INTERNET:
-                displaySlowInternetState();
-                break;
+                case SLOW_INTERNET:
+                    displaySlowInternetState();
+                    break;
 
-            case NO_INTERNET:
-                displayNoInternetState();
-                break;
+                case NO_INTERNET:
+                    displayNoInternetState();
+                    break;
 
-            case FAVORITE:
-                displayFavoriteHintState();
-                break;
+                case FAVORITE:
+                    displayFavoriteHintState();
+                    break;
+            }
         }
     }
 
