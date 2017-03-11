@@ -75,6 +75,8 @@ public class ImageDetailActivity extends BaseActivity {
 
     private ImageButton favoriteButton, setAsButton, shareButton;
 
+    private ViewGroup imageActionsParent;
+
     private LinearLayout imageInfoParent;
 
     private boolean isImageLoaded, isPropertiesLoaded;
@@ -102,6 +104,7 @@ public class ImageDetailActivity extends BaseActivity {
             imageView = (ImageView) findViewById(R.id.image);
             imageInfoParent = (LinearLayout) findViewById(R.id.parent_image_info);
             progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+            imageActionsParent = (ViewGroup) findViewById(R.id.parent_image_actions);
 
             final boolean isFavorite = favoriteImageRepository.isFavorite(image);
             favoriteButton = (ImageButton) findViewById(R.id.button_favorite);
@@ -259,9 +262,7 @@ public class ImageDetailActivity extends BaseActivity {
                 for (int i = 0; i < imageInfoParent.getChildCount(); i++) {
                     imageInfoParent.getChildAt(i).setVisibility(View.VISIBLE);
                 }
-                favoriteButton.setVisibility(View.VISIBLE);
-                setAsButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
+                imageActionsParent.setVisibility(View.VISIBLE);
             }
             TransitionManager.beginDelayedTransition(parentView, new Fade());
         }

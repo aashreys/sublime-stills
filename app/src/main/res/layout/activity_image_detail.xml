@@ -72,11 +72,13 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/parent_image_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:background="@color/windowBackground"
         android:elevation="6dp"
+        android:visibility="invisible"
         android:orientation="vertical">
 
         <com.aashreys.walls.ui.views.HintView
@@ -102,9 +104,7 @@
                 android:layout_width="@dimen/button_size"
                 android:layout_height="@dimen/button_size"
                 android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                android:visibility="invisible"
                 app:srcCompat="@drawable/ic_favorite_border_black_24dp"/>
-
 
             <FrameLayout
                 android:layout_width="@dimen/button_size"
@@ -116,7 +116,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    android:visibility="invisible"
                     app:srcCompat="@drawable/ic_share_black_24dp"/>
 
                 <ProgressBar
@@ -140,7 +139,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    android:visibility="invisible"
                     app:srcCompat="@drawable/ic_wallpaper_black_24dp"/>
 
                 <ProgressBar
