@@ -11,6 +11,7 @@ import com.aashreys.walls.ui.ImageDetailActivity;
 import com.aashreys.walls.ui.ImageStreamFragment;
 import com.aashreys.walls.ui.MainActivity;
 import com.aashreys.walls.ui.views.CollectionView;
+import com.aashreys.walls.ui.views.HintView;
 import com.aashreys.walls.ui.views.StreamImageView;
 
 import dagger.Subcomponent;
@@ -41,5 +42,7 @@ public interface UiComponent {
     void inject(CollectionView collectionView);
 
     void inject(StreamImageView streamImageView);
+
+    void inject(HintView hintView);
 
 }

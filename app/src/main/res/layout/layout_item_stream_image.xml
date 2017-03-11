@@ -21,6 +21,7 @@
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
         android:layout_gravity="bottom|right"
-        android:background="?attr/selectableItemBackgroundBorderlessCompat" />
+        android:background="?attr/selectableItemBackgroundBorderlessCompat"
+        android:alpha="0.8"/>
 
 </FrameLayout>

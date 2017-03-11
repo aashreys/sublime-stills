@@ -12,4 +12,9 @@
         <attr name="irv_value" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="HintView">
+        <attr name="hv_hint" format="string" />
+        <attr name="hv_seen_key" format="string" />
+    </declare-styleable>
+
 </resources>

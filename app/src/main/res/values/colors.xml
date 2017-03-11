@@ -8,8 +8,6 @@
     <color name="windowBackground">#FAFAFA</color>
     <color name="dialogBackground">@color/white</color>
 
-    <color name="imageStreamFavoriteButton">#A9FFFFFF</color>
-
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="black_60p">#99000000</color>

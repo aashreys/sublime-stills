@@ -1,7 +1,6 @@
 package com.aashreys.walls.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +18,7 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamViewPagerAdapter;
+import com.aashreys.walls.ui.helpers.StartupHelper;
 
 import javax.inject.Inject;
 
@@ -29,8 +29,6 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String KEY_IS_FIRST_START = "key_is_first_start";
-
     @Inject CollectionRepository collectionRepository;
 
     @Inject Lazy<CollectionFactory> collectionFactoryLazy;
@@ -39,16 +37,19 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
 
     private ImageStreamViewPagerAdapter viewPagerAdapter;
 
+    @Inject StartupHelper startupHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getActivityComponent().inject(this);
-        SharedPreferences preferences = getSharedPreferences();
-        if (preferences.getBoolean(KEY_IS_FIRST_START, true)) {
+
+        if (startupHelper.isFirstStart()) {
             populateDatabases();
-            preferences.edit().putBoolean(KEY_IS_FIRST_START, false).apply();
+            startupHelper.onFirstStartCompleted();
         }
+
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tablayout);
@@ -101,10 +102,6 @@ public class MainActivity extends BaseActivity implements ImageStreamFragment
     private UiComponent getActivityComponent() {
         return ((WallsApplication) getApplication()).getApplicationComponent()
                 .getUiComponent();
-    }
-
-    private SharedPreferences getSharedPreferences() {
-        return ((WallsApplication) getApplication()).getSharedPreferences();
     }
 
     @Override

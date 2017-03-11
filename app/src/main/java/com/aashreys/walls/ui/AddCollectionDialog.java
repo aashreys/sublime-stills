@@ -102,6 +102,7 @@ public class AddCollectionDialog extends DialogFragment implements
         collectionsList.setAdapter(adapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.title_search_and_add_collection);
         builder.setView(contentView);
         builder.setPositiveButton(R.string.action_search, null);
         builder.setNegativeButton(R.string.action_cancel, null);

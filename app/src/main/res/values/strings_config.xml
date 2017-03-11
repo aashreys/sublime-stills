@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="tag_hint_collection_activity">tag_hint_collection_activity</string>
+    <string name="tag_hint_add_collection_dialog">tag_hint_add_collection_dialog</string>
+    <string name="tag_hint_image_detail_activity">tag_hint_collection_activity</string>
+
+</resources>

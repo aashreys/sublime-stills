@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/windowBackground"
     android:clickable="true"
     android:orientation="vertical"
@@ -32,7 +33,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/toolbar_left_margin"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    app:srcCompat="@drawable/ic_close_black_24dp" />
+                    app:srcCompat="@drawable/ic_close_black_24dp"/>
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
@@ -40,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="@string/title_fragment_collection" />
+                    android:text="@string/title_fragment_collection"/>
 
                 <ImageButton
                     android:id="@+id/button_add_collection"
@@ -50,7 +51,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/toolbar_right_margin"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    app:srcCompat="@drawable/ic_add_black_24dp" />
+                    app:srcCompat="@drawable/ic_add_black_24dp"/>
 
             </RelativeLayout>
 
@@ -58,18 +59,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.aashreys.walls.ui.views.HintView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_medium"
+        android:paddingRight="@dimen/spacing_medium"
+        android:paddingTop="@dimen/spacing_medium"
+        app:hv_hint="@string/hint_collection_activity"
+        app:hv_seen_key="@string/tag_hint_collection_activity"/>
+
     <TextView
         style="@style/Walls.Text.Subhead"
         android:layout_width="match_parent"
         android:layout_height="@dimen/subhead_height"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:text="@string/title_existing_collections" />
+        android:text="@string/title_existing_collections"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_image_sources"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </LinearLayout>
