@@ -94,7 +94,7 @@ public class AddCollectionDialog extends DialogFragment implements
             public void getItemOffsets(
                     Rect outRect, View view, RecyclerView parent, RecyclerView.State state
             ) {
-                int margin = getResources().getDimensionPixelOffset(R.dimen.chip_margin);
+                int margin = getResources().getDimensionPixelOffset(R.dimen.spacing_xxs);
                 outRect.left = margin;
                 outRect.right = margin;
             }
@@ -102,7 +102,7 @@ public class AddCollectionDialog extends DialogFragment implements
         collectionsList.setAdapter(adapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.title_search_and_add_collection);
+        builder.setTitle(R.string.title_add_collection_dialog);
         builder.setView(contentView);
         builder.setPositiveButton(R.string.action_search, null);
         builder.setNegativeButton(R.string.action_cancel, null);

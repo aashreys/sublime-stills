@@ -26,23 +26,22 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_xl"
+                android:layout_height="@dimen/height_medium"
                 app:contentInsetStart="0dp"
                 app:layout_scrollFlags="scroll|snap|enterAlways">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageButton
                         android:id="@+id/button_menu"
-                        android:layout_width="@dimen/height_large"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
+                        android:layout_width="@dimen/button_size"
+                        android:layout_height="@dimen/button_size"
+                        android:padding="@dimen/spacing_small"
                         android:layout_marginLeft="@dimen/spacing_small"
-                        android:layout_marginRight="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
                         app:srcCompat="@drawable/ic_menu_black_24dp"/>
 
@@ -54,13 +53,15 @@
                         android:clipToPadding="false"
                         android:visibility="gone"
                         app:tabMode="scrollable"
+                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:layout_marginRight="@dimen/spacing_small"
                         app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
 
                     <ImageButton
                         android:id="@+id/button_collections"
-                        android:layout_width="@dimen/height_large"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:layout_width="@dimen/button_size"
+                        android:layout_height="@dimen/button_size"
+                        android:padding="@dimen/spacing_small"
                         android:layout_marginRight="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
                         app:srcCompat="@drawable/ic_add_black_24dp"/>
@@ -86,7 +87,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/drawer_header_layout"
         app:itemIconTint="@color/drawer_text_color"
-        app:itemTextAppearance="@style/Walls.TextAppearance.Tab"
         app:itemTextColor="@color/drawer_text_color"
         app:menu="@menu/drawer"/>
 

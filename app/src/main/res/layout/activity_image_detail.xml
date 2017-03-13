@@ -42,7 +42,6 @@
                     android:id="@+id/subhead_source"
                     style="@style/Walls.Text.Subhead"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/subhead_height"
                     android:gravity="center_vertical"
                     android:text="@string/title_source"
                     android:visibility="invisible"/>
@@ -51,7 +50,6 @@
                     android:id="@+id/subhead_properties"
                     style="@style/Walls.Text.Subhead"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/subhead_height"
                     android:gravity="center_vertical"
                     android:text="@string/title_properties"
                     android:visibility="invisible"/>
@@ -61,8 +59,8 @@
             <ProgressBar
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/progress_bar"
-                android:layout_width="@dimen/height_large"
-                android:layout_height="@dimen/height_large"
+                android:layout_width="@dimen/icon_xl"
+                android:layout_height="@dimen/icon_xl"
                 android:layout_gravity="center"
                 android:indeterminate="true"
                 android:orientation="vertical"/>
@@ -78,16 +76,13 @@
         android:animateLayoutChanges="true"
         android:background="@color/windowBackground"
         android:elevation="6dp"
-        android:visibility="invisible"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <com.aashreys.walls.ui.views.HintView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_small"
-            android:paddingLeft="@dimen/spacing_medium"
-            android:paddingRight="@dimen/spacing_medium"
-            android:paddingTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_small"
             app:hv_hint="@string/hint_image_detail_activity"
             app:hv_seen_key="@string/tag_hint_image_detail_activity"/>
 
@@ -124,7 +119,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/transparent"
                     android:indeterminate="true"
-                    android:padding="@dimen/share_progress_bar_padding"
+                    android:padding="@dimen/spacing_small"
                     android:visibility="gone"/>
 
             </FrameLayout>
@@ -147,7 +142,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/transparent"
                     android:indeterminate="true"
-                    android:padding="@dimen/share_progress_bar_padding"
+                    android:padding="@dimen/spacing_small"
                     android:visibility="gone"/>
 
             </FrameLayout>

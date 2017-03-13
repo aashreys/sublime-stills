@@ -6,8 +6,8 @@
         style="@style/Walls.Text.Body2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/info_row_left_margin"
-        android:layout_weight=".4"
+        android:layout_marginLeft="@dimen/spacing_medium"
+        android:layout_weight=".3"
         android:maxLines="1" />
 
     <TextView
@@ -15,16 +15,16 @@
         style="@style/Walls.Text.Body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".6"
+        android:layout_weight=".7"
         android:maxLines="2" />
 
     <ImageButton
         android:id="@+id/button_action"
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
-        android:layout_marginRight="@dimen/info_row_right_margin"
+        android:layout_marginRight="4dp"
         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-        android:padding="16dp"
+        android:padding="12dp"
         android:visibility="invisible" />
 
 </merge>

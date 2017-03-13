@@ -16,7 +16,10 @@ import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import javax.inject.Inject;
+
 import static com.aashreys.walls.ui.helpers.CollectionUiHelper.getIconForCollectionType;
 
 /**
@@ -84,7 +87,7 @@ public class CollectionView extends LinearLayout {
     public void setCollection(int position, Collection collection) {
         this.position = position;
         this.collection = collection;
-        titleText.setText(collection.getName().value());
+        titleText.setText(WordUtils.capitalizeFully(collection.getName().value()));
         iconImage.setImageResource(getIconForCollectionType(collection.getType()));
         removeButton.setImageResource(collection.isRemovable() ? R.drawable.ic_delete_black_24dp
                 : R.drawable.ic_delete_light_24dp);

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:foreground="?attr/selectableItemBackground"
-        android:minHeight="@dimen/height_xxxl"
+        android:minHeight="@dimen/height_xl"
         android:scaleType="fitXY" />
 
     <ImageButton

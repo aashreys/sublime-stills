@@ -5,32 +5,33 @@
 
     <ImageView
         android:id="@+id/image_icon"
-        android:layout_width="@dimen/image_source_icon_size"
-        android:layout_height="@dimen/image_source_icon_size"
-        android:padding="4dp" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:padding="8dp"/>
 
     <TextView
         android:id="@+id/text_title"
-        style="@style/Walls.Text.ImageSourceItem"
+        style="@style/Walls.Text.SingleListItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_weight="1"
-        android:textSize="16sp" />
+        android:layout_weight="1"/>
 
     <ImageButton
         android:id="@+id/button_remove"
-        android:layout_width="@dimen/image_source_icon_size"
-        android:layout_height="@dimen/image_source_icon_size"
-        android:background="?attr/selectableItemBackgroundBorderlessCompat" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderlessCompat"
+        android:padding="8dp"/>
 
     <ImageView
         android:id="@+id/handle"
-        android:layout_width="@dimen/image_drag_handle_size"
-        android:layout_height="@dimen/image_drag_handle_size"
-        android:padding="@dimen/image_drag_handle_padding"
-        android:rotation="90"
-        app:srcCompat="@drawable/ic_reorder_black_24dp" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginRight="8dp"
+        android:padding="8dp"
+        app:srcCompat="@drawable/ic_swap_vert_black_24dp"/>
 
 </merge>

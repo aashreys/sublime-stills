@@ -6,11 +6,10 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
@@ -23,7 +22,7 @@ import javax.inject.Inject;
  * Created by aashreys on 11/03/17.
  */
 
-public class HintView extends LinearLayout {
+public class HintView extends FrameLayout {
 
     @Inject KeyValueStore keyValueStore;
 
@@ -64,8 +63,8 @@ public class HintView extends LinearLayout {
                 .getUiComponent()
                 .inject(this);
         LayoutInflater.from(context).inflate(R.layout.layout_view_hint, this, true);
-        setGravity(Gravity.CENTER_VERTICAL);
-        setOrientation(HORIZONTAL);
+        int verticalPadding = getResources().getDimensionPixelSize(R.dimen.spacing_small);
+        setPadding(0, verticalPadding, 0, verticalPadding);
 
         final String hintString, seenKeyString;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.HintView, 0, 0);

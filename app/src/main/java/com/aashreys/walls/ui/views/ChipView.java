@@ -3,10 +3,11 @@ package com.aashreys.walls.ui.views;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
@@ -14,7 +15,7 @@ import com.aashreys.walls.domain.display.collections.Collection;
 /**
  * Created by aashreys on 04/02/17.
  */
-public class ChipView extends TextView {
+public class ChipView extends AppCompatTextView {
 
     @Nullable
     private OnSelectedListener listener;
@@ -24,14 +25,6 @@ public class ChipView extends TextView {
     public ChipView(Context context) {
         super(context);
         _init(context);
-    }
-
-    private void _init(Context context) {
-        int paddingVertical = getResources().getDimensionPixelSize(R.dimen.chip_padding_vertical);
-        int paddingHorizontal = getResources().getDimensionPixelSize(R.dimen
-                .chip_padding_horizontal);
-        setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
-        setBackgroundResource(R.drawable.chip_background_light);
     }
 
     public ChipView(Context context, AttributeSet attrs) {
@@ -44,10 +37,17 @@ public class ChipView extends TextView {
         _init(context);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public ChipView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        _init(context);
+    private void _init(Context context) {
+        int paddingVertical = getResources().getDimensionPixelSize(R.dimen.spacing_small);
+        int paddingHorizontal = getResources().getDimensionPixelSize(R.dimen
+                .spacing_medium);
+        setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        setGravity(Gravity.CENTER);
+        setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
+        setBackgroundResource(R.drawable.chip_background_light);
     }
 
     public void setCollection(final Collection collection) {
@@ -105,7 +105,10 @@ public class ChipView extends TextView {
 
     public interface OnSelectedListener {
 
-        void onChipViewSelected(@Nullable ChipView view, @Nullable Collection collection);
+        void onChipViewSelected(
+                @Nullable ChipView selectedChipView,
+                @Nullable Collection selectedCollection
+        );
 
     }
 }

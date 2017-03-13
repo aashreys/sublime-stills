@@ -11,14 +11,6 @@
     android:paddingRight="24dp"
     android:paddingTop="20dp">
 
-    <com.aashreys.walls.ui.views.HintView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/spacing_xs"
-        app:hv_hint="@string/hint_add_collection_dialog"
-        app:hv_seen_key="@string/tag_hint_add_collection_dialog"/>
-
     <EditText
         android:id="@+id/input_collection"
         android:layout_width="match_parent"
@@ -30,14 +22,14 @@
     <FrameLayout
         android:id="@+id/parent_collections"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/spacing_xxs"
+        android:layout_height="@dimen/height_small"
+        android:layout_marginTop="@dimen/spacing_small"
         android:visibility="gone">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_collections"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:visibility="gone"/>
 
         <ProgressBar
@@ -46,8 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/chip_margin"
-            android:layout_marginRight="@dimen/chip_margin"
+            android:layout_marginLeft="@dimen/spacing_xs"
+            android:layout_marginRight="@dimen/spacing_xs"
             android:indeterminate="true"
             android:visibility="gone"/>
 

@@ -21,45 +21,39 @@
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/button_close"
                     android:layout_width="@dimen/button_size"
                     android:layout_height="@dimen/button_size"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/toolbar_left_margin"
+                    android:layout_marginLeft="@dimen/spacing_small"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
                     app:srcCompat="@drawable/ic_arrow_back_black_24dp"/>
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
                     style="@style/Walls.Text.ToolbarTitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/title_fragment_collection"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_medium"
                     android:layout_marginRight="@dimen/spacing_small"
-                    android:layout_toRightOf="@+id/button_close"
-                    android:layout_toLeftOf="@+id/button_add_collection"
-                    android:layout_toStartOf="@+id/button_add_collection"/>
+                    android:layout_weight="1"
+                    android:text="@string/title_fragment_collection"/>
 
                 <ImageButton
                     android:id="@+id/button_add_collection"
                     android:layout_width="@dimen/button_size"
                     android:layout_height="@dimen/button_size"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/toolbar_right_margin"
+                    android:layout_marginRight="@dimen/spacing_small"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    app:srcCompat="@drawable/ic_add_black_24dp"/>
+                    app:srcCompat="@drawable/ic_search_black_24dp"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
 
@@ -68,18 +62,14 @@
     <com.aashreys.walls.ui.views.HintView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing_medium"
-        android:paddingRight="@dimen/spacing_medium"
-        android:paddingTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
         app:hv_hint="@string/hint_collection_activity"
         app:hv_seen_key="@string/tag_hint_collection_activity"/>
 
     <TextView
         style="@style/Walls.Text.Subhead"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/subhead_height"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/spacing_xxxl"
         android:text="@string/title_existing_collections"/>
 
     <android.support.v7.widget.RecyclerView
