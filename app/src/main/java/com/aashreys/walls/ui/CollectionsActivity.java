@@ -3,10 +3,11 @@ package com.aashreys.walls.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -24,12 +25,11 @@ import javax.inject.Inject;
  * Created by aashreys on 21/02/17.
  */
 
-public class CollectionsActivity extends BaseActivity implements CollectionsAdapter
-        .OnStartDragListener {
+public class CollectionsActivity extends BaseActivity implements CollectionsAdapter.DragListener {
 
     private static final String TAG = CollectionsActivity.class.getSimpleName();
 
-    private static final String ADD_COLLECTION_FRAGMENT_TAG = "tag_add_collection_fragment";
+    private static final String TAG_ADD_COLLECTION_FRAGMENT = "tag_add_collection_fragment";
 
     @Inject CollectionRepository collectionRepository;
 
@@ -38,6 +38,10 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
     private CollectionRepository.CollectionRepositoryListener repositoryCallback;
 
     private ItemTouchHelper itemTouchHelper;
+
+    private Snackbar dragHintSnackbar;
+
+    private RecyclerView collectionRecyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +69,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
                 adapter.remove(object);
             }
         };
-        RecyclerView collectionRecyclerView = (RecyclerView) findViewById(R.id.list_image_sources);
+        collectionRecyclerView = (RecyclerView) findViewById(R.id.list_image_sources);
         collectionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CollectionsAdapter();
         adapter.setOnCollectionClickListener(new CollectionsAdapter.OnCollectionClickListener() {
@@ -103,7 +107,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
             public void onClick(View v) {
                 AddCollectionDialog fragment
                         = new AddCollectionDialog();
-                fragment.show(getSupportFragmentManager(), ADD_COLLECTION_FRAGMENT_TAG);
+                fragment.show(getSupportFragmentManager(), TAG_ADD_COLLECTION_FRAGMENT);
             }
         });
     }
@@ -128,5 +132,18 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
     @Override
     public void onDragStarted(RecyclerView.ViewHolder holder) {
         itemTouchHelper.startDrag(holder);
+        dragHintSnackbar = Snackbar.make(
+                collectionRecyclerView,
+                R.string.hint_reorder_collection,
+                BaseTransientBottomBar.LENGTH_INDEFINITE
+        );
+        dragHintSnackbar.show();
+    }
+
+    @Override
+    public void onDragFinished() {
+        if (dragHintSnackbar != null) {
+            dragHintSnackbar.dismiss();
+        }
     }
 }

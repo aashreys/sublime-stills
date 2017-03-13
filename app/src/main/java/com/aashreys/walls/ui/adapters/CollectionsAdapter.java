@@ -3,7 +3,6 @@ package com.aashreys.walls.ui.adapters;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.CollectionView;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
 
     private final List<Collection> collectionList;
 
-    private OnStartDragListener dragListener;
+    private DragListener dragListener;
 
     private OnCollectionClickListener onCollectionClickListener;
 
@@ -70,8 +70,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDrag(holder);
-                    return true;
+                    onDragStarted(holder);
                 }
                 return false;
             }
@@ -84,15 +83,18 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
     }
 
     private void onItemMove(int fromPosition, int toPosition) {
-        Log.d(TAG, "onItemMove from " + fromPosition + " to " + toPosition);
         Collection collection = collectionList.remove(fromPosition);
         collectionList.add(toPosition, collection);
         notifyItemMoved(fromPosition, toPosition);
         isCollectionListModified = true;
     }
 
-    private void onStartDrag(RecyclerView.ViewHolder holder) {
+    private void onDragStarted(RecyclerView.ViewHolder holder) {
         dragListener.onDragStarted(holder);
+    }
+
+    private void onDragFinished() {
+        dragListener.onDragFinished();
     }
 
     public boolean isCollectionListModified() {
@@ -103,7 +105,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         return collectionList;
     }
 
-    public void setDragListener(OnStartDragListener dragListener) {
+    public void setDragListener(DragListener dragListener) {
         this.dragListener = dragListener;
     }
 
@@ -115,9 +117,17 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         this.isCollectionListModified = false;
     }
 
-    public interface OnStartDragListener {
+    public interface DragListener {
 
         void onDragStarted(RecyclerView.ViewHolder holder);
+
+        void onDragFinished();
+
+    }
+
+    public interface OnCollectionClickListener {
+
+        void onClick(CollectionView view, int position);
 
     }
 
@@ -145,7 +155,19 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
             });
         }
 
-        private void onSelected() {}
+        private void onSelectedForDrag() {
+            collectionView.setBackgroundColor(UiHelper.getColor(
+                    collectionView.getContext(),
+                    R.color.windowBackground
+            ));
+        }
+
+        private void onDeselected() {
+            collectionView.setBackgroundColor(UiHelper.getColor(
+                    collectionView.getContext(),
+                    R.color.transparent
+            ));
+        }
     }
 
     public static class ItemMoveHelperCallback extends ItemTouchHelper.Callback {
@@ -174,9 +196,13 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
             return true;
         }
 
+        private void dragFinished() {
+            adapter.onDragFinished();
+        }
+
         @Override
         public boolean isLongPressDragEnabled() {
-            return true;
+            return false;
         }
 
         @Override
@@ -190,17 +216,20 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         @Override
         public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                ((CollectionViewHolder) viewHolder).onSelected();
+                ((CollectionViewHolder) viewHolder).onSelectedForDrag();
             }
             super.onSelectedChanged(viewHolder, actionState);
 
         }
-    }
 
-    public interface OnCollectionClickListener {
-
-        void onClick(CollectionView view, int position);
-
+        @Override
+        public void clearView(
+                RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder
+        ) {
+            super.clearView(recyclerView, viewHolder);
+            ((CollectionViewHolder) viewHolder).onDeselected();
+            dragFinished();
+        }
     }
 
 }
