@@ -72,7 +72,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionAdapt
                 saveCollections();
                 finish();
                 Context context = collectionView.getContext();
-                context.startActivity(MainActivity.createLaunchIntent(
+                context.startActivity(StreamActivity.createLaunchIntent(
                         collectionView.getContext(),
                         collectionView.getPosition()
                 ));

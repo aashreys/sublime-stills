@@ -32,10 +32,10 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 
-public class MainActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
+public class StreamActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
         ImageStreamFragment.CollectionProvider {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = StreamActivity.class.getSimpleName();
 
     private static final String ARG_TAB_POSITION = "arg_tab_position";
 
@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements StreamImageView.ImageS
     private ViewPager viewPager;
 
     public static Intent createLaunchIntent(Context context, int tabPosition) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, StreamActivity.class);
         intent.putExtra(ARG_TAB_POSITION, tabPosition);
         return intent;
     }
@@ -63,7 +63,7 @@ public class MainActivity extends BaseActivity implements StreamImageView.ImageS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_stream);
         getActivityComponent().inject(this);
 
         if (startupHelper.isFirstStart()) {
@@ -180,7 +180,7 @@ public class MainActivity extends BaseActivity implements StreamImageView.ImageS
     }
 
     private void openCollectionsActivity() {
-        Intent intent = new Intent(MainActivity.this, CollectionsActivity.class);
+        Intent intent = new Intent(StreamActivity.this, CollectionsActivity.class);
         startActivity(intent);
     }
 }

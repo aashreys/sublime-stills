@@ -9,7 +9,7 @@ import com.aashreys.walls.ui.AddCollectionDialog;
 import com.aashreys.walls.ui.CollectionsActivity;
 import com.aashreys.walls.ui.ImageDetailActivity;
 import com.aashreys.walls.ui.ImageStreamFragment;
-import com.aashreys.walls.ui.MainActivity;
+import com.aashreys.walls.ui.StreamActivity;
 import com.aashreys.walls.ui.views.CollectionView;
 import com.aashreys.walls.ui.views.HintView;
 import com.aashreys.walls.ui.views.StreamImageView;
@@ -29,7 +29,7 @@ import dagger.Subcomponent;
 })
 public interface UiComponent {
 
-    void inject(MainActivity activity);
+    void inject(StreamActivity activity);
 
     void inject(ImageStreamFragment imageStreamFragment);
 
