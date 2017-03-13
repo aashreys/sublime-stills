@@ -159,7 +159,7 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     private void handleIntent(Intent intent) {
         int position = intent.getIntExtra(ARG_TAB_POSITION, 0);
         if (viewPager.getAdapter().getCount() > 0) {
-            viewPager.setCurrentItem(position, false);
+            viewPager.setCurrentItem(position);
         }
     }
 
