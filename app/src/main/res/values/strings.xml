@@ -33,7 +33,7 @@
     <string name="action_try_again">Try Again</string>
     <string name="action_undo">Undo</string>
 
-    <string name="hint_collection_name">space, cats, deadpool, beach…</string>
+    <string name="hint_collection_name">cat, food, nature, nasa…</string>
 
     <string name="error_generic">Images could not be loaded.</string>
     <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images.</string>
@@ -41,10 +41,9 @@
 
     <string name="title_add_collection_dialog">Search for a Collection</string>
 
-    <string name="hint_add_favorites">Your favorites live here.\nTap an empty heart on an image to favorite it.</string>
-    <string name="hint_collection_activity">Collections are images which follow a theme. You can search for new and manage your existing collections here.</string>
-    <string name="hint_add_collection_dialog">To add a collection, search for it and tap on a tag from the search results.</string>
-    <string name="hint_image_detail_activity">Tap the icons below to Favorite, Share or make this image your Wallpaper.</string>
+    <string name="hint_add_favorites">Your favorites are displayed here.\nTap an empty heart on an image to favorite it.</string>
+    <string name="hint_collection">Collections are images which follow a theme. You can search for new and manage your existing collections here.</string>
+    <string name="hint_image_actions">Tap the icons below to Favorite, Share or make this image your Wallpaper.</string>
 
     <string name="title_snackbar_favorite_removed">Image unfavorited</string>
 

@@ -130,18 +130,21 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         int columnCount = UiHelper.getStreamColumnCount(getContext());
+        RecyclerView.LayoutManager manager = null;
         if (columnCount == 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            manager = new LinearLayoutManager(getContext());
+            ((LinearLayoutManager) manager).setInitialPrefetchItemCount(5);
         } else {
-            StaggeredGridLayoutManager staggeredGridLayoutManager
-                    = new StaggeredGridLayoutManager(
+            manager = new StaggeredGridLayoutManager(
                     columnCount,
                     StaggeredGridLayoutManager.VERTICAL
             );
-            staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager
+
+            ((StaggeredGridLayoutManager) manager).setGapStrategy(StaggeredGridLayoutManager
                     .GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-            recyclerView.setLayoutManager(staggeredGridLayoutManager);
         }
+        manager.setItemPrefetchEnabled(true);
+        recyclerView.setLayoutManager(manager);
     }
 
     /**

@@ -47,7 +47,7 @@
                 <ImageButton
                     android:id="@+id/button_add_collection"
                     android:layout_width="@dimen/button_size"
-                    android:layout_height="@dimen/button_size"
+                    android:layout_height="@dimen/image_button_size"
                     android:layout_marginRight="@dimen/spacing_small"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
                     app:srcCompat="@drawable/ic_search_black_24dp"/>
@@ -62,8 +62,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
-        app:hv_hint="@string/hint_collection_activity"
-        app:hv_seen_key="@string/tag_hint_collection_activity"/>
+        app:hv_hint="@string/hint_collection"
+        app:hv_seen_key="@string/tag_hint_collection"/>
 
     <TextView
         style="@style/Walls.Text.Subhead"

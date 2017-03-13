@@ -83,8 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
-            app:hv_hint="@string/hint_image_detail_activity"
-            app:hv_seen_key="@string/tag_hint_image_detail_activity"/>
+            app:hv_hint="@string/hint_image_actions"
+            app:hv_seen_key="@string/tag_hint_image_actions"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

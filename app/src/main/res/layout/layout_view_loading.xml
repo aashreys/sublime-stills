@@ -26,10 +26,9 @@
 
     <TextView
         android:id="@+id/text_loading"
-        style="@style/TextAppearance.AppCompat.Body1"
+        style="@style/Walls.Text.Hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingMultiplier="1.1"
         android:layout_marginTop="@dimen/spacing_medium"
         android:gravity="center"/>
 
