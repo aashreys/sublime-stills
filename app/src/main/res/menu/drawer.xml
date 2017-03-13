@@ -3,7 +3,6 @@
 
     <item
         android:id="@+id/menu_item_stream"
-        android:checked="true"
         android:icon="@drawable/ic_stream_black_24dp"
         android:title="@string/title_menu_stream"/>
 
@@ -19,5 +18,20 @@
         android:id="@+id/menu_item_about"
         android:icon="@drawable/ic_about_black_24dp"
         android:title="@string/title_menu_about"/>
+
+    <!--Dummy items to create space for footer-->
+    <item
+        android:id="@+id/dummy1"
+        android:checkable="false"
+        android:enabled="false"
+        android:orderInCategory="200"
+        android:title=""/>
+
+    <item
+        android:id="@+id/dummy2"
+        android:checkable="false"
+        android:enabled="false"
+        android:orderInCategory="200"
+        android:title=""/>
 
 </menu>

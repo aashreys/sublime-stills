@@ -33,37 +33,37 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/button_menu"
                         android:layout_width="@dimen/image_button_size"
                         android:layout_height="@dimen/image_button_size"
-                        android:padding="@dimen/spacing_small"
                         android:layout_marginLeft="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
+                        android:padding="@dimen/spacing_small"
                         app:srcCompat="@drawable/ic_menu_black_24dp"/>
 
                     <android.support.design.widget.TabLayout
                         android:id="@+id/tablayout"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:layout_marginRight="@dimen/spacing_small"
                         android:layout_weight="1"
                         android:clipToPadding="false"
                         android:visibility="gone"
                         app:tabMode="scrollable"
-                        android:layout_marginLeft="@dimen/spacing_small"
-                        android:layout_marginRight="@dimen/spacing_small"
                         app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
 
                     <ImageButton
                         android:id="@+id/button_collections"
                         android:layout_width="@dimen/image_button_size"
                         android:layout_height="@dimen/image_button_size"
-                        android:padding="@dimen/spacing_small"
                         android:layout_marginRight="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
+                        android:padding="@dimen/spacing_small"
                         app:srcCompat="@drawable/ic_collections_black_24dp"/>
 
                 </LinearLayout>
@@ -88,6 +88,15 @@
         app:headerLayout="@layout/drawer_header_layout"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
-        app:menu="@menu/drawer"/>
+        app:menu="@menu/drawer">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_medium"
+            android:layout_gravity="bottom"
+            android:text="@string/version_name"/>
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
