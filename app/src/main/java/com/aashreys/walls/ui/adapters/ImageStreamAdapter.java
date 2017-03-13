@@ -152,6 +152,11 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    public int getImageCount() {
+        // Removing 1 to discount the loading view
+        return getItemCount() - 1;
+    }
+
     @Override
     public int getItemCount() {
         // Adding one to count the loading view.

@@ -172,7 +172,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         loadImagesTask = new LoadImagesTask(imageSource, this);
         loadImagesTask.executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR,
-                adapter.getItemCount()
+                adapter.getImageCount()
         );
         if (!isFavoritesStream()) {
             Context context = getContext();
