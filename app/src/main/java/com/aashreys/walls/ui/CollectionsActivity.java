@@ -6,13 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
-import com.aashreys.walls.ui.adapters.CollectionAdapter;
+import com.aashreys.walls.ui.adapters.CollectionsAdapter;
 import com.aashreys.walls.ui.views.CollectionView;
 
 import java.util.List;
@@ -23,14 +24,16 @@ import javax.inject.Inject;
  * Created by aashreys on 21/02/17.
  */
 
-public class CollectionsActivity extends BaseActivity implements CollectionAdapter
+public class CollectionsActivity extends BaseActivity implements CollectionsAdapter
         .OnStartDragListener {
+
+    private static final String TAG = CollectionsActivity.class.getSimpleName();
 
     private static final String ADD_COLLECTION_FRAGMENT_TAG = "tag_add_collection_fragment";
 
     @Inject CollectionRepository collectionRepository;
 
-    private CollectionAdapter adapter;
+    private CollectionsAdapter adapter;
 
     private CollectionRepository.CollectionRepositoryListener repositoryCallback;
 
@@ -64,17 +67,16 @@ public class CollectionsActivity extends BaseActivity implements CollectionAdapt
         };
         RecyclerView collectionRecyclerView = (RecyclerView) findViewById(R.id.list_image_sources);
         collectionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CollectionAdapter();
-        adapter.setOnCollectionClickListener(new View.OnClickListener() {
+        adapter = new CollectionsAdapter();
+        adapter.setOnCollectionClickListener(new CollectionsAdapter.OnCollectionClickListener() {
             @Override
-            public void onClick(View v) {
-                CollectionView collectionView = (CollectionView) v;
+            public void onClick(CollectionView view, int position) {
                 saveCollections();
                 finish();
-                Context context = collectionView.getContext();
+                Context context = view.getContext();
                 context.startActivity(StreamActivity.createLaunchIntent(
-                        collectionView.getContext(),
-                        collectionView.getPosition()
+                        view.getContext(),
+                        position
                 ));
             }
         });
@@ -83,7 +85,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionAdapt
         adapter.add(collectionRepository.getAll());
         collectionRepository.addListener(repositoryCallback);
 
-        ItemTouchHelper.Callback callback = new CollectionAdapter.ItemMoveHelperCallback(adapter);
+        ItemTouchHelper.Callback callback = new CollectionsAdapter.ItemMoveHelperCallback(adapter);
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(collectionRecyclerView);
 

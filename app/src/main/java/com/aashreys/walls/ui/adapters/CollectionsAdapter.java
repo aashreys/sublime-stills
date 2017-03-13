@@ -20,20 +20,20 @@ import java.util.List;
  * Created by aashreys on 04/02/17.
  */
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
+public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         .CollectionViewHolder> {
 
-    private static final String TAG = CollectionAdapter.class.getSimpleName();
+    private static final String TAG = CollectionsAdapter.class.getSimpleName();
 
     private final List<Collection> collectionList;
 
     private OnStartDragListener dragListener;
 
-    private View.OnClickListener onCollectionClickListener;
+    private OnCollectionClickListener onCollectionClickListener;
 
     private boolean isCollectionListModified;
 
-    public CollectionAdapter() {
+    public CollectionsAdapter() {
         this.collectionList = new ArrayList<>();
     }
 
@@ -107,7 +107,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
         this.dragListener = dragListener;
     }
 
-    public void setOnCollectionClickListener(View.OnClickListener onCollectionClickListener) {
+    public void setOnCollectionClickListener(OnCollectionClickListener onCollectionClickListener) {
         this.onCollectionClickListener = onCollectionClickListener;
     }
 
@@ -133,23 +133,26 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
         private void bind(
                 Collection collection,
                 View.OnTouchListener dragHandlerOnTouchListener,
-                View.OnClickListener onClickListener
+                final OnCollectionClickListener onClickListener
         ) {
-            this.collectionView.setCollection(getAdapterPosition(), collection);
+            this.collectionView.setCollection(collection);
             this.collectionView.setDragHandleOnTouchListener(dragHandlerOnTouchListener);
-            this.collectionView.setOnClickListener(onClickListener);
+            this.collectionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickListener.onClick((CollectionView) v, getAdapterPosition());
+                }
+            });
         }
 
-        private void onSelected() {
-
-        }
+        private void onSelected() {}
     }
 
     public static class ItemMoveHelperCallback extends ItemTouchHelper.Callback {
 
-        private final CollectionAdapter adapter;
+        private final CollectionsAdapter adapter;
 
-        public ItemMoveHelperCallback(CollectionAdapter adapter) {
+        public ItemMoveHelperCallback(CollectionsAdapter adapter) {
             this.adapter = adapter;
         }
 
@@ -192,6 +195,12 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter
             super.onSelectedChanged(viewHolder, actionState);
 
         }
+    }
+
+    public interface OnCollectionClickListener {
+
+        void onClick(CollectionView view, int position);
+
     }
 
 }

@@ -64,7 +64,7 @@
                         android:padding="@dimen/spacing_small"
                         android:layout_marginRight="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                        app:srcCompat="@drawable/ic_add_black_24dp"/>
+                        app:srcCompat="@drawable/ic_collections_black_24dp"/>
 
                 </LinearLayout>
 
