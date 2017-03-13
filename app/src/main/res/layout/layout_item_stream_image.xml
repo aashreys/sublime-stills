@@ -7,21 +7,22 @@
     android:layout_margin="@dimen/spacing_xxs">
 
     <com.aashreys.walls.ui.utils.ForegroundImageView
-        android:id="@+id/image"
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:foreground="?attr/selectableItemBackground"
         android:minHeight="@dimen/height_xl"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"/>
 
     <ImageButton
         android:id="@+id/button_action"
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
         android:layout_gravity="bottom|right"
-        android:background="?attr/selectableItemBackgroundBorderlessCompat"
-        android:alpha="0.8"/>
+        android:layout_margin="@dimen/spacing_xs"
+        android:alpha="0.9"
+        android:background="?attr/selectableItemBackgroundBorderlessCompat"/>
 
 </FrameLayout>
