@@ -18,8 +18,8 @@
 
     <ImageButton
         android:id="@+id/button_action"
-        android:layout_width="@dimen/button_size"
-        android:layout_height="@dimen/button_size"
+        android:layout_width="@dimen/image_button_size"
+        android:layout_height="@dimen/image_button_size"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/spacing_xs"
         android:alpha="0.9"

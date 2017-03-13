@@ -28,8 +28,8 @@
 
                 <ImageButton
                     android:id="@+id/button_close"
-                    android:layout_width="@dimen/button_size"
-                    android:layout_height="@dimen/button_size"
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
                     android:layout_marginLeft="@dimen/spacing_small"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
                     app:srcCompat="@drawable/ic_arrow_back_black_24dp"/>
@@ -46,7 +46,7 @@
 
                 <ImageButton
                     android:id="@+id/button_add_collection"
-                    android:layout_width="@dimen/button_size"
+                    android:layout_width="@dimen/image_button_size"
                     android:layout_height="@dimen/image_button_size"
                     android:layout_marginRight="@dimen/spacing_small"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
