@@ -1,0 +1,6 @@
+Walls 1.0 Release
+
+1. Find better images. Flickr finds the most random images, some of which are candid shots of people. 
+    That's not what Walls is supposed to display to a user.
+2. Image resolution optimization based on device resolution. 
+3. Redesign image detail page.

@@ -1,0 +1,10 @@
+Resolution based image urls
+
+1. Create a DeviceResolution object which contains device width and height values.
+
+2. Add method Image#getImage(Pixel width, Pixel height) which returns the best possible resolution matched url. 
+Favorite images can return stored values since they will be stored based on what is ideal for the device. 
+OR
+2. Explore viability of a base image url on which resolution transformations can be done to obtain a resolution adjusted url. 
+If this is possible, change FavoriteImageModel to make use of this base url when sharing images. Since some services may not 
+support this base url scheme keep the old database columns for image urls. 
