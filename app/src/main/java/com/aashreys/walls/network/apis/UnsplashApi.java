@@ -18,6 +18,10 @@ public interface UnsplashApi {
 
     String ENDPOINT = "https://api.unsplash.com/";
 
+    String PHOTO_INFO_CACHE_DURATION = "max-age=3600";
+
+    String GENERAL_CACHE_DURATION = "max-age=300";
+
     @GET("photos")
     Call<ResponseBody> getRecentPhotos(
             @Query("page") int pageNumber,
@@ -37,5 +41,10 @@ public interface UnsplashApi {
             @Query("page") int pageNumber,
             @IntRange(from = 1, to = 30) @Query("per_page") int imagesPerPage
     ) throws IOException;
+
+    @GET("photos/{id}")
+    Call<ResponseBody> getPhoto(
+            @Path("id") String photoId
+    );
 
 }

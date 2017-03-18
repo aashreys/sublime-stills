@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.display.images.info.ImageInfo;
 import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.WallsDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -87,24 +88,25 @@ public class FavoriteImageModel extends BaseModel {
     @Column
     String serviceUrl;
 
+
     public FavoriteImageModel() {}
 
     FavoriteImageModel(Image image) {
         this.id = image.getId().value();
+        this.title = Value.getNullableValue(image.getInfo().title);
         this.imageStreamUrl = image.getUrl(Image.UrlType.IMAGE_STREAM).value();
         this.imageDetailUrl = image.getUrl(Image.UrlType.IMAGE_DETAIL).value();
         this.imageSetAsUrl = image.getUrl(Image.UrlType.SET_AS).value();
         this.imageShareUrl = image.getUrl(Image.UrlType.SHARE).value();
-        Image.Properties properties = image.getProperties();
-        this.resX = Value.getNullableValue(properties.resX);
-        this.resY = Value.getNullableValue(properties.resY);
-        this.createdAt = properties.createdAt;
-        this.userId = Value.getNullableValue(properties.userId);
-        this.userRealName = Value.getNullableValue(properties.userRealName);
-        this.userProfileUrl = Value.getNullableValue(properties.userProfileUrl);
-        this.userPortfolioUrl = Value.getNullableValue(properties.userPortfolioUrl);
-        this.serviceName = properties.serviceName.value();
-        this.serviceUrl = Value.getNullableValue(properties.serviceUrl);
+        ImageInfo info = image.getInfo();
+        this.resX = Value.getNullableValue(info.resX);
+        this.resY = Value.getNullableValue(info.resY);
+        this.createdAt = info.createdAt;
+        this.userId = Value.getNullableValue(info.userId);
+        this.userRealName = Value.getNullableValue(info.userRealName);
+        this.userProfileUrl = Value.getNullableValue(info.userProfileUrl);
+        this.userPortfolioUrl = Value.getNullableValue(info.userPortfolioUrl);
+        this.serviceName = info.serviceName.value();
+        this.serviceUrl = Value.getNullableValue(info.serviceUrl);
     }
-
 }

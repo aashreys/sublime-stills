@@ -3,6 +3,7 @@ package com.aashreys.walls.domain.display.images;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
+import com.aashreys.walls.domain.display.images.info.ImageInfo;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
@@ -36,7 +37,7 @@ public class FavoriteImage implements Image {
 
     private final Url imageShareUrl;
 
-    private final Properties properties;
+    private final ImageInfo info;
 
 
     public FavoriteImage(
@@ -62,16 +63,16 @@ public class FavoriteImage implements Image {
         this.imageDetailUrl = imageDetailUrl;
         this.imageSetAsUrl = imageSetAsUrl;
         this.imageShareUrl = imageShareUrl;
-        this.properties = new Properties(serviceName);
-        this.properties.title = title;
-        this.properties.resX = resX;
-        this.properties.resY = resY;
-        this.properties.createdAt = createdAt;
-        this.properties.userId = userId;
-        this.properties.userRealName = userRealName;
-        this.properties.userProfileUrl = userProfileUrl;
-        this.properties.userPortfolioUrl = userPortfolioUrl;
-        this.properties.serviceUrl = serviceUrl;
+        this.info = new ImageInfo(serviceName);
+        this.info.title = title;
+        this.info.resX = resX;
+        this.info.resY = resY;
+        this.info.createdAt = createdAt;
+        this.info.userId = userId;
+        this.info.userRealName = userRealName;
+        this.info.userProfileUrl = userProfileUrl;
+        this.info.userPortfolioUrl = userPortfolioUrl;
+        this.info.serviceUrl = serviceUrl;
     }
 
     protected FavoriteImage(Parcel in) {
@@ -81,7 +82,7 @@ public class FavoriteImage implements Image {
         this.imageDetailUrl = in.readParcelable(Url.class.getClassLoader());
         this.imageSetAsUrl = in.readParcelable(Url.class.getClassLoader());
         this.imageShareUrl = in.readParcelable(Url.class.getClassLoader());
-        this.properties = in.readParcelable(Properties.class.getClassLoader());
+        this.info = in.readParcelable(ImageInfo.class.getClassLoader());
     }
 
     @NonNull
@@ -110,9 +111,8 @@ public class FavoriteImage implements Image {
     }
 
     @NonNull
-    @Override
-    public Properties getProperties() {
-        return properties;
+    public ImageInfo getInfo() {
+        return info;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class FavoriteImage implements Image {
         dest.writeParcelable(this.imageDetailUrl, flags);
         dest.writeParcelable(this.imageSetAsUrl, flags);
         dest.writeParcelable(this.imageShareUrl, flags);
-        dest.writeParcelable(this.properties, flags);
+        dest.writeParcelable(this.info, flags);
     }
 
     @Override
@@ -137,14 +137,14 @@ public class FavoriteImage implements Image {
         FavoriteImage that = (FavoriteImage) o;
 
         if (!id.equals(that.id)) return false;
-        return properties.serviceName.equals(that.properties.serviceName);
+        return info.serviceName.equals(that.info.serviceName);
 
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + properties.serviceName.hashCode();
+        result = 31 * result + info.serviceName.hashCode();
         return result;
     }
 }

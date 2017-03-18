@@ -1,27 +1,26 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/windowBackground"
-    android:orientation="vertical"
-    tools:context="com.aashreys.walls.ui.ImageDetailActivity">
+    android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/parent"
+    <LinearLayout
+        android:id="@+id/parent_content"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_small"
-        android:scrollbars="none"
-        tools:context="com.aashreys.walls.ui.ImageDetailFragment">
+        android:visibility="invisible">
 
-        <FrameLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:id="@+id/parent_image_info"
@@ -33,122 +32,141 @@
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:adjustViewBounds="true"
+                    android:minHeight="200dp"
                     android:scaleType="fitXY"
-                    android:visibility="invisible"/>
+                    android:src="@color/black_87p"/>
 
                 <TextView
-                    android:id="@+id/subhead_source"
-                    style="@style/Walls.Text.Subhead"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/title_source"
-                    android:visibility="invisible"/>
+                    android:id="@+id/text_title"
+                    style="@style/Walls.Text.PhotoTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_xxs"
+                    android:layout_marginLeft="@dimen/spacing_xl"
+                    android:layout_marginRight="@dimen/spacing_large"
+                    android:layout_marginTop="@dimen/spacing_xl"/>
 
                 <TextView
-                    android:id="@+id/subhead_properties"
+                    android:id="@+id/text_meta"
+                    style="@style/Walls.Text.PhotoMetaText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_xl"
+                    android:layout_marginLeft="@dimen/spacing_xl"
+                    android:layout_marginRight="@dimen/spacing_large"/>
+
+                <TextView
                     style="@style/Walls.Text.Subhead"
                     android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/title_properties"
-                    android:visibility="invisible"/>
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_stats_for_shutterbugs"/>
+
+                <TableLayout
+                    android:id="@+id/table_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_medium"
+                    android:layout_marginRight="@dimen/spacing_medium"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:stretchColumns="*"/>
 
             </LinearLayout>
 
-            <ProgressBar
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/progress_bar"
-                android:layout_width="@dimen/icon_xl"
-                android:layout_height="@dimen/icon_xl"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:orientation="vertical"/>
+        </ScrollView>
 
-        </FrameLayout>
-
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/parent_image_actions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="@color/windowBackground"
-        android:elevation="6dp"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <com.aashreys.walls.ui.views.HintView
+        <LinearLayout
+            android:id="@+id/parent_image_actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            app:hv_hint="@string/hint_image_actions"
-            app:hv_seen_key="@string/tag_hint_image_actions"/>
+            android:animateLayoutChanges="true"
+            android:background="@color/appBarBackground"
+            android:elevation="6dp"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_small"
-            android:paddingLeft="@dimen/spacing_xl"
-            android:paddingRight="@dimen/spacing_xl"
-            android:paddingTop="@dimen/spacing_small">
+            <com.aashreys.walls.ui.views.HintView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                app:hv_hint="@string/hint_image_actions"
+                app:hv_seen_key="@string/tag_hint_image_actions"/>
 
-            <ImageButton
-                android:id="@+id/button_favorite"
-                android:layout_width="@dimen/image_button_size"
-                android:layout_height="@dimen/image_button_size"
-                android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                app:srcCompat="@drawable/ic_favorite_border_black_24dp"/>
-
-            <FrameLayout
-                android:layout_width="@dimen/image_button_size"
-                android:layout_height="@dimen/image_button_size"
-                android:layout_centerInParent="true">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_small"
+                android:paddingLeft="@dimen/spacing_xl"
+                android:paddingRight="@dimen/spacing_xl"
+                android:paddingTop="@dimen/spacing_small">
 
                 <ImageButton
-                    android:id="@+id/button_share"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:id="@+id/button_favorite"
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    app:srcCompat="@drawable/ic_share_black_24dp"/>
 
-                <ProgressBar
-                    android:id="@+id/progress_share"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/transparent"
-                    android:indeterminate="true"
-                    android:padding="@dimen/spacing_small"
-                    android:visibility="gone"/>
+                    app:srcCompat="@drawable/ic_favorite_border_black_24dp"/>
 
-            </FrameLayout>
+                <FrameLayout
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
+                    android:layout_centerInParent="true">
 
-            <FrameLayout
-                android:layout_width="@dimen/image_button_size"
-                android:layout_height="@dimen/image_button_size"
-                android:layout_alignParentRight="true">
+                    <ImageButton
+                        android:id="@+id/button_share"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderlessCompat"
 
-                <ImageButton
-                    android:id="@+id/button_set_as"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    app:srcCompat="@drawable/ic_wallpaper_black_24dp"/>
+                        app:srcCompat="@drawable/ic_share_black_24dp"/>
 
-                <ProgressBar
-                    android:id="@+id/progress_set_as"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/transparent"
-                    android:indeterminate="true"
-                    android:padding="@dimen/spacing_small"
-                    android:visibility="gone"/>
+                    <ProgressBar
+                        android:id="@+id/progress_share"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:indeterminate="true"
+                        android:padding="@dimen/spacing_small"
+                        android:visibility="gone"/>
 
-            </FrameLayout>
+                </FrameLayout>
 
-        </RelativeLayout>
+                <FrameLayout
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
+                    android:layout_alignParentRight="true">
+
+                    <ImageButton
+                        android:id="@+id/button_set_as"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderlessCompat"
+                        app:srcCompat="@drawable/ic_wallpaper_black_24dp"/>
+
+                    <ProgressBar
+                        android:id="@+id/progress_set_as"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/transparent"
+                        android:indeterminate="true"
+                        android:padding="@dimen/spacing_small"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/icon_xl"
+        android:layout_height="@dimen/icon_xl"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="visible"/>
+
+</android.support.design.widget.CoordinatorLayout>

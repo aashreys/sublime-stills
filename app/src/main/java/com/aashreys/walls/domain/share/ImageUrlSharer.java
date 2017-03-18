@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.network.UrlShortener;
 import com.aashreys.walls.ui.utils.UiHandler;
@@ -24,20 +25,20 @@ public class ImageUrlSharer implements Sharer {
 
     private static final String MIME_TYPE = "text/plain";
 
+    private static final int MAX_URL_LENGTH = 40;
+
     private final UrlShortener urlShortener;
 
     private boolean isCancelled;
 
     private UiHandler uiHandler = new UiHandler();
 
-    private static final int MAX_URL_LENGTH = 40;
-
     ImageUrlSharer(@Provided UrlShortener urlShortener) {
         this.urlShortener = urlShortener;
     }
 
     @Override
-    public void share(final Context context, Image image, final Listener listener) {
+    public void share(final Context context, final Image image, final Listener listener) {
         Url imageUrl = image.getUrl(Image.UrlType.SHARE);
         if (imageUrl.value().length() > MAX_URL_LENGTH) {
             urlShortener.shorten(
@@ -46,7 +47,7 @@ public class ImageUrlSharer implements Sharer {
                         @Override
                         public void onComplete(@NonNull Url shortUrl) {
                             if (!isCancelled) {
-                                startSharingIntent(context, shortUrl);
+                                startSharingIntent(context, shortUrl, image.getInfo().title);
                                 uiHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -71,7 +72,7 @@ public class ImageUrlSharer implements Sharer {
                     }
             );
         } else {
-            startSharingIntent(context, imageUrl);
+            startSharingIntent(context, imageUrl, image.getInfo().title);
             listener.onShareComplete();
         }
     }
@@ -81,13 +82,23 @@ public class ImageUrlSharer implements Sharer {
         this.isCancelled = true;
     }
 
-    private void startSharingIntent(Context context, Url urlToShare) {
+    private void startSharingIntent(Context context, Url imageUrl, Name title) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(
-                Intent.EXTRA_TEXT,
-                context.getString(R.string.share_text_template, urlToShare.value())
-        );
+        String contentString;
+        if (title != null && title.isValid()) {
+            contentString = context.getResources().getString(
+                    R.string.share_text_template_with_title,
+                    title.value(),
+                    imageUrl.value()
+            );
+        } else {
+            contentString = context.getResources().getString(
+                    R.string.share_text_template,
+                    imageUrl.value()
+            );
+        }
+        shareIntent.putExtra(Intent.EXTRA_TEXT, contentString);
         shareIntent.setType(MIME_TYPE);
         context.startActivity(Intent.createChooser(
                 shareIntent,

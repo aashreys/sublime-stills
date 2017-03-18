@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="selectableItemBackgroundBorderlessCompat" />
+    <attr name="selectableItemBackgroundBorderlessCompat"/>
 
     <declare-styleable name="ForegroundImageView">
-        <attr name="android:foreground" />
+        <attr name="android:foreground"/>
     </declare-styleable>
 
-    <declare-styleable name="InformationRowView">
-        <attr name="irv_key" format="string" />
-        <attr name="irv_value" format="string" />
+    <declare-styleable name="InfoView">
+        <attr name="iv_key_icon" format="reference"></attr>
+        <attr name="iv_key_string" format="string"></attr>
+        <attr name="iv_value" format="string"></attr>
     </declare-styleable>
 
     <declare-styleable name="HintView">
-        <attr name="hv_hint" format="string" />
-        <attr name="hv_seen_key" format="string" />
+        <attr name="hv_hint" format="string"/>
+        <attr name="hv_seen_key" format="string"/>
     </declare-styleable>
 
 </resources>

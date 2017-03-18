@@ -7,6 +7,7 @@ import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.FlickrTag;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.network.apis.FlickrApi;
+import com.aashreys.walls.network.parsers.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,10 +47,7 @@ public class FlickrTagSearchService implements CollectionSearchService {
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 String responseString = response.body().string();
-                responseString = responseString.substring(
-                        responseString.indexOf('{'),
-                        responseString.lastIndexOf('}') + 1
-                );
+                responseString = Utils.removeFlickrResponseBrackets(responseString);
                 JSONArray tagJsonArray = new JSONObject(responseString)
                         .getJSONObject("tags")
                         .getJSONArray("tag");

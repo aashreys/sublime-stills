@@ -21,12 +21,12 @@ public class ImageCacheImpl implements ImageCache {
 
     @Override
     public void add(Image image) {
-        imageMap.put(_getKey(image.getProperties().serviceName, image.getId()), image);
+        imageMap.put(_getKey(image.getInfo().serviceName, image.getId()), image);
     }
 
     @Override
     public void remove(Image image) {
-        imageMap.remove(_getKey(image.getProperties().serviceName, image.getId()));
+        imageMap.remove(_getKey(image.getInfo().serviceName, image.getId()));
     }
 
     @Override

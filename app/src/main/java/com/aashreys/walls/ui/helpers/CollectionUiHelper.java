@@ -17,7 +17,7 @@ public class CollectionUiHelper {
             case Collection.Type.FAVORITE:
                 return R.drawable.ic_favorite_black_24dp;
             default:
-                return R.drawable.ic_unsplash_logo_black_24dp;
+                return R.drawable.ic_camera_black_24dp;
         }
     }
 

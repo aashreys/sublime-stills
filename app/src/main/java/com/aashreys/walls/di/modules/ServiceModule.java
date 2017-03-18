@@ -4,12 +4,15 @@ import com.aashreys.walls.domain.display.collections.search.CollectionSearchServ
 import com.aashreys.walls.domain.display.collections.search.CollectionSearchServiceImpl;
 import com.aashreys.walls.domain.display.collections.search.FlickrTagSearchService;
 import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
-import com.aashreys.walls.domain.display.images.ImagePropertiesService;
-import com.aashreys.walls.domain.display.images.ImagePropertiesServiceImpl;
+import com.aashreys.walls.domain.display.images.ImageInfoService;
+import com.aashreys.walls.domain.display.images.ImageInfoServiceImpl;
 import com.aashreys.walls.network.UrlShortener;
 import com.aashreys.walls.network.UrlShortenerImpl;
 import com.aashreys.walls.network.apis.FlickrApi;
+import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.apis.UrlShortenerApi;
+import com.aashreys.walls.network.parsers.FlickrExifParser;
+import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
 import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
 import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
@@ -24,9 +27,9 @@ import dagger.Provides;
  */
 
 @Module
-public class UtilsModule {
+public class ServiceModule {
 
-    public UtilsModule() {}
+    public ServiceModule() {}
 
     @Provides
     public UnsplashPhotoResponseParser providesUnsplashImageResponseParser() {
@@ -48,8 +51,18 @@ public class UtilsModule {
     }
 
     @Provides
-    public ImagePropertiesService providesImagePropertiesService(FlickrApi flickrApi) {
-        return new ImagePropertiesServiceImpl(flickrApi);
+    public ImageInfoService providesImagePropertiesService(
+            UnsplashApi unsplashApi,
+            FlickrApi flickrApi,
+            UnsplashPhotoInfoParser unsplashPhotoInfoParser,
+            FlickrExifParser flickrExifParser
+    ) {
+        return new ImageInfoServiceImpl(
+                unsplashApi,
+                flickrApi,
+                unsplashPhotoInfoParser,
+                flickrExifParser
+        );
     }
 
     @Provides

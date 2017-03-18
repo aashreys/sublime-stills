@@ -88,6 +88,7 @@
         app:headerLayout="@layout/drawer_header_layout"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
+        android:background="@color/navigationDrawerBackground"
         app:menu="@menu/drawer">
 
         <TextView

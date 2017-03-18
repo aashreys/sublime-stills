@@ -14,7 +14,6 @@ import retrofit2.Retrofit;
 
 /**
  * A class for creating implementations of Retrofit api interfaces.
- * <p>
  * Created by aashreys on 04/03/17.
  */
 
@@ -25,7 +24,7 @@ public class ApiInstanceCreator {
     public UnsplashApi createUnsplashApi(OkHttpClient client, String baseUrl) {
         return new Retrofit.Builder()
                 .client(client.newBuilder()
-                        .addNetworkInterceptor(new Interceptor() {
+                        .addInterceptor(new Interceptor() {
                             @Override
                             public Response intercept(Chain chain) throws IOException {
                                 Request originalRequest = chain.request();
@@ -41,7 +40,25 @@ public class ApiInstanceCreator {
                                         .build();
                                 return chain.proceed(requestWithHeaders);
                             }
-                        }).build())
+                        })
+                        .addNetworkInterceptor(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Request request = chain.request();
+                                Response response = chain.proceed(request);
+                                return response.newBuilder().header(
+                                        "Cache-Control",
+                                        "public, " +
+                                                (request.url()
+                                                        .toString()
+                                                        .contains("photos/") ?
+                                                        UnsplashApi.PHOTO_INFO_CACHE_DURATION :
+                                                        UnsplashApi.GENERAL_CACHE_DURATION
+                                                )
+                                ).build();
+                            }
+                        })
+                        .build())
                 .validateEagerly(true)
                 .baseUrl(baseUrl)
                 .build()

@@ -3,10 +3,14 @@ package com.aashreys.walls.domain.display.images;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
+import com.aashreys.walls.domain.display.images.info.ImageInfo;
+import com.aashreys.walls.domain.display.images.info.Location;
 import com.aashreys.walls.domain.display.images.utils.FlickrBaseEncoder;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
+
+import java.util.Date;
 
 /**
  * Created by aashreys on 02/03/17.
@@ -22,16 +26,24 @@ public class FlickrImage implements Image {
         public FlickrImage[] newArray(int size) {return new FlickrImage[size];}
     };
 
-    // Order of args: farm_id, server_id, id, secret, size
-    private static final String URL_TEMPLATE =
-            "https://farm%s.staticflickr.com/%s/%s_%s_%s.jpg";
-
-    // Arg: Base58 encoded id
-    private static final String SHARE_URL_TEMPLATE = "https://flic.kr/p/%s/";
-
     public static final Name SERVICE_NAME = new Name("Flickr");
 
     public static final Url SERVICE_URL = new Url("https://flickr.com");
+
+    // Order of args: farm_id, server_id, id, secret, size
+    private static final String IMAGE_URL_TEMPLATE =
+            "https://farm%s.staticflickr.com/%s/%s_%s_%s.jpg";
+
+    // Arg: Base58 encoded photo id
+    private static final String IMAGE_SHARE_URL_TEMPLATE = "https://flic.kr/p/%s/";
+
+    // Arg: User id
+    private static final String USER_PROIFLE_URL_TEMPLATE =
+            "https://www.flickr.com/people/%s/";
+
+    // Arg: User id
+    private static final String USER_PHOTOSTREAM_URL_TEMPLATE =
+            "https://www.flickr.com/photos/%s/";
 
     private final Id id;
 
@@ -41,17 +53,35 @@ public class FlickrImage implements Image {
 
     private final Id secret;
 
-    private final Properties properties;
+    private final ImageInfo info;
 
-    public FlickrImage(Id id, Id ownerId, Id serverId, Id farmId, Id secret) {
+    public FlickrImage(
+            Id id,
+            Id ownerId,
+            Id serverId,
+            Id farmId,
+            Id secret,
+            Name title,
+            Name userName,
+            Date createdAt,
+            Location location
+    ) {
         this.id = id;
         this.serverId = serverId;
         this.farmId = farmId;
         this.secret = secret;
-        properties = new Properties(SERVICE_NAME);
-        properties.userId = ownerId;
-        properties.serviceUrl = SERVICE_URL;
-
+        info = new ImageInfo(SERVICE_NAME);
+        info.title = title;
+        info.userRealName = userName;
+        info.createdAt = createdAt;
+        info.userId = ownerId;
+        info.userProfileUrl = new Url(String.format(USER_PROIFLE_URL_TEMPLATE, ownerId.value()));
+        info.userPortfolioUrl = new Url(String.format(
+                USER_PHOTOSTREAM_URL_TEMPLATE,
+                ownerId.value()
+        ));
+        info.serviceUrl = SERVICE_URL;
+        info.location = location;
     }
 
     private FlickrImage(Parcel in) {
@@ -59,7 +89,7 @@ public class FlickrImage implements Image {
         this.serverId = in.readParcelable(Id.class.getClassLoader());
         this.farmId = in.readParcelable(Id.class.getClassLoader());
         this.secret = in.readParcelable(Id.class.getClassLoader());
-        this.properties = in.readParcelable(Properties.class.getClassLoader());
+        this.info = in.readParcelable(ImageInfo.class.getClassLoader());
     }
 
     @NonNull
@@ -75,7 +105,7 @@ public class FlickrImage implements Image {
 
             case UrlType.IMAGE_STREAM:
                 return new Url(String.format(
-                        URL_TEMPLATE,
+                        IMAGE_URL_TEMPLATE,
                         farmId.value(),
                         serverId.value(),
                         id.value(),
@@ -86,7 +116,7 @@ public class FlickrImage implements Image {
             case UrlType.IMAGE_DETAIL:
             case UrlType.SET_AS:
                 return new Url(String.format(
-                        URL_TEMPLATE,
+                        IMAGE_URL_TEMPLATE,
                         farmId.value(),
                         serverId.value(),
                         id.value(),
@@ -96,7 +126,7 @@ public class FlickrImage implements Image {
 
             case UrlType.SHARE:
                 return new Url(String.format(
-                        SHARE_URL_TEMPLATE,
+                        IMAGE_SHARE_URL_TEMPLATE,
                         FlickrBaseEncoder.encode(Long.valueOf(id.value()))
                 ));
 
@@ -106,9 +136,8 @@ public class FlickrImage implements Image {
     }
 
     @NonNull
-    @Override
-    public Properties getProperties() {
-        return properties;
+    public ImageInfo getInfo() {
+        return info;
     }
 
     @Override
@@ -136,6 +165,6 @@ public class FlickrImage implements Image {
         dest.writeParcelable(this.serverId, flags);
         dest.writeParcelable(this.farmId, flags);
         dest.writeParcelable(this.secret, flags);
-        dest.writeParcelable(this.properties, flags);
+        dest.writeParcelable(this.info, flags);
     }
 }

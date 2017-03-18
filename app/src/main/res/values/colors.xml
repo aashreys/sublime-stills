@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--theme colors-->
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/white</color>
-    <color name="colorAccent">@color/black</color>
-    <color name="statusBarBackground">#F5F5F5</color>
-    <color name="toolbarBackground">#F5F5F5</color>
+    <color name="colorAccent">@color/black_87p</color>
+    <color name="appBarBackground">@color/white</color>
+    <color name="toolbarBackground">@color/white</color>
+    <color name="navigationDrawerBackground">@color/white</color>
     <color name="windowBackground">#FAFAFA</color>
     <color name="dialogBackground">@color/white</color>
+    <color name="textColorPrimary">@color/black_87p</color>
+    <color name="textColorSecondary">@color/black_54p</color>
+    <color name="iconColorDarkActive">@color/black_87p</color>
+    <color name="iconColorDarkInactive">@color/black_26p</color>
+    <color name="iconColorLightActive">@color/white</color>
+    <color name="iconColorLightInactive">@color/white_30p</color>
 
+    <!--palette-->
     <color name="white">#FFFFFF</color>
+    <color name="white_30p">#4CFFFFFF</color>
     <color name="black">#000000</color>
-    <color name="black_84p">#D6000000</color>
-    <color name="black_60p">#99000000</color>
+    <color name="black_87p">#DE000000</color>
     <color name="black_54p">#8A000000</color>
-    <color name="black_05p">#0B000000</color>
+    <color name="black_26p">#42000000</color>
     <color name="transparent">#00000000</color>
 
 </resources>

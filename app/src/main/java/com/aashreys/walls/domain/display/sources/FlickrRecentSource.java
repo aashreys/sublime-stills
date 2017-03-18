@@ -6,6 +6,7 @@ import com.aashreys.walls.Config;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.network.apis.FlickrApi;
 import com.aashreys.walls.network.parsers.FlickrPhotoArrayParser;
+import com.aashreys.walls.network.parsers.Utils;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -47,6 +48,7 @@ public class FlickrRecentSource implements Source {
     @Override
     public List<Image> getImages(int fromIndex) {
         Call<ResponseBody> call = flickrApi.getInterestingPhotos(
+                FlickrApi.PHOTO_EXTRAS,
                 UiHelper.getPageNumber(fromIndex, Config.Flickr.ITEMS_PER_PAGE),
                 Config.Flickr.ITEMS_PER_PAGE
         );
@@ -54,10 +56,7 @@ public class FlickrRecentSource implements Source {
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 String responseString = response.body().string();
-                responseString = responseString.substring(
-                        responseString.indexOf("{"),
-                        responseString.lastIndexOf("}") + 1
-                );
+                responseString = Utils.removeFlickrResponseBrackets(responseString);
                 JSONObject jsonObject = new JSONObject(responseString).getJSONObject(
                         "photos");
                 JSONArray jsonPhotoArray = jsonObject.getJSONArray("photo");

@@ -8,6 +8,7 @@
     <dimen name="spacing_xxl">48dp</dimen>
     <dimen name="spacing_xxxl">72dp</dimen>
 
+    <dimen name="height_xs">36dp</dimen>
     <dimen name="height_small">48dp</dimen>
     <dimen name="height_medium">56dp</dimen>
     <dimen name="height_large">72dp</dimen>
@@ -16,9 +17,13 @@
     <dimen name="font_xs">12sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_medium">16sp</dimen>
-    <dimen name="font_large">18sp</dimen>
-    <dimen name="font_xl">22sp</dimen>
+    <dimen name="font_large">20sp</dimen>
+    <dimen name="font_xl">24sp</dimen>
+    <dimen name="font_xxl">28sp</dimen>
+    <dimen name="font_xxxl">36sp</dimen>
 
+    <dimen name="icon_xxs">14dp</dimen>
+    <dimen name="icon_xs">16dp</dimen>
     <dimen name="icon_small">18dp</dimen>
     <dimen name="icon_medium">24dp</dimen>
     <dimen name="icon_large">32dp</dimen>

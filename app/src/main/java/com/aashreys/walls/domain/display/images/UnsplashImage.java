@@ -3,6 +3,7 @@ package com.aashreys.walls.domain.display.images;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
+import com.aashreys.walls.domain.display.images.info.ImageInfo;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
@@ -30,9 +31,9 @@ public final class UnsplashImage implements Image {
 
     private static final String SET_AS_URL_OPTIONS = "?q=80&cs=tinysrgb&fm=jpg&w=1080&fit=max";
 
-    private static final Name serviceName = new Name("Unsplash");
+    public static final Name SERVICE_NAME = new Name("Unsplash");
 
-    private static final Url serviceUrl = new Url("https://unsplash.com");
+    public static final Url SERVICE_URL = new Url("https://unsplash.com");
 
     // Valid fields
     @NonNull private final Id id;
@@ -41,7 +42,7 @@ public final class UnsplashImage implements Image {
 
     @NonNull private final Url imageShareUrl;
 
-    private final Properties properties;
+    private final ImageInfo info;
 
     public UnsplashImage(
             @NonNull Id id,
@@ -58,22 +59,22 @@ public final class UnsplashImage implements Image {
         this.id = id;
         this.rawImageUrl = rawImageUrl;
         this.imageShareUrl = imageShareUrl;
-        this.properties = new Properties(serviceName);
-        this.properties.resX = resX;
-        this.properties.resY = resY;
-        this.properties.createdAt = createdAt;
-        this.properties.userId = userId;
-        this.properties.userRealName = userRealName;
-        this.properties.userProfileUrl = userProfileUrl;
-        this.properties.userPortfolioUrl = userPortfolioUrl;
-        this.properties.serviceUrl = serviceUrl;
+        this.info = new ImageInfo(SERVICE_NAME);
+        this.info.resX = resX;
+        this.info.resY = resY;
+        this.info.createdAt = createdAt;
+        this.info.userId = userId;
+        this.info.userRealName = userRealName;
+        this.info.userProfileUrl = userProfileUrl;
+        this.info.userPortfolioUrl = userPortfolioUrl;
+        this.info.serviceUrl = SERVICE_URL;
     }
 
     private UnsplashImage(Parcel in) {
         this.id = in.readParcelable(Id.class.getClassLoader());
         this.rawImageUrl = in.readParcelable(Url.class.getClassLoader());
         this.imageShareUrl = in.readParcelable(Url.class.getClassLoader());
-        this.properties = in.readParcelable(Properties.class.getClassLoader());
+        this.info = in.readParcelable(ImageInfo.class.getClassLoader());
     }
 
     @NonNull
@@ -102,9 +103,8 @@ public final class UnsplashImage implements Image {
     }
 
     @NonNull
-    @Override
-    public Properties getProperties() {
-        return properties;
+    public ImageInfo getInfo() {
+        return info;
     }
 
     @Override
@@ -115,7 +115,7 @@ public final class UnsplashImage implements Image {
         dest.writeParcelable(this.id, flags);
         dest.writeParcelable(this.rawImageUrl, flags);
         dest.writeParcelable(this.imageShareUrl, flags);
-        dest.writeParcelable(this.properties, flags);
+        dest.writeParcelable(this.info, flags);
     }
 
     @Override

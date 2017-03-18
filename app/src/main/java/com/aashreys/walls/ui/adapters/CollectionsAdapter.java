@@ -72,7 +72,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
                     onDragStarted(holder);
                 }
-                return false;
+                return true;
             }
         }, onCollectionClickListener);
     }

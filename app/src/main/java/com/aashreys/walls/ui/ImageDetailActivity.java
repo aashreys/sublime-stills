@@ -3,12 +3,13 @@ package com.aashreys.walls.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.transition.Fade;
 import android.support.transition.TransitionManager;
-import android.util.Log;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.ImagePropertiesService;
+import com.aashreys.walls.domain.display.images.ImageInfoService;
+import com.aashreys.walls.domain.display.images.info.Exif;
+import com.aashreys.walls.domain.display.images.info.Location;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.domain.share.Sharer;
 import com.aashreys.walls.domain.share.SharerFactory;
@@ -32,7 +37,7 @@ import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.helpers.ChromeTabHelper;
-import com.aashreys.walls.ui.views.InformationRowView;
+import com.aashreys.walls.ui.views.InfoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -40,7 +45,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -60,7 +67,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Inject FavoriteImageRepository favoriteImageRepository;
 
-    @Inject ImagePropertiesService imagePropertiesService;
+    @Inject ImageInfoService imageInfoService;
 
     @Inject ImageCache imageCache;
 
@@ -75,20 +82,22 @@ public class ImageDetailActivity extends BaseActivity {
 
     private ImageButton favoriteButton, setAsButton, shareButton;
 
-    private ViewGroup imageActionsParent;
-
-    private LinearLayout imageInfoParent;
-
-    private boolean isImageLoaded, isPropertiesLoaded;
+    private boolean isImageLoaded, isInfoLoaded;
 
     private ProgressBar progressBar;
 
-    private ScrollView parentView;
+    private ViewGroup contentParent;
+
+    private TextView titleText, metaText;
+
+    private TableLayout infoTable;
+
+    private int infoViewHeight;
 
     public static Intent createLaunchIntent(Context context, Image image) {
         Intent intent = new Intent(context, ImageDetailActivity.class);
         intent.putExtra(ARG_IMAGE_ID, image.getId().value());
-        intent.putExtra(ARG_IMAGE_SERVICE_NAME, image.getProperties().serviceName.value());
+        intent.putExtra(ARG_IMAGE_SERVICE_NAME, image.getInfo().serviceName.value());
         return intent;
     }
 
@@ -100,11 +109,15 @@ public class ImageDetailActivity extends BaseActivity {
         if (image != null) {
             setContentView(R.layout.activity_image_detail);
             this.image = image;
-            parentView = (ScrollView) findViewById(R.id.parent);
+            contentParent = (ViewGroup) findViewById(R.id.parent_content);
             imageView = (ImageView) findViewById(R.id.image);
-            imageInfoParent = (LinearLayout) findViewById(R.id.parent_image_info);
             progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-            imageActionsParent = (ViewGroup) findViewById(R.id.parent_image_actions);
+            infoTable = (TableLayout) findViewById(R.id.table_info);
+
+            titleText = (TextView) findViewById(R.id.text_title);
+            metaText = (TextView) findViewById(R.id.text_meta);
+
+            infoViewHeight = getResources().getDimensionPixelSize(R.dimen.height_small);
 
             final boolean isFavorite = favoriteImageRepository.isFavorite(image);
             favoriteButton = (ImageButton) findViewById(R.id.button_favorite);
@@ -194,8 +207,9 @@ public class ImageDetailActivity extends BaseActivity {
                                 Target<GlideDrawable> target,
                                 boolean isFirstResource
                         ) {
+                            LogWrapper.i(TAG, "Error loading image, finishing", e);
                             finish();
-                            return false;
+                            return true;
                         }
 
                         @Override
@@ -206,7 +220,7 @@ public class ImageDetailActivity extends BaseActivity {
                                 boolean isFromMemoryCache,
                                 boolean isFirstResource
                         ) {
-                            isImageLoaded = true;
+
                             imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                                 @Override
                                 public void onLayoutChange(
@@ -220,16 +234,7 @@ public class ImageDetailActivity extends BaseActivity {
                                         int oldRight,
                                         int oldBottom
                                 ) {
-                                    Log.d(
-                                            TAG,
-                                            String.format(
-                                                    "View dimensions: %d %d %d %d",
-                                                    left,
-                                                    top,
-                                                    right,
-                                                    bottom
-                                            )
-                                    );
+                                    isImageLoaded = true;
                                     imageView.removeOnLayoutChangeListener(this);
                                     showView();
                                 }
@@ -239,12 +244,12 @@ public class ImageDetailActivity extends BaseActivity {
                     })
                     .into(imageView);
 
-            imagePropertiesService.addProperties(image, new ImagePropertiesService.Listener() {
+            imageInfoService.addInfo(image, new ImageInfoService.Listener() {
                 @Override
                 public void onComplete(Image imageWithProperties) {
-                    isPropertiesLoaded = true;
-                    addSourceInfo(image, imageInfoParent);
-                    addPropertiesInfo(image, imageInfoParent);
+                    displayHeader();
+                    displayInfo();
+                    isInfoLoaded = true;
                     showView();
                 }
             });
@@ -254,141 +259,202 @@ public class ImageDetailActivity extends BaseActivity {
         }
     }
 
+    private void displayInfo() {
+        int infoColumns = getResources().getInteger(R.integer.image_info_column_count);
+        List<Pair<Value, Integer>> infoList = new ArrayList<>();
+
+        Date createdAt = image.getInfo().createdAt;
+        if (createdAt != null) {
+            putValueIconPair(
+                    infoList,
+                    new Name(getFormattedDate(createdAt)),
+                    R.drawable.ic_date_black_24dp
+            );
+        }
+
+        Location location = image.getInfo().location;
+        if (location != null) {
+            Name locationName;
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            if (location.getName() != null) {
+                locationName = location.getName();
+            } else if (latitude != 0 || longitude != 0) {
+                locationName = new Name(latitude + ", " + longitude);
+            } else {
+                locationName = new Name(getString(R.string.title_location_elsweyr));
+            }
+            putValueIconPair(infoList, locationName, R.drawable.ic_location_pin_black_24dp);
+        }
+
+        Pixel resX = image.getInfo().resX;
+        Pixel resY = image.getInfo().resY;
+        if (resX != null && resX.isValid() && resY != null && resY.isValid()) {
+            putValueIconPair(
+                    infoList,
+                    new Name(formatResolution(resX.value(), resY.value())),
+                    R.drawable.ic_dimensions_black_24dp
+            );
+        }
+
+        if (image.getInfo().exif != null) {
+            Exif exif = image.getInfo().exif;
+            putValueIconPair(infoList, exif.camera, R.drawable.ic_camera_black_24dp);
+            putValueIconPair(infoList, exif.aperture, R.drawable.ic_aperture_black_24dp);
+            putValueIconPair(infoList, exif.exposureTime, R.drawable.ic_exposure_time_black_24dp);
+            putValueIconPair(infoList, exif.focalLength, R.drawable.ic_focus_black_24dp);
+            putValueIconPair(infoList, exif.iso, R.drawable.ic_iso_black_24dp);
+        }
+
+        TableRow tableRow = null;
+        for (int i = 0; i < infoList.size(); i++) {
+            int columnPosition = i % infoColumns;
+            if (columnPosition == 0) {
+                tableRow = new TableRow(this);
+                infoTable.addView(tableRow);
+            }
+            InfoView infoView = addInfoView(tableRow, columnPosition, infoColumns);
+            Pair<Value, Integer> infoPair = infoList.get(i);
+            infoView.setInfoWithIcon(infoPair.second, String.valueOf(infoPair.first.value()));
+        }
+    }
+
+    private InfoView addInfoView(TableRow row, int columnPosition, int numColumns) {
+        InfoView infoView = (InfoView) LayoutInflater.from(this).inflate(
+                R.layout.view_info,
+                row,
+                false
+        );
+        TableRow.LayoutParams params = new TableRow.LayoutParams(0, infoViewHeight, 1);
+        int margin = getResources().getDimensionPixelSize(R.dimen.spacing_small);
+        if (columnPosition == 0) {
+            params.setMargins(0, 0, margin, 0);
+        } else if (columnPosition == numColumns - 1) {
+            params.setMargins(margin, 0, 0, 0);
+        } else {
+            params.setMargins(margin, 0, margin, 0);
+        }
+        row.addView(infoView, params);
+        return infoView;
+
+    }
+
+    private void putValueIconPair(List<Pair<Value, Integer>> target, Value value, int icon) {
+        if (value != null && value.isValid()) {
+            target.add(new Pair<>(value, icon));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (image != null && isFinishing()) {
+            imageCache.remove(image);
+        }
+    }
+
     private void showView() {
-        if (isImageLoaded) {
+        if (isImageLoaded && isInfoLoaded) {
+            TransitionManager.beginDelayedTransition(contentParent, new Fade());
             progressBar.setVisibility(View.INVISIBLE);
-            imageView.setVisibility(View.VISIBLE);
-            if (isPropertiesLoaded) {
-                for (int i = 0; i < imageInfoParent.getChildCount(); i++) {
-                    imageInfoParent.getChildAt(i).setVisibility(View.VISIBLE);
-                }
-                imageActionsParent.setVisibility(View.VISIBLE);
-            }
-            TransitionManager.beginDelayedTransition(parentView, new Fade());
+            contentParent.setVisibility(View.VISIBLE);
         }
     }
 
-    private void addSourceInfo(Image image, ViewGroup parent) {
-        int sourceSubheadIndex = parent.indexOfChild(parent.findViewById(R.id.subhead_source));
-        if (sourceSubheadIndex != -1) {
-            int currentIndex = sourceSubheadIndex + 1;
-            Name userRealName = image.getProperties().userRealName;
-            Url userProfileUrl = image.getProperties().userProfileUrl;
-            if (userRealName != null) {
-                parent.addView(getInfoWithLink(
-                        parent,
-                        R.string.title_info_photographer,
-                        userRealName.value(),
-                        Value.getNullableValue(userProfileUrl),
-                        View.INVISIBLE
-                ), currentIndex);
-                currentIndex += 1;
-            }
-            Url userPortfolioUrl = image.getProperties().userPortfolioUrl;
-            if (userPortfolioUrl != null) {
-                parent.addView(getInfoWithLink(
-                        parent,
-                        R.string.title_info_portfolio,
-                        userPortfolioUrl.value(),
-                        userPortfolioUrl.value(),
-                        View.INVISIBLE
-                ), currentIndex);
-                currentIndex += 1;
-            }
-            Name serviceName = image.getProperties().serviceName;
-            Url serviceUrl = image.getProperties().serviceUrl;
-            if (serviceName != null) {
-                parent.addView(getInfoWithLink(
-                        parent,
-                        R.string.title_info_service,
-                        serviceName.value(),
-                        Value.getNullableValue(serviceUrl),
-                        View.INVISIBLE
-                ), currentIndex);
-                currentIndex += 1;
-            }
+    private void displayHeader() {
+        Name title = image.getInfo().title;
+        Name userName = image.getInfo().userRealName;
+        Name serviceName = image.getInfo().serviceName;
+        final Url userProfileUrl = image.getInfo().userProfileUrl;
+        final Url userPortfolioUrl = image.getInfo().userPortfolioUrl;
+        final Url serviceUrl = image.getInfo().serviceUrl;
+
+        if (title != null && title.isValid()) {
+            titleText.setText(title.value());
+        } else {
+            titleText.setVisibility(View.GONE);
         }
+
+        if (titleText.getVisibility() == View.GONE) {
+            LinearLayout.LayoutParams params =
+                    (LinearLayout.LayoutParams) metaText.getLayoutParams();
+            params.setMargins(
+                    params.leftMargin,
+                    getResources().getDimensionPixelSize(R.dimen.spacing_xl),
+                    params.rightMargin,
+                    params.bottomMargin
+            );
+            metaText.setLayoutParams(params);
+        }
+
+        String metaString;
+        SpannableString spannableString;
+        if (userName != null && userName.isValid()) {
+            metaString = getString(
+                    R.string.title_photo_by,
+                    userName.value() + " / " + serviceName.value()
+            );
+            spannableString = new SpannableString(metaString);
+
+            if ((userProfileUrl != null && userProfileUrl.isValid()) ||
+                    (userPortfolioUrl != null && userPortfolioUrl.isValid())) {
+                int indexUserNameStart = metaString.indexOf(userName.value());
+                int indexUserNameEnd = indexUserNameStart + userName.value().length();
+                spannableString.setSpan(
+                        new ClickableSpan() {
+                            @Override
+                            public void onClick(View widget) {
+                                if (userPortfolioUrl != null && userPortfolioUrl.isValid()) {
+                                    ChromeTabHelper.openUrl(
+                                            ImageDetailActivity.this,
+                                            userPortfolioUrl.value()
+                                    );
+                                } else {
+                                    ChromeTabHelper.openUrl(
+                                            ImageDetailActivity.this,
+                                            userProfileUrl.value()
+                                    );
+                                }
+                            }
+                        },
+                        indexUserNameStart,
+                        indexUserNameEnd,
+                        0
+                );
+            }
+        } else {
+            metaString = getString(R.string.title_photo_by, serviceName.value());
+            spannableString = new SpannableString(metaString);
+        }
+
+        if (serviceUrl != null && serviceUrl.isValid()) {
+            int indexServiceNameStart = metaString.indexOf(serviceName.value());
+            int indexServiceNameEnd = indexServiceNameStart + serviceName.value().length();
+            spannableString.setSpan(
+                    new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            ChromeTabHelper.openUrl(
+                                    ImageDetailActivity.this,
+                                    serviceUrl.value()
+                            );
+                        }
+                    },
+                    indexServiceNameStart,
+                    indexServiceNameEnd,
+                    0
+            );
+        }
+        metaText.setText(spannableString);
+        metaText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void addPropertiesInfo(Image image, ViewGroup parent) {
-        int propertiesSubheadIndex =
-                parent.indexOfChild(parent.findViewById(R.id.subhead_properties));
-        if (propertiesSubheadIndex != -1) {
-            int currentIndex = propertiesSubheadIndex + 1;
-            Pixel resX, resY;
-            resX = image.getProperties().resX;
-            resY = image.getProperties().resY;
-            if (resX != null && resY != null) {
-                //noinspection ConstantConditions
-                parent.addView(getInfoWithLink(
-                        parent,
-                        R.string.title_info_resolution,
-                        formatResolution(resX.value(), resY.value()),
-                        null,
-                        View.INVISIBLE
-                ), currentIndex);
-                currentIndex += 1;
-            }
-            Date createdAt = image.getProperties().createdAt;
-            if (createdAt != null) {
-                parent.addView(getInfoWithLink(
-                        parent,
-                        R.string.title_info_captured_on,
-                        SimpleDateFormat.getDateInstance().format(createdAt),
-                        null,
-                        View.INVISIBLE
-                ), currentIndex);
-                currentIndex += 1;
-            }
-        }
+    private String getFormattedDate(Date date) {
+        return SimpleDateFormat.getDateInstance().format(date);
     }
 
     private String formatResolution(int resX, int resY) {
         return getString(R.string.resolution_formatted_string, resX, resY);
-    }
-
-    private InformationRowView getInfoView(
-            ViewGroup parent,
-            @StringRes int key,
-            String value,
-            @Nullable @DrawableRes Integer actionDrawable,
-            @Nullable View.OnClickListener listener
-    ) {
-        InformationRowView
-                view = (InformationRowView) LayoutInflater.from(this)
-                .inflate(
-                        R.layout.item_image_information_view,
-                        parent,
-                        false
-                );
-        view.setKey(key);
-        view.setValue(value);
-        view.setAction(actionDrawable, listener);
-        return view;
-    }
-
-    private InformationRowView getInfoWithLink(
-            ViewGroup parent,
-            @StringRes int key,
-            String value,
-            @Nullable final String url,
-            int visibility
-    ) {
-        //noinspection ResourceType
-        InformationRowView informationRowView = getInfoView(
-                parent,
-                key,
-                value,
-                url != null ? R.drawable.ic_open_in_browser_black_24dp : null,
-                url != null ? new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ChromeTabHelper.openUrl(ImageDetailActivity.this, url);
-                    }
-                } : null
-        );
-        informationRowView.setVisibility(visibility);
-        return informationRowView;
     }
 
     @Nullable
@@ -399,14 +465,6 @@ public class ImageDetailActivity extends BaseActivity {
             return imageCache.get(serviceName, imageId);
         } else {
             return null;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (image != null && isFinishing()) {
-            imageCache.remove(image);
         }
     }
 }

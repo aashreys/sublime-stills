@@ -9,12 +9,15 @@
     <string name="title_menu_settings">Settings</string>
     <string name="title_menu_about">About</string>
 
-    <string name="title_source">Source</string>
-    <string name="title_properties">Properties</string>
+    <string name="title_stats_for_shutterbugs">Stats for Shutterbugs</string>
 
-    <string name="title_info_photographer">Photo By</string>
-    <string name="title_info_service">Service</string>
-    <string name="title_info_portfolio">Portfolio</string>
+    <string name="title_photo_by">Photo by %s</string>
+
+    <string name="title_info_user_profile">Profile</string>
+    <string name="title_info_user_profile_with_name">%s\'s Profile</string>
+    <string name="title_info_hosted_by">Hosted By</string>
+    <string name="title_info_portfolio_with_name">%s\'s Photos</string>
+    <string name="title_info_portfolio">Photos</string>
     <string name="title_info_resolution">Resolution</string>
     <string name="title_info_captured_on">Created On</string>
 
@@ -23,8 +26,9 @@
 
     <string name="resolution_formatted_string">%1$d x %2$d</string>
 
-    <string name="share_title">Share via</string>
-    <string name="share_text_template">See %1$s. Shared via Walls.</string>
+    <string name="share_title">Share with</string>
+    <string name="share_text_template_with_title">See "%1$s" - "%2$s". Shared via Walls.</string>
+    <string name="share_text_template">See "%1$s". Shared via Walls.</string>
     <string name="share_set_as_title">Set as</string>
 
     <string name="action_add">Add</string>
@@ -32,6 +36,8 @@
     <string name="action_search">Search</string>
     <string name="action_try_again">Try Again</string>
     <string name="action_undo">Undo</string>
+
+    <string name="title_location_elsweyr">Elsweyr, Tamriel</string>
 
     <string name="hint_collection_name">cat, food, nature, nasa…</string>
 

@@ -3,7 +3,7 @@ package com.aashreys.walls.di;
 import com.aashreys.walls.di.modules.ApplicationModule;
 import com.aashreys.walls.di.modules.FactoryModule;
 import com.aashreys.walls.di.modules.RepositoryModule;
-import com.aashreys.walls.di.modules.UtilsModule;
+import com.aashreys.walls.di.modules.ServiceModule;
 import com.aashreys.walls.di.scopes.UiScoped;
 import com.aashreys.walls.ui.AddCollectionDialog;
 import com.aashreys.walls.ui.CollectionsActivity;
@@ -25,7 +25,7 @@ import dagger.Subcomponent;
         ApplicationModule.class,
         RepositoryModule.class,
         FactoryModule.class,
-        UtilsModule.class
+        ServiceModule.class
 })
 public interface UiComponent {
 

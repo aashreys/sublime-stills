@@ -123,7 +123,6 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         recyclerView.setAdapter(adapter);
         adapter.setLoadingCallback(this);
         setCollection(collectionProvider.getCollection(getArguments().getInt(ARG_POSITION)));
-        // Start listening to scrolling load requests after we have queued the initial data to load
 
         return view;
     }

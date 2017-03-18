@@ -22,7 +22,7 @@ public class WallsDatabase {
 
     public static final String NAME = "walls_database";
 
-    public static final int VERSION = 3;
+    public static final int VERSION = 4;
 
     @Migration(version = 2, database = WallsDatabase.class)
     public static class Migration2 extends BaseMigration {

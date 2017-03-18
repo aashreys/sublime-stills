@@ -87,7 +87,7 @@ public class CollectionView extends LinearLayout {
         titleText.setText(WordUtils.capitalizeFully(collection.getName().value()));
         iconImage.setImageResource(getIconForCollectionType(collection.getType()));
         removeButton.setImageResource(collection.isRemovable() ? R.drawable.ic_delete_black_24dp
-                : R.drawable.ic_delete_light_24dp);
+                : R.drawable.ic_delete_black_inactive_24dp);
         removeButton.setEnabled(collection.isRemovable());
     }
 

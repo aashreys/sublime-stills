@@ -91,7 +91,7 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
         return SQLite.select()
                 .from(FavoriteImageModel.class)
                 .where(FavoriteImageModel_Table.id.is(image.getId().value()))
-                .and(FavoriteImageModel_Table.serviceName.is(image.getProperties().serviceName
+                .and(FavoriteImageModel_Table.serviceName.is(image.getInfo().serviceName
                         .value()))
                 .querySingle();
     }

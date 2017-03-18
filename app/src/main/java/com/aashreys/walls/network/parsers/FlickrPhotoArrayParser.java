@@ -3,6 +3,7 @@ package com.aashreys.walls.network.parsers;
 import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.FlickrImage;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.display.images.info.Location;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 
@@ -10,7 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,6 +24,9 @@ import javax.inject.Inject;
  */
 
 public class FlickrPhotoArrayParser {
+
+    private final static SimpleDateFormat DATE_PARSER
+            = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private static final String TAG = FlickrPhotoArrayParser.class.getSimpleName();
 
@@ -41,18 +48,28 @@ public class FlickrPhotoArrayParser {
     }
 
     private FlickrImage _parse(JSONObject photoJson) throws JSONException {
+        Name userName = null;
+        Date createdAt = null;
+        Location location = null;
+        try {
+            userName = new Name(photoJson.getString("ownername"));
+            createdAt = DATE_PARSER.parse(photoJson.getString("datetaken"));
+            double longitude = photoJson.getDouble("longitude");
+            double latitude = photoJson.getDouble("latitude");
+            location = new Location(null, longitude, latitude);
+        } catch (JSONException | ParseException ignored) {}
+
         FlickrImage image = new FlickrImage(
                 new Id(photoJson.getString("id")),
                 new Id(photoJson.getString("owner")),
                 new Id(photoJson.getString("server")),
                 new Id(String.valueOf(photoJson.getInt("farm"))),
-                new Id(photoJson.getString("secret"))
+                new Id(photoJson.getString("secret")),
+                new Name(photoJson.getString("title")),
+                userName,
+                createdAt,
+                location
         );
-        String title = photoJson.optString("title");
-        if (title != null && title.isEmpty()) {
-            image.getProperties().title = new Name(title);
-        }
         return image;
     }
-
 }

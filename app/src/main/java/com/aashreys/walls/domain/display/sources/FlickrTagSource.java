@@ -7,6 +7,7 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.network.apis.FlickrApi;
 import com.aashreys.walls.network.parsers.FlickrPhotoArrayParser;
+import com.aashreys.walls.network.parsers.Utils;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -53,6 +54,7 @@ public class FlickrTagSource implements Source {
     public List<Image> getImages(int fromIndex) {
         Call<ResponseBody> call = flickrApi.searchPhotos(
                 tag.value(),
+                FlickrApi.PHOTO_EXTRAS,
                 UiHelper.getPageNumber(fromIndex, Config.Flickr.ITEMS_PER_PAGE),
                 Config.Flickr.ITEMS_PER_PAGE
         );
@@ -60,10 +62,7 @@ public class FlickrTagSource implements Source {
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 String responseString = response.body().string();
-                responseString = responseString.substring(
-                        responseString.indexOf("{"),
-                        responseString.lastIndexOf("}") + 1
-                );
+                responseString = Utils.removeFlickrResponseBrackets(responseString);
                 JSONObject jsonObject = new JSONObject(responseString);
                 JSONArray jsonPhotoArray = jsonObject.getJSONObject("photos").getJSONArray("photo");
                 return parser.parse(jsonPhotoArray);
