@@ -72,10 +72,7 @@ public class UnsplashRecentCollection implements Collection {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof UnsplashRecentCollection)) {
-            return false;
-        }
-        return true;
+        return o instanceof UnsplashRecentCollection;
     }
 
 }

@@ -68,10 +68,7 @@ public class FavoriteCollection implements Collection, Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FavoriteCollection)) {
-            return false;
-        }
-        return true;
+        return o instanceof FavoriteCollection;
 
     }
 

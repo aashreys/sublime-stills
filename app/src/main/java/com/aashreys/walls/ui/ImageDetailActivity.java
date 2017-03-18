@@ -10,7 +10,6 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -320,11 +319,7 @@ public class ImageDetailActivity extends BaseActivity {
     }
 
     private InfoView addInfoView(TableRow row, int columnPosition, int numColumns) {
-        InfoView infoView = (InfoView) LayoutInflater.from(this).inflate(
-                R.layout.view_info,
-                row,
-                false
-        );
+        InfoView infoView = new InfoView(this);
         TableRow.LayoutParams params = new TableRow.LayoutParams(0, infoViewHeight, 1);
         int margin = getResources().getDimensionPixelSize(R.dimen.spacing_small);
         if (columnPosition == 0) {

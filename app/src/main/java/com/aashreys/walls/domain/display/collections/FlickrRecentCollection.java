@@ -72,10 +72,7 @@ public class FlickrRecentCollection implements Collection {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FlickrRecentCollection)) {
-            return false;
-        }
-        return true;
+        return o instanceof FlickrRecentCollection;
     }
 
 }

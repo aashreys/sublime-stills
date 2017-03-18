@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.aashreys.walls.ui.views.InfoView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/height_xs"
-    android:layout_marginLeft="@dimen/spacing_medium"
-    android:layout_marginRight="@dimen/spacing_xxl" />

@@ -67,10 +67,7 @@ public class DiscoverCollection implements Collection, Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DiscoverCollection)) {
-            return false;
-        }
-        return true;
+        return o instanceof DiscoverCollection;
     }
 
     @Override

@@ -22,9 +22,9 @@ public class FlickrBaseEncoder {
 
         while (num >= BASE_COUNT) {
             div = num / BASE_COUNT;
-            mod = (int) (num - (BASE_COUNT * (long) div));
+            mod = (int) (num - (BASE_COUNT * div));
             result = ALPHABET[mod] + result;
-            num = (long) div;
+            num = div;
         }
         if (num > 0) {
             result = ALPHABET[(int) num] + result;
