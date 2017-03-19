@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
 import dagger.Lazy;
 
 public class StreamActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
-        ImageStreamFragment.CollectionProvider {
+        ImageStreamFragment.CollectionProvider, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = StreamActivity.class.getSimpleName();
 
@@ -47,12 +48,16 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
 
     @Inject StartupHelper startupHelper;
 
-    private ImageStreamViewPagerAdapter viewPagerAdapter;
-
     @Inject
     FavoriteImageRepository favoriteImageRepository;
 
+    private DrawerLayout drawerLayout;
+
+    private ImageStreamViewPagerAdapter viewPagerAdapter;
+
     private ViewPager viewPager;
+
+    private Toolbar toolbar;
 
     public static Intent createLaunchIntent(Context context, int tabPosition) {
         Intent intent = new Intent(context, StreamActivity.class);
@@ -71,22 +76,9 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
             startupHelper.onFirstStartCompleted();
         }
 
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView
-                .OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(
-                    @NonNull MenuItem item
-            ) {
-                drawerLayout.closeDrawers();
-                if (item.getItemId() == R.id.menu_item_collections) {
-                    openCollectionsActivity();
-                    return true;
-                }
-                return false;
-            }
-        });
+        navigationView.setNavigationItemSelectedListener(this);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         TabLayout tabs = (TabLayout) findViewById(R.id.tablayout);
@@ -141,11 +133,11 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
                 .make(viewPager, R.string.title_snackbar_favorite_removed, Snackbar.LENGTH_LONG);
         snackbar.setActionTextColor(UiHelper.getColor(this, R.color.white));
         snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        favoriteImageRepository.favorite(image);
-                    }
-                });
+            @Override
+            public void onClick(View view) {
+                favoriteImageRepository.favorite(image);
+            }
+        });
 
         snackbar.show();
     }
@@ -180,7 +172,29 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     }
 
     private void openCollectionsActivity() {
-        Intent intent = new Intent(StreamActivity.this, CollectionsActivity.class);
+        Intent intent = new Intent(this, CollectionsActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        drawerLayout.closeDrawers();
+        switch (item.getItemId()) {
+
+            case R.id.menu_item_settings:
+                openSettingsActivity();
+                return true;
+
+            case R.id.menu_item_collections:
+                openCollectionsActivity();
+                return true;
+
+        }
+        return false;
+    }
+
+    private void openSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }

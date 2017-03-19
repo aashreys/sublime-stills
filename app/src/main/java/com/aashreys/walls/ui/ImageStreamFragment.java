@@ -93,7 +93,8 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         ((WallsApplication) context.getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
                 .inject(this);
-        if (context instanceof StreamImageView.ImageSelectedCallback && context instanceof CollectionProvider) {
+        if (context instanceof StreamImageView.ImageSelectedCallback &&
+                context instanceof CollectionProvider) {
             this.imageSelectedListener = (StreamImageView.ImageSelectedCallback) context;
             this.collectionProvider = (CollectionProvider) context;
         } else {
@@ -275,13 +276,13 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         }
     }
 
+    private boolean isFavoritesStream() {
+        return collection != null && collection instanceof FavoriteCollection;
+    }
+
     public interface CollectionProvider {
 
         Collection getCollection(int position);
 
-    }
-
-    private boolean isFavoritesStream() {
-        return collection != null && collection instanceof FavoriteCollection;
     }
 }

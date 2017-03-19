@@ -44,16 +44,15 @@
                         android:padding="@dimen/spacing_small"
                         app:srcCompat="@drawable/ic_menu_black_24dp"/>
 
-                    <android.support.design.widget.TabLayout
-                        android:id="@+id/tablayout"
+                    <TextView
+                        android:id="@+id/text_toolbar_title"
+                        style="@style/Walls.Text.ToolbarTitle"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/spacing_small"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_medium"
                         android:layout_marginRight="@dimen/spacing_small"
                         android:layout_weight="1"
-                        android:clipToPadding="false"
-                        app:tabMode="scrollable"
-                        app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
+                        android:text="@string/title_walls"/>
 
                     <ImageButton
                         android:id="@+id/button_collections"
@@ -67,6 +66,14 @@
                 </LinearLayout>
 
             </android.support.v7.widget.Toolbar>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_small"
+                app:tabContentStart="@dimen/spacing_large"
+                app:tabMode="scrollable"
+                app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -83,17 +90,17 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/navigationDrawerBackground"
         app:headerLayout="@layout/drawer_header_layout"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
-        android:background="@color/navigationDrawerBackground"
         app:menu="@menu/nav_drawer">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_medium"
             android:layout_gravity="bottom"
+            android:layout_margin="@dimen/spacing_medium"
             android:text="@string/version_name"/>
 
     </android.support.design.widget.NavigationView>

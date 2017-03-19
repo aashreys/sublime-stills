@@ -3,7 +3,6 @@
           package="com.aashreys.walls">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
@@ -13,7 +12,6 @@
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/WallsTheme">
-
         <activity
             android:name=".ui.StreamActivity"
             android:label="@string/app_name"
@@ -25,16 +23,15 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.CollectionsActivity"
-            android:label="@string/title_fragment_collection"/>
+        <activity android:name=".ui.CollectionsActivity"/>
 
         <activity android:name=".ui.ImageDetailActivity"/>
+
+        <activity android:name=".ui.SettingsActivity"/>
 
         <meta-data
             android:name="com.aashreys.walls.ui.utils.GlideConfiguration"
             android:value="GlideModule"/>
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d1d9ded86a522d4ae7651fac61fdd2cba46ccc22"/>
