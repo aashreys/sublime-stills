@@ -33,6 +33,7 @@ import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
 import com.aashreys.walls.ui.views.ChipView;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -81,6 +82,9 @@ public class AddCollectionDialog extends DialogFragment implements
                 false
         );
         collectionInput = (EditText) contentView.findViewById(R.id.input_collection);
+        String[] hintArray =
+                getContext().getResources().getStringArray(R.array.hint_collection_suggestions);
+        collectionInput.setHint(hintArray[new Random().nextInt(hintArray.length)]);
         collectionsParent = (ViewGroup) contentView.findViewById(R.id.parent_collections);
         collectionsList = (RecyclerView) contentView.findViewById(R.id.list_collections);
         progressBar = (ProgressBar) contentView.findViewById(R.id.progress_bar);
@@ -209,7 +213,11 @@ public class AddCollectionDialog extends DialogFragment implements
 
     @Override
     public void onSearchComplete(List<Collection> collections) {
-        showCollectionsList();
-        onCollectionsFound(collections);
+        if (collections.size() > 0) {
+            showCollectionsList();
+            onCollectionsFound(collections);
+        } else {
+            resetState();
+        }
     }
 }

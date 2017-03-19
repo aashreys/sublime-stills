@@ -29,13 +29,27 @@
 
     <string name="title_location_elsweyr">Elsweyr, Tamriel</string>
 
-    <string name="hint_collection_name">cat, food, nature, nasa…</string>
+    <string-array name="hint_collection_suggestions">
+        <item>cats</item>
+        <item>space</item>
+        <item>aurora</item>
+        <item>endless summer</item>
+        <item>automobiles</item>
+        <item>best of nasa</item>
+        <item>drone captures</item>
+        <item>the unsplash book</item>
+        <item>volcanoes</item>
+        <item>mountains</item>
+        <item>winter tones</item>
+        <item>clear skies</item>
+        <item>reflection perfection</item>
+    </string-array>
 
     <string name="error_generic">Images could not be loaded.</string>
     <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images.</string>
     <string name="error_slow_connectivity">Your connection is poor.\nLoading images will take longer than usual.</string>
 
-    <string name="title_add_collection_dialog">Find A Collection Online</string>
+    <string name="title_add_collection_dialog">Find a Collection Online</string>
 
     <string name="hint_add_favorites">Your favorites are displayed here.\nTap an empty heart on an image to favorite it.</string>
     <string name="hint_collection">Collections are images which follow a theme. You can search for new and manage your existing collections here.</string>

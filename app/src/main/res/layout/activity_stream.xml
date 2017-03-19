@@ -87,7 +87,7 @@
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
         android:background="@color/navigationDrawerBackground"
-        app:menu="@menu/drawer">
+        app:menu="@menu/nav_drawer">
 
         <TextView
             android:layout_width="match_parent"

@@ -13,10 +13,12 @@
     <item
         android:id="@+id/menu_item_settings"
         android:icon="@drawable/ic_settings_black_24dp"
+        android:enabled="false"
         android:title="@string/title_menu_settings"/>
     <item
         android:id="@+id/menu_item_about"
         android:icon="@drawable/ic_about_black_24dp"
+        android:enabled="false"
         android:title="@string/title_menu_about"/>
 
     <!--Dummy items to create space for footer-->

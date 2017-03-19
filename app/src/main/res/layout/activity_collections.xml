@@ -41,7 +41,7 @@
                     android:layout_marginLeft="@dimen/spacing_medium"
                     android:layout_marginRight="@dimen/spacing_small"
                     android:layout_weight="1"
-                    android:text="@string/title_fragment_collection"/>
+                    android:text="@string/title_your_collections"/>
 
                 <ImageButton
                     android:id="@+id/button_add_collection"
@@ -49,7 +49,7 @@
                     android:layout_height="@dimen/image_button_size"
                     android:layout_marginRight="@dimen/spacing_small"
                     android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                    app:srcCompat="@drawable/ic_search_black_24dp"/>
+                    app:srcCompat="@drawable/ic_add_black_24dp"/>
 
             </LinearLayout>
 
@@ -63,13 +63,6 @@
         android:layout_marginTop="@dimen/spacing_small"
         app:hv_hint="@string/hint_collection"
         app:hv_seen_key="@string/tag_hint_collection"/>
-
-    <TextView
-        style="@style/Walls.Text.Subhead"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_small"
-        android:paddingLeft="@dimen/spacing_xxxl"
-        android:text="@string/title_your_collections"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_image_sources"

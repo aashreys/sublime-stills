@@ -15,9 +15,8 @@
         android:id="@+id/input_collection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_collection_name"
         android:imeOptions="actionSearch|flagNoExtractUi"
-        android:inputType="text"/>
+        android:inputType="textAutoCorrect"/>
 
     <FrameLayout
         android:id="@+id/parent_collections"
