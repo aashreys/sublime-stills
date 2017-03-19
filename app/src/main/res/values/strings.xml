@@ -35,13 +35,13 @@
     <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images.</string>
     <string name="error_slow_connectivity">Your connection is poor.\nLoading images will take longer than usual.</string>
 
-    <string name="title_add_collection_dialog">Search for a Collection</string>
+    <string name="title_add_collection_dialog">Find A Collection Online</string>
 
     <string name="hint_add_favorites">Your favorites are displayed here.\nTap an empty heart on an image to favorite it.</string>
     <string name="hint_collection">Collections are images which follow a theme. You can search for new and manage your existing collections here.</string>
     <string name="hint_image_actions">Tap the icons below to Favorite, Share or make this image your Wallpaper.</string>
 
-    <string name="title_snackbar_favorite_removed">Image unfavorited</string>
+    <string name="title_snackbar_favorite_removed">Image un-favorited</string>
 
     <string name="hint_reorder_collection">Drag and drop to reorder collection</string>
 

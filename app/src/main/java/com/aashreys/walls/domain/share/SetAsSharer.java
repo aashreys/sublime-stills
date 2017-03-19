@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import com.aashreys.walls.R;
+import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.ui.helpers.GlideHelper;
@@ -29,9 +30,15 @@ class SetAsSharer implements Sharer {
 
     private UiHandler uiHandler = new UiHandler();
 
+    private final DeviceResolution deviceResolution;
+
+    public SetAsSharer(DeviceResolution deviceResolution) {
+        this.deviceResolution = deviceResolution;
+    }
+
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
-        final Url imageUrl = image.getUrl(Image.UrlType.SET_AS);
+        final Url imageUrl = image.getUrl(deviceResolution.getPortraitWidth() * 2);
         GlideHelper.downloadImageAsync(
                 context,
                 imageUrl,

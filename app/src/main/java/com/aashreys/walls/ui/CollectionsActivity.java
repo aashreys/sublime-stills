@@ -114,7 +114,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
 
     private void saveCollections() {
         if (adapter.isCollectionListModified()) {
-            collectionRepository.replace(adapter.getCollectionList());
+            collectionRepository.replaceAll(adapter.getCollectionList());
         }
         adapter.onCollectionsSaved();
     }
@@ -125,7 +125,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
         super.onDestroy();
         collectionRepository.removeListener(repositoryCallback);
         if (adapter.isCollectionListModified()) {
-            collectionRepository.replace(adapter.getCollectionList());
+            collectionRepository.replaceAll(adapter.getCollectionList());
         }
     }
 

@@ -1,7 +1,7 @@
 package com.aashreys.walls.network.parsers;
 
 import com.aashreys.walls.LogWrapper;
-import com.aashreys.walls.domain.display.images.info.Exif;
+import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.values.Name;
 
 import org.json.JSONArray;

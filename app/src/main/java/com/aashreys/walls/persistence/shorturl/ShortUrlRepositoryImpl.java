@@ -2,7 +2,9 @@ package com.aashreys.walls.persistence.shorturl;
 
 
 import com.aashreys.walls.domain.values.Url;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+
+import io.paperdb.Book;
+import io.paperdb.Paper;
 
 /**
  * Created by aashreys on 04/12/16.
@@ -10,25 +12,25 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 public class ShortUrlRepositoryImpl implements ShortUrlRepository {
 
+    private static final String BOOK_NAME = "short_url_book";
+
     public ShortUrlRepositoryImpl() {}
 
     @Override
     public Url get(Url longUrl) {
-        ShortUrlModel model = SQLite.select()
-                .from(ShortUrlModel.class)
-                .where(ShortUrlModel_Table.longUrl.eq(longUrl.value()))
-                .querySingle();
-        if (model != null) {
-            Url url = new Url(model.shortUrl);
-            if (url.isValid()) {
-                return url;
-            }
+        String shortUrlString = getBook().read(longUrl.value(), null);
+        if (shortUrlString != null) {
+            return new Url(shortUrlString);
         }
         return null;
     }
 
     @Override
     public void save(Url longUrl, Url shortUrl) {
-        new ShortUrlModel(longUrl, shortUrl).save();
+        getBook().write(longUrl.value(), shortUrl.value());
+    }
+
+    private Book getBook() {
+        return Paper.book(BOOK_NAME);
     }
 }

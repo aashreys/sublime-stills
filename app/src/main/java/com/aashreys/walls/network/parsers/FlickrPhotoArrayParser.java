@@ -3,7 +3,7 @@ package com.aashreys.walls.network.parsers;
 import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.FlickrImage;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.info.Location;
+import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 

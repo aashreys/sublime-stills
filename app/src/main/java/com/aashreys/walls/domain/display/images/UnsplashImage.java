@@ -2,8 +2,13 @@ package com.aashreys.walls.domain.display.images;
 
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.aashreys.walls.domain.display.images.info.ImageInfo;
+import com.aashreys.walls.domain.display.images.metadata.Exif;
+import com.aashreys.walls.domain.display.images.metadata.Location;
+import com.aashreys.walls.domain.display.images.metadata.Resolution;
+import com.aashreys.walls.domain.display.images.metadata.Service;
+import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
@@ -12,9 +17,15 @@ import com.aashreys.walls.domain.values.Url;
 import java.util.Date;
 
 /**
- * Created by aashreys on 01/02/17.
+ * Created by aashreys on 19/03/17.
  */
-public final class UnsplashImage implements Image {
+
+public class UnsplashImage implements Image {
+
+    static final Service SERVICE = new Service(
+            new Name("Unsplash"),
+            new Url("https://unsplash.com")
+    );
 
     public static final Creator<UnsplashImage> CREATOR = new Creator<UnsplashImage>() {
         @Override
@@ -24,25 +35,25 @@ public final class UnsplashImage implements Image {
         public UnsplashImage[] newArray(int size) {return new UnsplashImage[size];}
     };
 
-    private static final String IMAGE_STREAM_URL_OPTIONS = "?q=80&fm=jpg&w=600&fit=max";
+    private static final String IMAGE_URL_CONFIG = "?q=75&cs=tinysrgb&fm=jpg&w=%s&fit=max";
 
-    private static final String IMAGE_DETAIL_URL_OPTIONS =
-            "?q=80&cs=tinysrgb&fm=jpg&w=1080&fit=max";
+    private final Id id;
 
-    private static final String SET_AS_URL_OPTIONS = "?q=80&cs=tinysrgb&fm=jpg&w=1080&fit=max";
+    private final Url rawImageUrl;
 
-    public static final Name SERVICE_NAME = new Name("Unsplash");
+    private final Url imageShareUrl;
 
-    public static final Url SERVICE_URL = new Url("https://unsplash.com");
+    private final User user;
 
-    // Valid fields
-    @NonNull private final Id id;
+    private final Resolution resolution;
 
-    @NonNull private final Url rawImageUrl;
+    private final Date createdAt;
 
-    @NonNull private final Url imageShareUrl;
+    private Location location;
 
-    private final ImageInfo info;
+    private Exif exif;
+
+    private Name title;
 
     public UnsplashImage(
             @NonNull Id id,
@@ -59,22 +70,22 @@ public final class UnsplashImage implements Image {
         this.id = id;
         this.rawImageUrl = rawImageUrl;
         this.imageShareUrl = imageShareUrl;
-        this.info = new ImageInfo(SERVICE_NAME);
-        this.info.resX = resX;
-        this.info.resY = resY;
-        this.info.createdAt = createdAt;
-        this.info.userId = userId;
-        this.info.userRealName = userRealName;
-        this.info.userProfileUrl = userProfileUrl;
-        this.info.userPortfolioUrl = userPortfolioUrl;
-        this.info.serviceUrl = SERVICE_URL;
+        this.resolution = new Resolution(resX, resY);
+        this.user = new User(userId, userRealName, userProfileUrl, userPortfolioUrl);
+        this.createdAt = createdAt;
     }
 
-    private UnsplashImage(Parcel in) {
+    protected UnsplashImage(Parcel in) {
         this.id = in.readParcelable(Id.class.getClassLoader());
         this.rawImageUrl = in.readParcelable(Url.class.getClassLoader());
         this.imageShareUrl = in.readParcelable(Url.class.getClassLoader());
-        this.info = in.readParcelable(ImageInfo.class.getClassLoader());
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.resolution = in.readParcelable(Resolution.class.getClassLoader());
+        long tmpCreatedAt = in.readLong();
+        this.createdAt = tmpCreatedAt == -1 ? null : new Date(tmpCreatedAt);
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.exif = in.readParcelable(Exif.class.getClassLoader());
+        this.title = in.readParcelable(Name.class.getClassLoader());
     }
 
     @NonNull
@@ -85,26 +96,78 @@ public final class UnsplashImage implements Image {
 
     @NonNull
     @Override
-    public Url getUrl(@UrlType int type) {
-        switch (type) {
-            case UrlType.IMAGE_STREAM:
-                return rawImageUrl.append(IMAGE_STREAM_URL_OPTIONS);
-
-            case UrlType.IMAGE_DETAIL:
-                return rawImageUrl.append(IMAGE_DETAIL_URL_OPTIONS);
-
-            case UrlType.SET_AS:
-                return rawImageUrl.append(SET_AS_URL_OPTIONS);
-
-            case UrlType.SHARE:
-                return imageShareUrl;
+    public Url getUrl(int width) {
+        if (width != RES_ORIGINAL) {
+            return rawImageUrl.append(String.format(IMAGE_URL_CONFIG, width));
+        } else {
+            return rawImageUrl;
         }
-        throw new IllegalArgumentException("Unexpected type value");
     }
 
     @NonNull
-    public ImageInfo getInfo() {
-        return info;
+    @Override
+    public Url getShareUrl() {
+        return imageShareUrl;
+    }
+
+    @Nullable
+    @Override
+    public Name getTitle() {
+        return title;
+    }
+
+    public void setTitle(Name title) {
+        this.title = title;
+    }
+
+    @Nullable
+    @Override
+    public Date getUploadDate() {
+        return createdAt;
+    }
+
+    @NonNull
+    @Override
+    public Service getService() {
+        return SERVICE;
+    }
+
+    @Nullable
+    @Override
+    public Resolution getResolution() {
+        return resolution;
+    }
+
+    @Nullable
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Nullable
+    @Override
+    public Exif getExif() {
+        return exif;
+    }
+
+    public void setExif(Exif exif) {
+        this.exif = exif;
+    }
+
+    @Nullable
+    @Override
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @NonNull
+    @Override
+    public String getType() {
+        return Type.UNSPLASH;
     }
 
     @Override
@@ -115,22 +178,11 @@ public final class UnsplashImage implements Image {
         dest.writeParcelable(this.id, flags);
         dest.writeParcelable(this.rawImageUrl, flags);
         dest.writeParcelable(this.imageShareUrl, flags);
-        dest.writeParcelable(this.info, flags);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UnsplashImage)) return false;
-
-        UnsplashImage that = (UnsplashImage) o;
-
-        return id.equals(that.id);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
+        dest.writeParcelable(this.user, flags);
+        dest.writeParcelable(this.resolution, flags);
+        dest.writeLong(this.createdAt != null ? this.createdAt.getTime() : -1);
+        dest.writeParcelable(this.location, flags);
+        dest.writeParcelable(this.exif, flags);
+        dest.writeParcelable(this.title, flags);
     }
 }

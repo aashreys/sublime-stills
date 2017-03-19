@@ -39,7 +39,7 @@ public class ImageUrlSharer implements Sharer {
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
-        Url imageUrl = image.getUrl(Image.UrlType.SHARE);
+        Url imageUrl = image.getShareUrl();
         if (imageUrl.value().length() > MAX_URL_LENGTH) {
             urlShortener.shorten(
                     imageUrl,
@@ -47,7 +47,7 @@ public class ImageUrlSharer implements Sharer {
                         @Override
                         public void onComplete(@NonNull Url shortUrl) {
                             if (!isCancelled) {
-                                startSharingIntent(context, shortUrl, image.getInfo().title);
+                                startSharingIntent(context, shortUrl, image.getTitle());
                                 uiHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -72,7 +72,7 @@ public class ImageUrlSharer implements Sharer {
                     }
             );
         } else {
-            startSharingIntent(context, imageUrl, image.getInfo().title);
+            startSharingIntent(context, imageUrl, image.getTitle());
             listener.onShareComplete();
         }
     }

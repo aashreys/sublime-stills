@@ -1,17 +1,15 @@
 package com.aashreys.walls.persistence.collections;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
-import com.aashreys.walls.domain.values.Id;
-import com.aashreys.walls.domain.values.Name;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.paperdb.Book;
+import io.paperdb.Paper;
 
 /**
  * Created by aashreys on 01/02/17.
@@ -23,6 +21,8 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
     private final static List<CollectionRepositoryListener> listeners = new ArrayList<>();
 
+    private static final String BOOK_NAME = "collections_book";
+
     private final CollectionFactory collectionFactory;
 
     public CollectionRepositoryImpl(CollectionFactory collectionFactory) {
@@ -31,62 +31,37 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
     @Override
     public void insert(Collection collection) {
-        CollectionModel model = new CollectionModel(collection);
-        model.insert();
+        getBook().write(getCollectionKey(collection), collection);
         _notifyInsert(collection);
     }
 
     @Override
-    public boolean exists(Collection collection) {
-        return _getModel(collection) != null;
-    }
-
-    @Override
-    public void update(Collection collection) {
-        CollectionModel model = _getModel(collection);
-        if (model != null) {
-            model.name = collection.getName().value();
-            model.type = collection.getType();
-            model.collectionId = collection.getId().value();
-            model.update();
-            _notifyUpdate(collection);
-        } else {
-            Log.w(TAG, "Could not find an image collection to update");
-        }
-    }
-
-    @Override
     public void remove(Collection collection) {
-        CollectionModel model = _getModel(collection);
-        if (model != null) {
-            model.delete();
-            _notifyDelete(collection);
-        } else {
-            Log.e(TAG, "Could not find an image collection to delete");
-        }
+        getBook().delete(getCollectionKey(collection));
+        _notifyDelete(collection);
     }
 
     @Override
-    public void replace(List<Collection> collections) {
-        SQLite.delete().from(CollectionModel.class).execute();
-        for (Collection collection : collections) {
-            new CollectionModel(collection).insert();
+    public void replaceAll(List<Collection> collectionList) {
+        getBook().destroy();
+        Book book = getBook();
+        for (Collection collection : collectionList) {
+            book.write(getCollectionKey(collection), collection);
         }
-        _notifyReplace(collections);
+        _notifyReplaceAll(collectionList);
     }
 
     @NonNull
     @Override
     public List<Collection> getAll() {
-        List<CollectionModel> models = SQLite.select().from(CollectionModel.class).queryList();
-        List<Collection> collectionList = new ArrayList<>(models.size());
-        for (CollectionModel model : models) {
-            Collection collection = collectionFactory.create(
-                    model.type,
-                    new Id(model.collectionId),
-                    new Name(model.name)
-            );
-            collectionList.add(collection);
+        List<Collection> collectionList = new ArrayList<>();
+        List<String> keyList = getBook().getAllKeys();
+        Book book = getBook();
+        for (String key : keyList) {
+            Collection collection = book.read(key, null);
+            if (collection != null) {
+                collectionList.add(collection);
+            }
         }
         return collectionList;
     }
@@ -107,33 +82,24 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         }
     }
 
-    private void _notifyUpdate(Collection collection) {
-        for (CollectionRepositoryListener listener : listeners) {
-            listener.onUpdate(collection);
-        }
-    }
-
-    @Nullable
-    private CollectionModel _getModel(Collection collection) {
-        return SQLite.select()
-                .from(CollectionModel.class)
-                .where(
-                        CollectionModel_Table.collectionId.eq(collection.getId().value()),
-                        CollectionModel_Table.type.eq(collection.getType())
-                )
-                .querySingle();
-    }
-
     private void _notifyInsert(Collection collection) {
         for (CollectionRepositoryListener listener : listeners) {
             listener.onInsert(collection);
         }
     }
     
-    private void _notifyReplace(List<Collection> collections) {
+    private void _notifyReplaceAll(List<Collection> collections) {
         for (CollectionRepositoryListener listener : listeners) {
             listener.onReplace(collections);
         }
+    }
+
+    private Book getBook() {
+        return Paper.book(BOOK_NAME);
+    }
+
+    private String getCollectionKey(Collection collection) {
+        return collection.getType() + collection.getId().value();
     }
 
 }

@@ -22,20 +22,23 @@ import android.widget.TextView;
 
 import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.R;
+import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.ImageInfoService;
-import com.aashreys.walls.domain.display.images.info.Exif;
-import com.aashreys.walls.domain.display.images.info.Location;
+import com.aashreys.walls.domain.display.images.metadata.Exif;
+import com.aashreys.walls.domain.display.images.metadata.Location;
+import com.aashreys.walls.domain.display.images.metadata.Resolution;
+import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.domain.share.Sharer;
 import com.aashreys.walls.domain.share.SharerFactory;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.Pixel;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.helpers.ChromeTabHelper;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.InfoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -70,6 +73,8 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Inject ImageCache imageCache;
 
+    @Inject DeviceResolution deviceResolution;
+
     private Sharer imageSharer;
 
     private Sharer setAsSharer;
@@ -96,7 +101,7 @@ public class ImageDetailActivity extends BaseActivity {
     public static Intent createLaunchIntent(Context context, Image image) {
         Intent intent = new Intent(context, ImageDetailActivity.class);
         intent.putExtra(ARG_IMAGE_ID, image.getId().value());
-        intent.putExtra(ARG_IMAGE_SERVICE_NAME, image.getInfo().serviceName.value());
+        intent.putExtra(ARG_IMAGE_SERVICE_NAME, image.getService().getName().value());
         return intent;
     }
 
@@ -194,9 +199,14 @@ public class ImageDetailActivity extends BaseActivity {
                 }
             });
 
-
+            int width;
+            if (UiHelper.isPortrait(this)) {
+                width = deviceResolution.getPortraitWidth();
+            } else {
+                width = deviceResolution.getPortraitHeight();
+            }
             Glide.with(this)
-                    .load(image.getUrl(Image.UrlType.IMAGE_DETAIL).value())
+                    .load(image.getUrl(width).value())
                     .priority(Priority.IMMEDIATE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -262,7 +272,7 @@ public class ImageDetailActivity extends BaseActivity {
         int infoColumns = getResources().getInteger(R.integer.image_info_column_count);
         List<Pair<Value, Integer>> infoList = new ArrayList<>();
 
-        Date createdAt = image.getInfo().createdAt;
+        Date createdAt = image.getUploadDate();
         if (createdAt != null) {
             putValueIconPair(
                     infoList,
@@ -271,7 +281,7 @@ public class ImageDetailActivity extends BaseActivity {
             );
         }
 
-        Location location = image.getInfo().location;
+        Location location = image.getLocation();
         if (location != null) {
             Name locationName;
             double latitude = location.getLatitude();
@@ -286,18 +296,20 @@ public class ImageDetailActivity extends BaseActivity {
             putValueIconPair(infoList, locationName, R.drawable.ic_location_pin_black_24dp);
         }
 
-        Pixel resX = image.getInfo().resX;
-        Pixel resY = image.getInfo().resY;
-        if (resX != null && resX.isValid() && resY != null && resY.isValid()) {
+        Resolution resolution = image.getResolution();
+        if (resolution != null) {
             putValueIconPair(
                     infoList,
-                    new Name(formatResolution(resX.value(), resY.value())),
+                    new Name(formatResolution(
+                            resolution.getResX().value(),
+                            resolution.getResY().value()
+                    )),
                     R.drawable.ic_dimensions_black_24dp
             );
         }
 
-        if (image.getInfo().exif != null) {
-            Exif exif = image.getInfo().exif;
+        Exif exif = image.getExif();
+        if (exif != null) {
             putValueIconPair(infoList, exif.camera, R.drawable.ic_camera_black_24dp);
             putValueIconPair(infoList, exif.aperture, R.drawable.ic_aperture_black_24dp);
             putValueIconPair(infoList, exif.exposureTime, R.drawable.ic_exposure_time_black_24dp);
@@ -357,12 +369,17 @@ public class ImageDetailActivity extends BaseActivity {
     }
 
     private void displayHeader() {
-        Name title = image.getInfo().title;
-        Name userName = image.getInfo().userRealName;
-        Name serviceName = image.getInfo().serviceName;
-        final Url userProfileUrl = image.getInfo().userProfileUrl;
-        final Url userPortfolioUrl = image.getInfo().userPortfolioUrl;
-        final Url serviceUrl = image.getInfo().serviceUrl;
+        Name title = image.getTitle();
+        Name serviceName = image.getService().getName();
+        final Url serviceUrl = image.getService().getUrl();
+
+        Name userName = null;
+        final User user = image.getUser();
+        if (user != null) {
+            if (user.getName() != null) {
+                userName = user.getName();
+            }
+        }
 
         if (title != null && title.isValid()) {
             titleText.setText(title.value());
@@ -391,23 +408,24 @@ public class ImageDetailActivity extends BaseActivity {
             );
             spannableString = new SpannableString(metaString);
 
-            if ((userProfileUrl != null && userProfileUrl.isValid()) ||
-                    (userPortfolioUrl != null && userPortfolioUrl.isValid())) {
+            if ((user.getProfileUrl() != null && user.getProfileUrl().isValid()) ||
+                    (user.getPortfolioUrl() != null && user.getPortfolioUrl().isValid())) {
                 int indexUserNameStart = metaString.indexOf(userName.value());
                 int indexUserNameEnd = indexUserNameStart + userName.value().length();
                 spannableString.setSpan(
                         new ClickableSpan() {
                             @Override
                             public void onClick(View widget) {
-                                if (userPortfolioUrl != null && userPortfolioUrl.isValid()) {
+                                if (user.getPortfolioUrl() != null &&
+                                        user.getPortfolioUrl().isValid()) {
                                     ChromeTabHelper.openUrl(
                                             ImageDetailActivity.this,
-                                            userPortfolioUrl.value()
+                                            user.getPortfolioUrl().value()
                                     );
                                 } else {
                                     ChromeTabHelper.openUrl(
                                             ImageDetailActivity.this,
-                                            userProfileUrl.value()
+                                            user.getProfileUrl().value()
                                     );
                                 }
                             }

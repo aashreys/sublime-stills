@@ -1,6 +1,7 @@
 package com.aashreys.walls.ui.helpers;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 
@@ -29,5 +30,10 @@ public class UiHelper {
         } else {
             return context.getResources().getColor(color);
         }
+    }
+
+    public static boolean isPortrait(Context context) {
+        return context.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT;
     }
 }

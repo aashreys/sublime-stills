@@ -12,11 +12,13 @@ import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
+import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.ImageStreamFragment;
 import com.aashreys.walls.ui.helpers.GlideHelper;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.utils.ForegroundImageView;
 import com.bumptech.glide.Priority;
 
@@ -30,6 +32,8 @@ public class StreamImageView extends FrameLayout {
 
     @Inject FavoriteImageRepository favoriteImageRepository;
 
+    @Inject DeviceResolution deviceResolution;
+
     private FavoriteSyncTask favoriteSyncTask;
 
     private ForegroundImageView imageView;
@@ -39,6 +43,8 @@ public class StreamImageView extends FrameLayout {
     private Image image;
 
     private ImageSelectedCallback callback;
+
+    private int numStreamColumns;
 
     private RepositoryCallback<Image> repositoryCallback = new RepositoryCallback<Image>() {
         @Override
@@ -88,6 +94,7 @@ public class StreamImageView extends FrameLayout {
                 .getUiComponent()
                 .inject(this);
         LayoutInflater.from(context).inflate(R.layout.layout_item_stream_image, this, true);
+        numStreamColumns = UiHelper.getStreamColumnCount(getContext());
         imageView = (ForegroundImageView) findViewById(R.id.image);
         favoriteButton = (ImageButton) findViewById(R.id.button_action);
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
@@ -111,9 +118,17 @@ public class StreamImageView extends FrameLayout {
         this.image = image;
         this.callback = callback;
         favoriteButton.setVisibility(View.GONE);
+
+
+        int width;
+        if (UiHelper.isPortrait(getContext())) {
+            width = deviceResolution.getPortraitWidth() / numStreamColumns;
+        } else {
+            width = deviceResolution.getPortraitHeight() / numStreamColumns;
+        }
         GlideHelper.displayImageAsync(
                 fragment,
-                image.getUrl(Image.UrlType.IMAGE_STREAM),
+                image.getUrl(width),
                 imageView,
                 fragment.isDisplayed() ? Priority.HIGH : Priority.LOW
         );

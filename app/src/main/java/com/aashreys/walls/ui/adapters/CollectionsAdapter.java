@@ -3,6 +3,7 @@ package com.aashreys.walls.ui.adapters;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -163,10 +164,11 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         }
 
         private void onDeselected() {
-            collectionView.setBackgroundColor(UiHelper.getColor(
-                    collectionView.getContext(),
-                    R.color.transparent
-            ));
+            TypedValue outValue = new TypedValue();
+            collectionView.getContext()
+                    .getTheme()
+                    .resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+            collectionView.setBackgroundResource(outValue.resourceId);
         }
     }
 

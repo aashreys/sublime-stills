@@ -52,7 +52,6 @@
                         android:layout_marginRight="@dimen/spacing_small"
                         android:layout_weight="1"
                         android:clipToPadding="false"
-                        android:visibility="gone"
                         app:tabMode="scrollable"
                         app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
 

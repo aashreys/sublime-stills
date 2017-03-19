@@ -24,7 +24,7 @@ public class DiscoverSource implements Source {
     @NonNull
     @Override
     public List<Image> getImages(int fromIndex) {
-        // TODO: Integrate Unsplash
-        return flickRecentSource.getImages(fromIndex);
+        // TODO: Integrate both image sources
+        return unsplashRecentSource.getImages(fromIndex);
     }
 }

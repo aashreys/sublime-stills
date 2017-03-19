@@ -7,14 +7,15 @@ import com.aashreys.walls.di.ApplicationComponent;
 import com.aashreys.walls.di.DaggerApplicationComponent;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
+import com.aashreys.walls.domain.device.DeviceResolution;
+import com.aashreys.walls.persistence.WallsDatabase;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 
 import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
+import io.paperdb.Paper;
 
 /**
  * Created by aashreys on 30/11/16.
@@ -23,6 +24,8 @@ import io.fabric.sdk.android.Fabric;
 public class WallsApplication extends Application {
 
     @Inject SharedPreferences sharedPreferences;
+
+    @Inject DeviceResolution deviceResolution;
 
     private ApplicationComponent applicationComponent;
 
@@ -35,7 +38,11 @@ public class WallsApplication extends Application {
                 .build();
         Fabric.with(this, crashlyticsKit);
         LogWrapper.setProductionLogging(BuildConfig.PRODUCTION);
-        FlowManager.init(new FlowConfig.Builder(this).openDatabasesOnInit(true).build());
+
+        // Delete old SQL database since we've switched to NoSql
+        deleteDatabase(WallsDatabase.NAME);
+
+        Paper.init(this);
         this.applicationComponent = DaggerApplicationComponent
                 .builder()
                 .applicationModule(new ApplicationModule(this))
@@ -46,10 +53,6 @@ public class WallsApplication extends Application {
 
     public ApplicationComponent getApplicationComponent() {
         return applicationComponent;
-    }
-
-    public SharedPreferences getSharedPreferences() {
-        return sharedPreferences;
     }
 
 }

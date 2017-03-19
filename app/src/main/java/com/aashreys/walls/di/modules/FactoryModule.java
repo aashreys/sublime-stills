@@ -1,5 +1,6 @@
 package com.aashreys.walls.di.modules;
 
+import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
 import com.aashreys.walls.domain.display.sources.FlickrRecentSourceFactory;
@@ -40,8 +41,11 @@ public class FactoryModule {
     }
 
     @Provides
-    public SharerFactory providesSharerFactory(ImageUrlSharerFactory imageUrlSharerFactory) {
-        return new SharerFactory(imageUrlSharerFactory);
+    public SharerFactory providesSharerFactory(
+            ImageUrlSharerFactory imageUrlSharerFactory,
+            DeviceResolution deviceResolution
+    ) {
+        return new SharerFactory(imageUrlSharerFactory, deviceResolution);
     }
 
     @Provides

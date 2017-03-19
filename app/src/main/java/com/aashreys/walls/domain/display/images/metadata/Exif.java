@@ -1,4 +1,4 @@
-package com.aashreys.walls.domain.display.images.info;
+package com.aashreys.walls.domain.display.images.metadata;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,7 +1,6 @@
 package com.aashreys.walls.domain.display.images;
 
 import com.aashreys.walls.LogWrapper;
-import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.network.apis.FlickrApi;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.parsers.FlickrExifParser;
@@ -45,15 +44,18 @@ public class ImageInfoServiceImpl implements ImageInfoService {
 
     @Override
     public void addInfo(Image image, Listener listener) {
+        switch (image.getType()) {
+            case Image.Type.FLICKR:
+                addFlickrInfo((FlickrImage) image, listener);
+                break;
 
+            case Image.Type.UNSPLASH:
+                addUnsplashInfo(image, listener);
+                break;
 
-        Name serviceName = image.getInfo().serviceName;
-        if (serviceName.equals(FlickrImage.SERVICE_NAME)) {
-            addFlickrInfo(image, listener);
-        } else if (serviceName.equals(UnsplashImage.SERVICE_NAME)) {
-            addUnsplashInfo(image, listener);
-        } else {
-            listener.onComplete(image);
+            default:
+                listener.onComplete(image);
+                break;
         }
     }
 
@@ -66,7 +68,7 @@ public class ImageInfoServiceImpl implements ImageInfoService {
                     try {
                         unsplashPhotoInfoParser.parse(
                                 response.body().string(),
-                                image
+                                (UnsplashImage) image
                         );
 
                     } catch (IOException e) {
@@ -93,17 +95,17 @@ public class ImageInfoServiceImpl implements ImageInfoService {
         });
     }
 
-    private void addFlickrInfo(final Image image, final Listener listener) {
+    private void addFlickrInfo(final FlickrImage image, final Listener listener) {
         Call<ResponseBody> call = flickrApi.getPhotoExif(image.getId().value());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        image.getInfo().exif =
+                        image.setExif(
                                 flickrExifParser.parse(Utils.removeFlickrResponseBrackets(
-                                        response.body().string()
-                                ));
+                                response.body().string()
+                        )));
                     } catch (IOException e) {
                         LogWrapper.e(
                                 TAG,

@@ -15,13 +15,9 @@ public interface CollectionRepository {
 
     void insert(Collection collection);
 
-    boolean exists(Collection collection);
-
-    void update(Collection collection);
-
     void remove(Collection collection);
 
-    void replace(List<Collection> collections);
+    void replaceAll(List<Collection> collectionList);
 
     @NonNull
     List<Collection> getAll();

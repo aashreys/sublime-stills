@@ -30,6 +30,6 @@ public class CollectionSearchServiceImpl implements CollectionSearchService {
     @NonNull
     @Override
     public List<Collection> search(String collection) {
-        return flickrTagSearchService.search(collection);
+        return unsplashCollectionSearchService.search(collection);
     }
 }

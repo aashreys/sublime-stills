@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.aashreys.walls.WallsApplication;
+import com.aashreys.walls.domain.device.DeviceResolution;
+import com.aashreys.walls.domain.device.DeviceResolutionImpl;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.domain.display.images.utils.ImageCacheImpl;
 
@@ -34,6 +36,11 @@ public class ApplicationModule {
     @Provides
     public ImageCache providesMemoryCache() {
         return imageCache;
+    }
+
+    @Provides
+    public DeviceResolution providesDeviceResolution() {
+        return new DeviceResolutionImpl(application);
     }
 
 }

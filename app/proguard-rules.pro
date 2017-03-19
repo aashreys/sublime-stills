@@ -16,9 +16,6 @@
 #   public *;
 #}
 
-# DBFlow
--keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
-
 # Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
@@ -47,3 +44,6 @@
 -dontwarn retrofit2.Platform$Java8
 -keepattributes Signature
 -keepattributes Exceptions
+
+# Paper
+-keep class my.package.data.model.** { *; }
