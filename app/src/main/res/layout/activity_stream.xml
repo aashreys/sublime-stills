@@ -91,7 +91,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/navigationDrawerBackground"
-        app:headerLayout="@layout/drawer_header_layout"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
         app:menu="@menu/nav_drawer">
