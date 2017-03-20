@@ -17,6 +17,7 @@
 package com.aashreys.walls.domain.share;
 
 import com.aashreys.walls.domain.device.DeviceResolution;
+import com.aashreys.walls.network.UrlShortener;
 
 import javax.inject.Inject;
 
@@ -26,23 +27,25 @@ import javax.inject.Inject;
 
 public class SharerFactory {
 
-    private final ImageUrlSharerFactory imageUrlSharerFactory;
-
     private final DeviceResolution deviceResolution;
+
+    private final UrlShortener urlShortener;
 
     @Inject
     public SharerFactory(
-            ImageUrlSharerFactory imageUrlSharerFactory,
+            UrlShortener urlShortener,
             DeviceResolution deviceResolution
     ) {
-        this.imageUrlSharerFactory = imageUrlSharerFactory;
+        this.urlShortener = urlShortener;
         this.deviceResolution = deviceResolution;
     }
 
     public ShareDelegate create(ShareDelegate.Mode mode) {
         switch (mode) {
-            case ONLY_URL:
-                return imageUrlSharerFactory.create();
+            case LINK:
+                return new ImageUrlShareDelegate(urlShortener);
+            case PHOTO:
+                return new ImageFileShareDelegate(deviceResolution);
             case SET_AS:
                 return new SetAsShareDelegate(deviceResolution);
         }

@@ -24,8 +24,8 @@ import com.aashreys.walls.domain.display.sources.FlickrTagSourceFactory;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.domain.display.sources.UnsplashCollectionSourceFactory;
 import com.aashreys.walls.domain.display.sources.UnsplashRecentSourceFactory;
-import com.aashreys.walls.domain.share.ImageUrlSharerFactory;
 import com.aashreys.walls.domain.share.SharerFactory;
+import com.aashreys.walls.network.UrlShortener;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,10 +58,10 @@ public class FactoryModule {
 
     @Provides
     public SharerFactory providesSharerFactory(
-            ImageUrlSharerFactory imageUrlSharerFactory,
+            UrlShortener urlShortener,
             DeviceResolution deviceResolution
     ) {
-        return new SharerFactory(imageUrlSharerFactory, deviceResolution);
+        return new SharerFactory(urlShortener, deviceResolution);
     }
 
     @Provides

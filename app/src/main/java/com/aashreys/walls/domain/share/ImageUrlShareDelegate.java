@@ -27,14 +27,11 @@ import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.network.UrlShortener;
 import com.aashreys.walls.ui.utils.UiHandler;
-import com.google.auto.factory.AutoFactory;
-import com.google.auto.factory.Provided;
 
 /**
  * Created by aashreys on 08/02/17.
  */
 
-@AutoFactory
 public class ImageUrlShareDelegate implements ShareDelegate {
 
     private static final String TAG = ImageUrlShareDelegate.class.getSimpleName();
@@ -49,7 +46,7 @@ public class ImageUrlShareDelegate implements ShareDelegate {
 
     private UiHandler uiHandler = new UiHandler();
 
-    ImageUrlShareDelegate(@Provided UrlShortener urlShortener) {
+    ImageUrlShareDelegate(UrlShortener urlShortener) {
         this.urlShortener = urlShortener;
     }
 
@@ -104,13 +101,13 @@ public class ImageUrlShareDelegate implements ShareDelegate {
         String contentString;
         if (title != null && title.isValid()) {
             contentString = context.getResources().getString(
-                    R.string.share_text_template_with_title,
+                    R.string.share_text_template,
                     title.value(),
                     imageUrl.value()
             );
         } else {
             contentString = context.getResources().getString(
-                    R.string.share_text_template,
+                    R.string.share_text_template_notitle,
                     imageUrl.value()
             );
         }
@@ -118,7 +115,7 @@ public class ImageUrlShareDelegate implements ShareDelegate {
         shareIntent.setType(MIME_TYPE);
         context.startActivity(Intent.createChooser(
                 shareIntent,
-                context.getResources().getText(R.string.share_title)
+                context.getResources().getText(R.string.title_share_link)
         ));
     }
 }

@@ -161,7 +161,7 @@ public class ImageDetailActivity extends BaseActivity {
 
             shareButton = (ImageButton) findViewById(R.id.button_share);
             final ProgressBar shareProgress = (ProgressBar) findViewById(R.id.progress_share);
-            imageShareDelegate = sharerFactory.create(ShareDelegate.Mode.ONLY_URL);
+            imageShareDelegate = sharerFactory.create(ShareDelegate.Mode.LINK);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -371,6 +371,8 @@ public class ImageDetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        imageShareDelegate.cancel();
+        setAsShareDelegate.cancel();
         if (image != null && isFinishing()) {
             imageCache.remove(image);
         }

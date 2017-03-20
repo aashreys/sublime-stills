@@ -31,7 +31,8 @@ public interface ShareDelegate {
     void cancel();
 
     enum Mode {
-        ONLY_URL,
+        LINK,
+        PHOTO,
         SET_AS
     }
 
