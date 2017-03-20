@@ -44,6 +44,8 @@ public class SharerFactory {
         switch (mode) {
             case LINK:
                 return new ImageUrlShareDelegate(urlShortener);
+            case COPY_LINK:
+                return new CopyLinkDelegate();
             case PHOTO:
                 return new ImageFileShareDelegate(deviceResolution);
             case SET_AS:

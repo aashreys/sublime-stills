@@ -16,33 +16,34 @@
 
 package com.aashreys.walls.domain.share;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 
+import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
 
 /**
- * Created by aashreys on 03/12/16.
+ * Created by aashreys on 20/03/17.
  */
 
-public interface ShareDelegate {
+public class CopyLinkDelegate implements ShareDelegate {
 
-    void share(Context context, Image image, Listener listener);
-
-    void cancel();
-
-    enum Mode {
-        LINK,
-        COPY_LINK,
-        PHOTO,
-        SET_AS
+    @Override
+    public void share(
+            Context context, Image image, Listener listener
+    ) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(
+                context.getResources().getString(R.string.title_image_link_clipboard_label),
+                image.getShareUrl().value()
+        );
+        clipboard.setPrimaryClip(clip);
+        listener.onShareComplete();
     }
 
-    interface Listener {
-
-        void onShareComplete();
-
-        void onShareFailed();
+    @Override
+    public void cancel() {
 
     }
-
 }
