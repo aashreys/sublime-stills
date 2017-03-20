@@ -18,9 +18,9 @@ public interface UnsplashApi {
 
     String ENDPOINT = "https://api.unsplash.com/";
 
-    String PHOTO_INFO_CACHE_DURATION = "max-age=3600";
+    String PHOTO_INFO_CACHE_DURATION = "max-age=3600"; // 1 hour
 
-    String GENERAL_CACHE_DURATION = "max-age=300";
+    String GENERAL_CACHE_DURATION = "max-age=900"; // 15 minutes
 
     @GET("photos")
     Call<ResponseBody> getRecentPhotos(

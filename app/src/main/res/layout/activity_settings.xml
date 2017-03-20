@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,17 +10,53 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/appBarBackground">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_medium"/>
+            android:layout_height="@dimen/height_medium"
+            app:contentInsetStart="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/button_back"
+                    android:layout_width="@dimen/image_button_size"
+                    android:layout_height="@dimen/image_button_size"
+                    android:layout_marginLeft="@dimen/spacing_small"
+                    android:background="?attr/selectableItemBackgroundBorderlessCompat"
+                    app:srcCompat="@drawable/ic_arrow_back_black_24dp"/>
+
+                <TextView
+                    android:id="@+id/text_toolbar_title"
+                    style="@style/Walls.Text.ToolbarTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_medium"
+                    android:layout_marginRight="@dimen/spacing_small"
+                    android:layout_weight="1"
+                    android:text="@string/title_settings"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
     <TextView
-        android:id="@+id/text_reset_tips"
+        style="@style/Walls.Text.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_small"
+        android:text="@string/title_tips"/>
+
+    <TextView
+        android:id="@+id/text_display_tips"
         style="@style/Walls.Text.SingleListItem"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_medium"
@@ -27,7 +64,8 @@
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/spacing_medium"
         android:paddingRight="@dimen/spacing_medium"
-        android:text="@string/settings_reset_tips"/>
+        android:text="@string/settings_show_tips_again"
+        android:textSize="18sp"/>
 
     <View style="@style/Walls.Divider"/>
 

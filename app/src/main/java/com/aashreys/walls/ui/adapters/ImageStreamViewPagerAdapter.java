@@ -25,10 +25,12 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
 
     private final SparseArray<ImageStreamFragment> positionFragmentArray;
 
+    private CollectionAddedListener collectionAddedListener;
+
     private final CollectionRepositoryListener repositoryCallback
             = new CollectionRepositoryListener() {
         @Override
-        public void onReplace(List<Collection> collections) {
+        public void onReplaceAll(List<Collection> collections) {
             collectionList.clear();
             collectionList.addAll(collections);
             notifyDataSetChanged();
@@ -38,6 +40,9 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
         public void onInsert(Collection object) {
             collectionList.add(object);
             notifyDataSetChanged();
+            if (collectionAddedListener != null) {
+                collectionAddedListener.onCollectionAdded(object, collectionList.size() - 1);
+            }
         }
 
         @Override
@@ -120,5 +125,15 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
     @Override
     public Collection getCollection(int position) {
         return collectionList.get(position);
+    }
+
+    public void setCollectionAddedListener(CollectionAddedListener collectionAddedListener) {
+        this.collectionAddedListener = collectionAddedListener;
+    }
+
+    public interface CollectionAddedListener {
+
+        void onCollectionAdded(Collection collection, int position);
+
     }
 }

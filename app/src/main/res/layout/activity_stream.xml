@@ -19,7 +19,7 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/toolbarBackground"
+            android:background="@color/appBarBackground"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
@@ -55,13 +55,13 @@
                         android:text="@string/title_walls"/>
 
                     <ImageButton
-                        android:id="@+id/button_collections"
+                        android:id="@+id/button_add"
                         android:layout_width="@dimen/image_button_size"
                         android:layout_height="@dimen/image_button_size"
                         android:layout_marginRight="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
                         android:padding="@dimen/spacing_small"
-                        app:srcCompat="@drawable/ic_collections_black_24dp"/>
+                        app:srcCompat="@drawable/ic_add_black_24dp"/>
 
                 </LinearLayout>
 
@@ -71,7 +71,9 @@
                 android:id="@+id/tablayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_small"
-                app:tabContentStart="@dimen/spacing_large"
+                android:paddingLeft="@dimen/spacing_medium"
+                android:paddingRight="@dimen/spacing_medium"
+                android:clipToPadding="false"
                 app:tabMode="scrollable"
                 app:tabTextAppearance="@style/Walls.TextAppearance.Tab"/>
 
@@ -93,7 +95,7 @@
         android:background="@color/navigationDrawerBackground"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
-        app:menu="@menu/nav_drawer">
+        app:menu="@menu/menu_nav_drawer">
 
         <TextView
             android:layout_width="match_parent"

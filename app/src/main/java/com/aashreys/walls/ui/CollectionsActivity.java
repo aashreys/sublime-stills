@@ -50,7 +50,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
         getUiComponent().inject(this);
         this.repositoryCallback = new CollectionRepository.CollectionRepositoryListener() {
             @Override
-            public void onReplace(List<Collection> collections) {
+            public void onReplaceAll(List<Collection> collections) {
 
             }
 
@@ -105,9 +105,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
         addCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddCollectionDialog fragment
-                        = new AddCollectionDialog();
-                fragment.show(getSupportFragmentManager(), TAG_ADD_COLLECTION_FRAGMENT);
+                AddCollectionDialog.showNewInstance(CollectionsActivity.this, TAG_ADD_COLLECTION_FRAGMENT);
             }
         });
     }

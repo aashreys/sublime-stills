@@ -24,7 +24,7 @@ public class ChromeTabHelper {
     public static void openUrl(Context context, String url) {
         if (isChromeTabSupported(context)) {
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-            builder.setToolbarColor(UiHelper.getColor(context, R.color.toolbarBackground));
+            builder.setToolbarColor(UiHelper.getColor(context, R.color.appBarBackground));
             CustomTabsIntent customTabsIntent = builder.build();
             customTabsIntent.launchUrl(context, Uri.parse(url));
         } else {

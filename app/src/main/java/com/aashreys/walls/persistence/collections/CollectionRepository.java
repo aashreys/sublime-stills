@@ -15,6 +15,8 @@ public interface CollectionRepository {
 
     void insert(Collection collection);
 
+    boolean exists(Collection collection);
+
     void remove(Collection collection);
 
     void replaceAll(List<Collection> collectionList);
@@ -28,7 +30,7 @@ public interface CollectionRepository {
 
     interface CollectionRepositoryListener extends RepositoryCallback<Collection> {
 
-        void onReplace(List<Collection> collections);
+        void onReplaceAll(List<Collection> collections);
 
     }
 

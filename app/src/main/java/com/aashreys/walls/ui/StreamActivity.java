@@ -10,7 +10,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,6 +19,8 @@ import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.di.UiComponent;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
+import com.aashreys.walls.domain.display.collections.DiscoverCollection;
+import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
@@ -31,8 +32,6 @@ import com.aashreys.walls.ui.views.StreamImageView;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
-
 public class StreamActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
         ImageStreamFragment.CollectionProvider, NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,9 +39,11 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
 
     private static final String ARG_TAB_POSITION = "arg_tab_position";
 
+    private static final String FRAGMENT_TAG_ADD_COLLECTION = "fragment_tag_add_collection";
+
     @Inject CollectionRepository collectionRepository;
 
-    @Inject Lazy<CollectionFactory> collectionFactoryLazy;
+    @Inject CollectionFactory collectionFactory;
 
     @Inject ImageCache imageCache;
 
@@ -57,8 +58,6 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
 
     private ViewPager viewPager;
 
-    private Toolbar toolbar;
-
     public static Intent createLaunchIntent(Context context, int tabPosition) {
         Intent intent = new Intent(context, StreamActivity.class);
         intent.putExtra(ARG_TAB_POSITION, tabPosition);
@@ -71,10 +70,7 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
         setContentView(R.layout.activity_stream);
         getActivityComponent().inject(this);
 
-        if (startupHelper.isFirstStart()) {
-            populateDatabases();
-            startupHelper.onFirstStartCompleted();
-        }
+        addDefaultCollectionsIfMissing();
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -88,9 +84,13 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
                 collectionRepository
         );
         viewPager.setAdapter(viewPagerAdapter);
-        if (viewPager.getAdapter().getCount() > 1) {
-            tabs.setVisibility(View.VISIBLE);
-        }
+        viewPagerAdapter.setCollectionAddedListener(new ImageStreamViewPagerAdapter
+                .CollectionAddedListener() {
+            @Override
+            public void onCollectionAdded(Collection collection, int position) {
+                viewPager.setCurrentItem(position);
+            }
+        });
 
         ImageButton menuButton = (ImageButton) findViewById(R.id.button_menu);
         menuButton.setOnClickListener(new View.OnClickListener() {
@@ -100,11 +100,14 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
             }
         });
 
-        ImageButton collectionsButton = (ImageButton) findViewById(R.id.button_collections);
+        ImageButton collectionsButton = (ImageButton) findViewById(R.id.button_add);
         collectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCollectionsActivity();
+                AddCollectionDialog.showNewInstance(
+                        StreamActivity.this,
+                        FRAGMENT_TAG_ADD_COLLECTION
+                );
             }
         });
         handleIntent(getIntent());
@@ -155,10 +158,23 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
         }
     }
 
-    private void populateDatabases() {
-        CollectionFactory collectionFactory = collectionFactoryLazy.get();
-        collectionRepository.insert(collectionFactory.create(Collection.Type.DISCOVER, null, null));
-        collectionRepository.insert(collectionFactory.create(Collection.Type.FAVORITE, null, null));
+    private void addDefaultCollectionsIfMissing() {
+        DiscoverCollection discoverCollection = (DiscoverCollection) collectionFactory.create(
+                Collection.Type.DISCOVER,
+                null,
+                null
+        );
+        FavoriteCollection favoriteCollection = (FavoriteCollection) collectionFactory.create(
+                Collection.Type.FAVORITE,
+                null,
+                null
+        );
+        if (!collectionRepository.exists(discoverCollection)) {
+            collectionRepository.insert(discoverCollection);
+        }
+        if (!collectionRepository.exists(favoriteCollection)) {
+            collectionRepository.insert(favoriteCollection);
+        }
     }
 
     private UiComponent getActivityComponent() {

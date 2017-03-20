@@ -64,6 +64,11 @@ public class AddCollectionDialog extends DialogFragment implements
 
     private CollectionSuggestionAdapter adapter;
 
+    public static void showNewInstance(BaseActivity activity, String tag) {
+        AddCollectionDialog fragment = new AddCollectionDialog();
+        fragment.show(activity.getSupportFragmentManager(), tag);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -84,7 +89,10 @@ public class AddCollectionDialog extends DialogFragment implements
         collectionInput = (EditText) contentView.findViewById(R.id.input_collection);
         String[] hintArray =
                 getContext().getResources().getStringArray(R.array.hint_collection_suggestions);
-        collectionInput.setHint(hintArray[new Random().nextInt(hintArray.length)]);
+        collectionInput.setHint(getString(
+                R.string.hint_collection_search_template,
+                hintArray[new Random().nextInt(hintArray.length)]
+        ));
         collectionsParent = (ViewGroup) contentView.findViewById(R.id.parent_collections);
         collectionsList = (RecyclerView) contentView.findViewById(R.id.list_collections);
         progressBar = (ProgressBar) contentView.findViewById(R.id.progress_bar);

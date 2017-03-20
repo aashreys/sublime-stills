@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
@@ -24,16 +25,16 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getUiComponent().inject(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_settings);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+        ImageButton backButton = (ImageButton) findViewById(R.id.button_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        resetTipsText = (TextView) findViewById(R.id.text_reset_tips);
+
+        resetTipsText = (TextView) findViewById(R.id.text_display_tips);
         resetTipsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,6 +46,6 @@ public class SettingsActivity extends BaseActivity {
     private void clearTipsSeen() {
         keyValueStore.putBoolean(getString(R.string.tag_hint_collection), false);
         keyValueStore.putBoolean(getString(R.string.tag_hint_image_actions), false);
-        Snackbar.make(resetTipsText, R.string.confirmation_tips_reset, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(resetTipsText, R.string.confirmation_show_tips_again, Snackbar.LENGTH_LONG).show();
     }
 }

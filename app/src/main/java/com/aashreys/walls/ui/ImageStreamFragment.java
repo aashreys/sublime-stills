@@ -118,7 +118,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             Bundle savedInstanceState
     ) {
         View view = inflater.inflate(R.layout.fragment_image_stream, container, false);
-        this.recyclerView = (RecyclerView) view;
+        this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         setupRecyclerView(this.recyclerView);
         adapter = new ImageStreamAdapter(this, imageSelectedListener);
         recyclerView.setAdapter(adapter);

@@ -36,6 +36,11 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     }
 
     @Override
+    public boolean exists(Collection collection) {
+        return getBook().exist(getCollectionKey(collection));
+    }
+
+    @Override
     public void remove(Collection collection) {
         getBook().delete(getCollectionKey(collection));
         _notifyDelete(collection);
@@ -90,7 +95,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     
     private void _notifyReplaceAll(List<Collection> collections) {
         for (CollectionRepositoryListener listener : listeners) {
-            listener.onReplace(collections);
+            listener.onReplaceAll(collections);
         }
     }
 
