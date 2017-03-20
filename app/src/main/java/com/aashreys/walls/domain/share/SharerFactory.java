@@ -39,12 +39,12 @@ public class SharerFactory {
         this.deviceResolution = deviceResolution;
     }
 
-    public Sharer create(Sharer.ShareMode shareMode) {
-        switch (shareMode) {
+    public ShareDelegate create(ShareDelegate.Mode mode) {
+        switch (mode) {
             case ONLY_URL:
                 return imageUrlSharerFactory.create();
             case SET_AS:
-                return new SetAsSharer(deviceResolution);
+                return new SetAsShareDelegate(deviceResolution);
         }
         throw new IllegalArgumentException("Unexpected share mode");
     }

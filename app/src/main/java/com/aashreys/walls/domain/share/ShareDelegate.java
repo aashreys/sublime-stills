@@ -24,13 +24,13 @@ import com.aashreys.walls.domain.display.images.Image;
  * Created by aashreys on 03/12/16.
  */
 
-public interface Sharer {
+public interface ShareDelegate {
 
     void share(Context context, Image image, Listener listener);
 
     void cancel();
 
-    enum ShareMode {
+    enum Mode {
         ONLY_URL,
         SET_AS
     }

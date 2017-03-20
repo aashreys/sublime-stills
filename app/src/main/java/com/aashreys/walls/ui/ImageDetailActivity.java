@@ -46,7 +46,7 @@ import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
-import com.aashreys.walls.domain.share.Sharer;
+import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.domain.share.SharerFactory;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
@@ -91,9 +91,9 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Inject DeviceResolution deviceResolution;
 
-    private Sharer imageSharer;
+    private ShareDelegate imageShareDelegate;
 
-    private Sharer setAsSharer;
+    private ShareDelegate setAsShareDelegate;
 
     @Nullable
     private Image image;
@@ -161,16 +161,16 @@ public class ImageDetailActivity extends BaseActivity {
 
             shareButton = (ImageButton) findViewById(R.id.button_share);
             final ProgressBar shareProgress = (ProgressBar) findViewById(R.id.progress_share);
-            imageSharer = sharerFactory.create(Sharer.ShareMode.ONLY_URL);
+            imageShareDelegate = sharerFactory.create(ShareDelegate.Mode.ONLY_URL);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     shareButton.setVisibility(View.INVISIBLE);
                     shareProgress.setVisibility(View.VISIBLE);
-                    imageSharer.share(
+                    imageShareDelegate.share(
                             ImageDetailActivity.this,
                             image,
-                            new Sharer.Listener() {
+                            new ShareDelegate.Listener() {
                                 @Override
                                 public void onShareComplete() {
                                     shareProgress.setVisibility(View.INVISIBLE);
@@ -189,16 +189,16 @@ public class ImageDetailActivity extends BaseActivity {
 
             setAsButton = (ImageButton) findViewById(R.id.button_set_as);
             final ProgressBar setAsProgress = (ProgressBar) findViewById(R.id.progress_set_as);
-            setAsSharer = sharerFactory.create(Sharer.ShareMode.SET_AS);
+            setAsShareDelegate = sharerFactory.create(ShareDelegate.Mode.SET_AS);
             setAsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     setAsButton.setVisibility(View.INVISIBLE);
                     setAsProgress.setVisibility(View.VISIBLE);
-                    setAsSharer.share(
+                    setAsShareDelegate.share(
                             ImageDetailActivity.this,
                             image,
-                            new Sharer.Listener() {
+                            new ShareDelegate.Listener() {
                                 @Override
                                 public void onShareComplete() {
                                     setAsProgress.setVisibility(View.INVISIBLE);

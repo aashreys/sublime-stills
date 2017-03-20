@@ -35,9 +35,9 @@ import com.google.auto.factory.Provided;
  */
 
 @AutoFactory
-public class ImageUrlSharer implements Sharer {
+public class ImageUrlShareDelegate implements ShareDelegate {
 
-    private static final String TAG = ImageUrlSharer.class.getSimpleName();
+    private static final String TAG = ImageUrlShareDelegate.class.getSimpleName();
 
     private static final String MIME_TYPE = "text/plain";
 
@@ -49,7 +49,7 @@ public class ImageUrlSharer implements Sharer {
 
     private UiHandler uiHandler = new UiHandler();
 
-    ImageUrlSharer(@Provided UrlShortener urlShortener) {
+    ImageUrlShareDelegate(@Provided UrlShortener urlShortener) {
         this.urlShortener = urlShortener;
     }
 
