@@ -36,9 +36,9 @@ import java.io.File;
  * Created by aashreys on 05/12/16.
  */
 
-class SetAsShareDelegate implements ShareDelegate {
+class SetAsDelegate implements ShareDelegate {
 
-    private static final String TAG = SetAsShareDelegate.class.getSimpleName();
+    private static final String TAG = SetAsDelegate.class.getSimpleName();
 
     private static final String MIME_TYPE = "image/*";
 
@@ -48,7 +48,7 @@ class SetAsShareDelegate implements ShareDelegate {
 
     private final DeviceResolution deviceResolution;
 
-    public SetAsShareDelegate(DeviceResolution deviceResolution) {
+    public SetAsDelegate(DeviceResolution deviceResolution) {
         this.deviceResolution = deviceResolution;
     }
 

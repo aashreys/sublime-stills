@@ -37,7 +37,7 @@ import java.io.File;
  * Created by aashreys on 20/03/17.
  */
 
-public class ImageFileShareDelegate implements ShareDelegate {
+public class ShareImageDelegate implements ShareDelegate {
 
     private static final int minWidth = 720;
 
@@ -49,7 +49,7 @@ public class ImageFileShareDelegate implements ShareDelegate {
 
     private boolean isCancelled;
 
-    ImageFileShareDelegate(DeviceResolution deviceResolution) {
+    ShareImageDelegate(DeviceResolution deviceResolution) {
         this.deviceResolution = deviceResolution;
     }
 

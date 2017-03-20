@@ -43,13 +43,13 @@ public class SharerFactory {
     public ShareDelegate create(ShareDelegate.Mode mode) {
         switch (mode) {
             case LINK:
-                return new ImageUrlShareDelegate(urlShortener);
+                return new ShareLinkDelegate(urlShortener);
             case COPY_LINK:
                 return new CopyLinkDelegate();
             case PHOTO:
-                return new ImageFileShareDelegate(deviceResolution);
+                return new ShareImageDelegate(deviceResolution);
             case SET_AS:
-                return new SetAsShareDelegate(deviceResolution);
+                return new SetAsDelegate(deviceResolution);
         }
         throw new IllegalArgumentException("Unexpected share mode");
     }

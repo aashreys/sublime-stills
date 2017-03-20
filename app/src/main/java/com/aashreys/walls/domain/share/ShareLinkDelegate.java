@@ -32,9 +32,9 @@ import com.aashreys.walls.ui.utils.UiHandler;
  * Created by aashreys on 08/02/17.
  */
 
-public class ImageUrlShareDelegate implements ShareDelegate {
+public class ShareLinkDelegate implements ShareDelegate {
 
-    private static final String TAG = ImageUrlShareDelegate.class.getSimpleName();
+    private static final String TAG = ShareLinkDelegate.class.getSimpleName();
 
     private static final String MIME_TYPE = "text/plain";
 
@@ -46,7 +46,7 @@ public class ImageUrlShareDelegate implements ShareDelegate {
 
     private UiHandler uiHandler = new UiHandler();
 
-    ImageUrlShareDelegate(UrlShortener urlShortener) {
+    ShareLinkDelegate(UrlShortener urlShortener) {
         this.urlShortener = urlShortener;
     }
 

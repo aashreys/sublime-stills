@@ -22,10 +22,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.transition.Fade;
 import android.support.transition.TransitionManager;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.widget.PopupMenu;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -35,6 +39,7 @@ import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.R;
@@ -81,7 +86,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     private static final String ARG_IMAGE_SERVICE_NAME = "arg_image_service_name";
 
-    @Inject SharerFactory sharerFactory;
+    @Inject SharerFactory shareDelegateFactory;
 
     @Inject FavoriteImageRepository favoriteImageRepository;
 
@@ -91,7 +96,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Inject DeviceResolution deviceResolution;
 
-    private ShareDelegate imageShareDelegate;
+    private ShareDelegate shareImageDelegate, shareLinkDelegate, copyLinkDelegate;
 
     private ShareDelegate setAsShareDelegate;
 
@@ -104,7 +109,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     private boolean isImageLoaded, isInfoLoaded;
 
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, shareProgress;
 
     private ViewGroup contentParent;
 
@@ -113,6 +118,8 @@ public class ImageDetailActivity extends BaseActivity {
     private TableLayout infoTable;
 
     private int infoViewHeight;
+
+    private MenuPopupHelper shareMenuHelper;
 
     public static Intent createLaunchIntent(Context context, Image image) {
         Intent intent = new Intent(context, ImageDetailActivity.class);
@@ -137,10 +144,19 @@ public class ImageDetailActivity extends BaseActivity {
             titleText = (TextView) findViewById(R.id.text_title);
             metaText = (TextView) findViewById(R.id.text_meta);
 
+            favoriteButton = (ImageButton) findViewById(R.id.button_favorite);
+            shareButton = (ImageButton) findViewById(R.id.button_share);
+            setAsButton = (ImageButton) findViewById(R.id.button_set_as);
+
+            shareProgress = (ProgressBar) findViewById(R.id.progress_share);
+            final ProgressBar setAsProgress = (ProgressBar) findViewById(R.id.progress_set_as);
+
             infoViewHeight = getResources().getDimensionPixelSize(R.dimen.height_small);
 
+            buildShareDelegates();
+            buildShareMenu(shareButton);
+
             final boolean isFavorite = favoriteImageRepository.isFavorite(image);
-            favoriteButton = (ImageButton) findViewById(R.id.button_favorite);
             favoriteButton.setImageResource(isFavorite ?
                     R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp);
             favoriteButton.setOnClickListener(new View.OnClickListener() {
@@ -159,37 +175,14 @@ public class ImageDetailActivity extends BaseActivity {
                 }
             });
 
-            shareButton = (ImageButton) findViewById(R.id.button_share);
-            final ProgressBar shareProgress = (ProgressBar) findViewById(R.id.progress_share);
-            imageShareDelegate = sharerFactory.create(ShareDelegate.Mode.LINK);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    shareButton.setVisibility(View.INVISIBLE);
-                    shareProgress.setVisibility(View.VISIBLE);
-                    imageShareDelegate.share(
-                            ImageDetailActivity.this,
-                            image,
-                            new ShareDelegate.Listener() {
-                                @Override
-                                public void onShareComplete() {
-                                    shareProgress.setVisibility(View.INVISIBLE);
-                                    shareButton.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onShareFailed() {
-                                    shareProgress.setVisibility(View.INVISIBLE);
-                                    shareButton.setVisibility(View.VISIBLE);
-                                }
-                            }
-                    );
+                    //noinspection RestrictedApi
+                    shareMenuHelper.show();
                 }
             });
 
-            setAsButton = (ImageButton) findViewById(R.id.button_set_as);
-            final ProgressBar setAsProgress = (ProgressBar) findViewById(R.id.progress_set_as);
-            setAsShareDelegate = sharerFactory.create(ShareDelegate.Mode.SET_AS);
             setAsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -371,7 +364,7 @@ public class ImageDetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        imageShareDelegate.cancel();
+        shareLinkDelegate.cancel();
         setAsShareDelegate.cancel();
         if (image != null && isFinishing()) {
             imageCache.remove(image);
@@ -496,6 +489,77 @@ public class ImageDetailActivity extends BaseActivity {
             return imageCache.get(serviceName, imageId);
         } else {
             return null;
+        }
+    }
+
+    private void buildShareDelegates() {
+        shareImageDelegate = shareDelegateFactory.create(ShareDelegate.Mode.PHOTO);
+        shareLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.LINK);
+        copyLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.COPY_LINK);
+        setAsShareDelegate = shareDelegateFactory.create(ShareDelegate.Mode.SET_AS);
+    }
+
+    @SuppressWarnings("RestrictedApi")
+    private void buildShareMenu(View anchor) {
+        PopupMenu shareMenu = new PopupMenu(this, anchor);
+        shareMenu.getMenuInflater().inflate(R.menu.menu_image_share, shareMenu.getMenu());
+        shareMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+
+                    case R.id.menu_share_photo:
+                        handleImageShare(ShareDelegate.Mode.PHOTO);
+                        return true;
+
+                    case R.id.menu_share_link:
+                        handleImageShare(ShareDelegate.Mode.LINK);
+                        return true;
+
+                    case R.id.menu_copy_link:
+                        handleImageShare(ShareDelegate.Mode.COPY_LINK);
+                        return true;
+
+                }
+                return false;
+            }
+        });
+        shareMenuHelper = new MenuPopupHelper(
+                this,
+                (MenuBuilder) shareMenu.getMenu(),
+                anchor
+        );
+        shareMenuHelper.setForceShowIcon(true);
+    }
+
+    private void handleImageShare(ShareDelegate.Mode mode) {
+        shareButton.setVisibility(View.INVISIBLE);
+        shareProgress.setVisibility(View.VISIBLE);
+        ShareDelegate.Listener listener = new ShareDelegate.Listener() {
+            @Override
+            public void onShareComplete() {
+                shareProgress.setVisibility(View.INVISIBLE);
+                shareButton.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onShareFailed() {
+                shareProgress.setVisibility(View.INVISIBLE);
+                shareButton.setVisibility(View.VISIBLE);
+            }
+        };
+        switch (mode) {
+            case PHOTO:
+                shareImageDelegate.share(this, image, listener);
+                break;
+
+            case LINK:
+                shareLinkDelegate.share(this, image, listener);
+                break;
+
+            case COPY_LINK:
+                copyLinkDelegate.share(this, image, listener);
+                Toast.makeText(this, R.string.confirmation_link_copied, Toast.LENGTH_SHORT).show();
         }
     }
 }
