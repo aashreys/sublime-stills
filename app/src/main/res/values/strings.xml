@@ -79,6 +79,7 @@
     <string name="error_generic">Photos could not be loaded</string>
     <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images</string>
     <string name="error_slow_connectivity">Your connection is poor\nLoading images will take longer than usual</string>
+    <string name="hint_end_of_collection">You\'ve reached the end of this Collection</string>
 
     <string name="title_add_collection_dialog">Find a Collection Online</string>
 

@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.sources.Source;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,6 +37,8 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
 
     private boolean isReleased;
 
+    private boolean isError;
+
     public LoadImagesTask(
             @NonNull Source source,
             @NonNull ImageLoadCallback listener
@@ -47,7 +50,12 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
     @Override
     protected List<Image> doInBackground(Integer... fromIndex) {
         if (!isReleased) {
-            return source.getImages(fromIndex[0]);
+            try {
+                return source.getImages(fromIndex[0]);
+            } catch (IOException e) {
+                isError = true;
+                return null;
+            }
         }
         return null;
     }
@@ -56,7 +64,11 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
     protected void onPostExecute(List<Image> images) {
         super.onPostExecute(images);
         if (!isReleased) {
-            listener.onLoadComplete(images);
+            if (!isError) {
+                listener.onLoadComplete(images);
+            } else {
+                listener.onLoadError();
+            }
         }
     }
 
@@ -68,6 +80,7 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
         cancel(true);
         source = null;
         listener = null;
+        isError = false;
         isReleased = true;
     }
 
@@ -75,6 +88,9 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
 
         @MainThread
         void onLoadComplete(@NonNull List<Image> images);
+
+        @MainThread
+        void onLoadError();
 
     }
 }

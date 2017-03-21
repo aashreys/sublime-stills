@@ -32,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -62,7 +61,7 @@ public class FlickrRecentSource implements Source {
 
     @NonNull
     @Override
-    public List<Image> getImages(int fromIndex) {
+    public List<Image> getImages(int fromIndex) throws IOException {
         Call<ResponseBody> call = flickrApi.getInterestingPhotos(
                 FlickrApi.PHOTO_EXTRAS,
                 UiHelper.getPageNumber(fromIndex, Config.Flickr.ITEMS_PER_PAGE),
@@ -80,9 +79,8 @@ public class FlickrRecentSource implements Source {
             } else {
                 throw new IOException("Unexpected error code " + response.code());
             }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+        } catch (JSONException e) {
+            throw new IOException("Image loading failed with JSONException", e);
         }
     }
 }

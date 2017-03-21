@@ -44,6 +44,7 @@ import static com.aashreys.walls.ui.views.LoadingView.ViewMode.FAVORITE;
 import static com.aashreys.walls.ui.views.LoadingView.ViewMode.LOADING;
 import static com.aashreys.walls.ui.views.LoadingView.ViewMode.NOT_LOADING;
 import static com.aashreys.walls.ui.views.LoadingView.ViewMode.NO_INTERNET;
+import static com.aashreys.walls.ui.views.LoadingView.ViewMode.END_OF_COLLECTION;
 import static com.aashreys.walls.ui.views.LoadingView.ViewMode.SLOW_INTERNET;
 
 /**
@@ -133,8 +134,20 @@ public class LoadingView extends LinearLayout {
                 case FAVORITE:
                     displayFavoriteHintState();
                     break;
+
+                case END_OF_COLLECTION:
+                    displayReachedEndState();
             }
         }
+    }
+
+    private void displayReachedEndState() {
+        TransitionManager.beginDelayedTransition(this, new AutoTransition());
+        resetUiState();
+        infoImage.setVisibility(VISIBLE);
+        infoImage.setImageResource(R.drawable.ic_info_outline_black_24dp);
+        infoText.setVisibility(VISIBLE);
+        infoText.setText(R.string.hint_end_of_collection);
     }
 
     private void resetUiState() {
@@ -274,7 +287,8 @@ public class LoadingView extends LinearLayout {
             NO_INTERNET,
             SLOW_INTERNET,
             NOT_LOADING,
-            FAVORITE
+            FAVORITE,
+            END_OF_COLLECTION
     })
     public @interface ViewMode {
 
@@ -289,6 +303,8 @@ public class LoadingView extends LinearLayout {
         int SLOW_INTERNET = 4;
 
         int FAVORITE = 5;
+
+        int END_OF_COLLECTION = 6;
 
     }
 

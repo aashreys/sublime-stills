@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 
 import com.aashreys.walls.domain.display.images.Image;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ public class DiscoverSource implements Source {
 
     @NonNull
     @Override
-    public List<Image> getImages(int fromIndex) {
+    public List<Image> getImages(int fromIndex) throws IOException {
         // TODO: Integrate both image sources
         return unsplashRecentSource.getImages(fromIndex);
     }

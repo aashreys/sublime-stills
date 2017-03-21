@@ -20,7 +20,6 @@ import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
 import com.aashreys.walls.Config;
-import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.network.apis.UnsplashApi;
@@ -29,8 +28,9 @@ import com.aashreys.walls.ui.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
+import org.json.JSONException;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -65,7 +65,7 @@ public class UnsplashCollectionSource implements Source {
     @NonNull
     @SuppressLint("DefaultLocale")
     @Override
-    public List<Image> getImages(int fromIndex) {
+    public List<Image> getImages(int fromIndex) throws IOException {
         try {
             Call<ResponseBody> call = unsplashApi.getCollectionPhotos(
                     collectionId.value(),
@@ -78,9 +78,8 @@ public class UnsplashCollectionSource implements Source {
             } else {
                 throw new IOException("Unexpected response code " + response.code());
             }
-        } catch (IOException e) {
-            LogWrapper.e(TAG, "Unable to get images", e);
-            return new ArrayList<>();
+        } catch (JSONException e) {
+            throw new IOException("Image loading failed with JSONException", e);
         }
     }
 }

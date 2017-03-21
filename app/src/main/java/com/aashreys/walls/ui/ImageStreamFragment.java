@@ -287,9 +287,14 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             if (images.size() > 0) {
                 adapter.setLoadingState(LoadingView.ViewMode.NOT_LOADING);
             } else {
-                adapter.setLoadingState(LoadingView.ViewMode.ERROR);
+                adapter.setLoadingState(LoadingView.ViewMode.END_OF_COLLECTION);
             }
         }
+    }
+
+    @Override
+    public void onLoadError() {
+        adapter.setLoadingState(LoadingView.ViewMode.ERROR);
     }
 
     private boolean isFavoritesStream() {

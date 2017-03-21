@@ -52,21 +52,15 @@ public class UnsplashPhotoResponseParser {
     public UnsplashPhotoResponseParser() {}
 
     @NonNull
-    public List<Image> parse(String response) {
+    public List<Image> parse(String response) throws JSONException {
+        JSONArray jsonArray = new JSONArray(response);
         List<Image> imageList = new ArrayList<>();
-        if (response != null) {
-            try {
-                JSONArray jsonArray = new JSONArray(response);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    Image image = _parse(jsonArray.getJSONObject(i));
-                    if (image != null) {
-                        imageList.add(image);
-                    } else {
-                        LogWrapper.d(TAG, "Skipping adding image to list as it is invalid");
-                    }
-                }
-            } catch (JSONException e) {
-                LogWrapper.e(TAG, "Unable to parse response", e);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            Image image = _parse(jsonArray.getJSONObject(i));
+            if (image != null) {
+                imageList.add(image);
+            } else {
+                LogWrapper.d(TAG, "Skipping adding image to list as it is invalid");
             }
         }
         return imageList;

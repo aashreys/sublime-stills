@@ -20,7 +20,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.aashreys.walls.Config;
-import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
@@ -28,8 +27,9 @@ import com.aashreys.walls.ui.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
+import org.json.JSONException;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -60,7 +60,7 @@ public class UnsplashRecentSource implements Source {
     @NonNull
     @WorkerThread
     @Override
-    public List<Image> getImages(int fromIndex) {
+    public List<Image> getImages(int fromIndex) throws IOException {
         try {
             Call<ResponseBody> call = unsplashApi.getRecentPhotos(
                     UiHelper.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
@@ -72,9 +72,8 @@ public class UnsplashRecentSource implements Source {
             } else {
                 throw new IOException("Unexpected error code " + response.code());
             }
-        } catch (IOException e) {
-            LogWrapper.e(TAG, "Unable to get images", e);
-            return new ArrayList<>();
+        } catch (JSONException e) {
+            throw new IOException("Image loading failed with JSONException", e);
         }
     }
 }

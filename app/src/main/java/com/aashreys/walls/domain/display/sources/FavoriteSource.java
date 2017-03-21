@@ -23,6 +23,7 @@ import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class FavoriteSource implements Source {
 
     @NonNull
     @Override
-    public List<Image> getImages(int fromIndex) {
+    public List<Image> getImages(int fromIndex) throws IOException {
         return favoriteImageRepository.get(fromIndex, ITEMS_PER_PAGE);
     }
 
