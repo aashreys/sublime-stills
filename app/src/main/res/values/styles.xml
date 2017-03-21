@@ -17,7 +17,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="WallsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="SublimeTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -34,31 +34,31 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="Walls" />
+    <style name="Sublime" />
 
-    <style name="Walls.Divider">
+    <style name="Sublime.Divider">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@color/black_12p</item>
     </style>
 
-    <style name="Walls.Text" parent="TextAppearance.AppCompat"/>
+    <style name="Sublime.Text" parent="TextAppearance.AppCompat"/>
 
-    <style name="Walls.TextAppearance.Tab" parent="TextAppearance.Design.Tab"/>
+    <style name="Sublime.TextAppearance.Tab" parent="TextAppearance.Design.Tab"/>
 
-    <style name="Walls.Text.ToolbarTitle" parent="TextAppearance.AppCompat.Title">
+    <style name="Sublime.Text.ToolbarTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/black_87p</item>
     </style>
 
-    <style name="Walls.Text.ToolbarTitle.Caps" parent="Walls.Text.ToolbarTitle">
+    <style name="Sublime.Text.ToolbarTitle.Caps" parent="Sublime.Text.ToolbarTitle">
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="Walls.Text.Hint" parent="Walls.Text.Body1">
+    <style name="Sublime.Text.Hint" parent="Sublime.Text.Body1">
         <item name="android:lineSpacingMultiplier">1.1</item>
     </style>
 
-    <style name="Walls.Text.Subhead" parent="Walls.Text">
+    <style name="Sublime.Text.Subhead" parent="Sublime.Text">
         <item name="android:textSize">@dimen/font_medium</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/black_54p</item>
@@ -67,29 +67,33 @@
         <item name="android:paddingRight">@dimen/spacing_medium</item>
     </style>
 
-    <style name="Walls.Text.Body1" parent="TextAppearance.AppCompat.Body1">
+    <style name="Sublime.Text.Body1" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/black_87p</item>
     </style>
 
-    <style name="Walls.Text.Body2" parent="TextAppearance.AppCompat.Body2">
+    <style name="Sublime.Text.Body2" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textColor">@color/black_87p</item>
     </style>
 
-    <style name="Walls.Text.PhotoTitle" parent="Walls.Text">
+    <style name="Sublime.Text.PhotoTitle" parent="Sublime.Text">
         <item name="android:textSize">@dimen/font_xxxl</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textColor">@color/black_87p</item>
+        <item name="android:textColor">@color/black_65p</item>
     </style>
 
-    <style name="Walls.Text.PhotoMetaText" parent="Walls.Text">
+    <style name="Sublime.Text.Display1" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textColor">@color/black_65p</item>
+    </style>
+
+    <style name="Sublime.Text.PhotoMetaText" parent="Sublime.Text">
         <item name="android:maxLines">2</item>
         <item name="android:textSize">@dimen/font_large</item>
         <item name="android:ellipsize">middle</item>
         <item name="android:textColor">@color/black_87p</item>
     </style>
 
-    <style name="Walls.Text.SingleListItem" parent="Walls.Text.Body1">
+    <style name="Sublime.Text.SingleListItem" parent="Sublime.Text.Body1">
         <item name="android:textSize">@dimen/font_medium</item>
         <item name="android:textColor">@color/black_87p</item>
     </style>

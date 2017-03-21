@@ -27,7 +27,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/WallsTheme"
+        android:theme="@style/SublimeTheme"
         tools:replace="android:allowBackup, android:supportsRtl">
         <activity
             android:name=".ui.StreamActivity"

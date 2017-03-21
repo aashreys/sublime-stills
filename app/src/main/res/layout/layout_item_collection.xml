@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/text_title"
-        style="@style/Walls.Text.SingleListItem"
+        style="@style/Sublime.Text.SingleListItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"

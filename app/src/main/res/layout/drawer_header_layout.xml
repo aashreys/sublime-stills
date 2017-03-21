@@ -22,7 +22,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/Walls.Text.ToolbarTitle"
+        style="@style/Sublime.Text.ToolbarTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_medium"

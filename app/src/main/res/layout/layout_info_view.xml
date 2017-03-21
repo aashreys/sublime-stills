@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/text_key"
-            style="@style/Walls.Text.Body2"
+            style="@style/Sublime.Text.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_small"
@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/text_value"
-        style="@style/Walls.Text.Body1"
+        style="@style/Sublime.Text.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="middle"
