@@ -51,6 +51,7 @@ captures/
 .idea/libraries
 .idea/misc.xml
 .idea/vcs.xml
+.idea/copyright/Apache_2_0.xml
 
 # Keystore files
 *.jks
