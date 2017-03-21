@@ -61,7 +61,7 @@ public class CollectionSearchTask extends AsyncTask<String, Void, List<Collectio
 
     public interface CollectionSearchListener {
 
-        void onSearchComplete(List<Collection> collectionList, boolean isFeatured);
+        void onSearchComplete(List<Collection> collectionList, boolean isCurated);
 
     }
 }

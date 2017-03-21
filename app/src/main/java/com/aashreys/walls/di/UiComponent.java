@@ -25,6 +25,7 @@ import com.aashreys.walls.ui.AddCollectionDialog;
 import com.aashreys.walls.ui.CollectionsActivity;
 import com.aashreys.walls.ui.ImageDetailActivity;
 import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.OnboardingActivity;
 import com.aashreys.walls.ui.SettingsActivity;
 import com.aashreys.walls.ui.StreamActivity;
 import com.aashreys.walls.ui.views.CollectionView;
@@ -63,4 +64,6 @@ public interface UiComponent {
     void inject(HintView hintView);
 
     void inject(SettingsActivity settingsActivity);
+
+    void inject(OnboardingActivity onboardingActivity);
 }

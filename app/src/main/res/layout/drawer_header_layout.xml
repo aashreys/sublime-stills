@@ -28,6 +28,6 @@
         android:layout_marginLeft="@dimen/spacing_medium"
         android:layout_marginRight="@dimen/spacing_medium"
         android:layout_marginTop="@dimen/spacing_medium"
-        android:text="@string/title_walls"/>
+        android:text="@string/title_sublime_stills"/>
 
 </LinearLayout>

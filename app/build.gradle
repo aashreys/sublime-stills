@@ -129,6 +129,8 @@ dependencies {
     compile 'com.squareup:javawriter:2.5.1'
     compile "org.objenesis:objenesis:2.5"
 
+    compile "com.wefika:flowlayout:0.4.1"
+
     // Required for the @Generated annotation by Google Auto Factory
     provided 'org.glassfish:javax.annotation:10.0-b28'
 

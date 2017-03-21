@@ -68,7 +68,7 @@
                         android:layout_marginLeft="@dimen/spacing_medium"
                         android:layout_marginRight="@dimen/spacing_small"
                         android:layout_weight="1"
-                        android:text="@string/title_walls"/>
+                        android:text="@string/title_sublime_stills"/>
 
                     <ImageButton
                         android:id="@+id/button_add"

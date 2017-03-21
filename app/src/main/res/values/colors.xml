@@ -37,6 +37,8 @@
     <color name="white_30p">#4CFFFFFF</color>
     <color name="black">#000000</color>
     <color name="black_87p">#DE000000</color>
+    <color name="black_65p">#A6000000</color>
+    <color name="black_75p">#BF000000</color>
     <color name="black_54p">#8A000000</color>
     <color name="black_26p">#42000000</color>
     <color name="black_12p">#1F000000</color>

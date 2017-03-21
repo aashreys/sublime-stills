@@ -60,7 +60,7 @@ import javax.inject.Inject;
  */
 
 public class AddCollectionDialog extends DialogFragment implements
-        ChipView.OnSelectedListener, CollectionSearchTask.CollectionSearchListener {
+        ChipView.OnCheckedListener, CollectionSearchTask.CollectionSearchListener {
 
     private static final String TAG = AddCollectionDialog.class.getSimpleName();
 
@@ -244,10 +244,17 @@ public class AddCollectionDialog extends DialogFragment implements
     }
 
     @Override
-    public void onChipViewSelected(
-            @Nullable ChipView view, @Nullable Collection collection
+    public void onChipViewChecked(
+            @Nullable ChipView checkedChipView, @Nullable Collection checkedCollection
     ) {
-        setSelectedCollection(collection);
+        setSelectedCollection(checkedCollection);
+    }
+
+    @Override
+    public void onChipViewUnchecked(
+            ChipView uncheckedChipView, Collection uncheckedCollection
+    ) {
+        // Do nothing
     }
 
     private void setSelectedCollection(final Collection collection) {
@@ -275,7 +282,6 @@ public class AddCollectionDialog extends DialogFragment implements
                 });
             }
         }
-
     }
 
     @Override

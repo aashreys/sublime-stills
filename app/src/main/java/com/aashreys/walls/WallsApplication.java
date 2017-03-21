@@ -17,18 +17,14 @@
 package com.aashreys.walls;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import com.aashreys.walls.di.ApplicationComponent;
 import com.aashreys.walls.di.DaggerApplicationComponent;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
-import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.persistence.WallsDatabase;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
-
-import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
 import io.paperdb.Paper;
@@ -38,10 +34,6 @@ import io.paperdb.Paper;
  */
 
 public class WallsApplication extends Application {
-
-    @Inject SharedPreferences sharedPreferences;
-
-    @Inject DeviceResolution deviceResolution;
 
     private ApplicationComponent applicationComponent;
 

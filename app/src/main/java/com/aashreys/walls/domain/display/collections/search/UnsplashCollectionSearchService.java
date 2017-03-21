@@ -63,7 +63,8 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 String responseString = response.body().string();
-                JSONArray collectionJsonArray = new JSONObject(responseString).getJSONArray("results");
+                JSONArray collectionJsonArray = new JSONObject(responseString).getJSONArray(
+                        "results");
                 return parseResponse(collectionJsonArray);
             } else {
                 throw new IOException("Unexpected error code" + response.code());

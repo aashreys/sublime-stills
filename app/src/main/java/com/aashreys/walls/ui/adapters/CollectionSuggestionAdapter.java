@@ -32,7 +32,7 @@ import java.util.List;
 
 public class CollectionSuggestionAdapter extends
         RecyclerView.Adapter<CollectionSuggestionAdapter.CollectionSuggestionViewHolder>
-        implements ChipView.OnSelectedListener {
+        implements ChipView.OnCheckedListener {
 
     private final List<Collection> collectionList;
 
@@ -42,8 +42,10 @@ public class CollectionSuggestionAdapter extends
     @Nullable
     private Collection selectedCollection;
 
+    private boolean isMultiSelectEnabled;
+
     @Nullable
-    private ChipView.OnSelectedListener chipViewSelectedListener;
+    private ChipView.OnCheckedListener chipViewSelectedListener;
 
     public CollectionSuggestionAdapter() {
         this.collectionList = new ArrayList<>();
@@ -78,26 +80,33 @@ public class CollectionSuggestionAdapter extends
     }
 
     @Override
-    public void onChipViewSelected(
-            ChipView view, Collection collection
+    public void onChipViewChecked(
+            ChipView checkedChipView, Collection checkedCollection
     ) {
-        if (selectedChipView != null) {
-            selectedChipView.setChecked(false);
+        if (!isMultiSelectEnabled) {
+            if (selectedChipView != null) {
+                selectedChipView.setChecked(false);
+            }
+            selectedChipView = checkedChipView;
+            selectedCollection = checkedCollection;
+
         }
-        selectedChipView = view;
-        selectedCollection = collection;
         if (chipViewSelectedListener != null) {
-            chipViewSelectedListener.onChipViewSelected(view, collection);
+            chipViewSelectedListener.onChipViewChecked(checkedChipView, checkedCollection);
         }
     }
 
-    public void setOnChipViewListener(@Nullable ChipView.OnSelectedListener listener) {
-        this.chipViewSelectedListener = listener;
+    @Override
+    public void onChipViewUnchecked(
+            ChipView uncheckedChipView, Collection uncheckedCollection
+    ) {
+        if (chipViewSelectedListener != null) {
+            chipViewSelectedListener.onChipViewUnchecked(uncheckedChipView, uncheckedCollection);
+        }
     }
 
-    @Nullable
-    public Collection getSelectedCollection() {
-        return selectedCollection;
+    public void setOnChipViewListener(@Nullable ChipView.OnCheckedListener listener) {
+        this.chipViewSelectedListener = listener;
     }
 
     public void resetState() {
@@ -106,6 +115,10 @@ public class CollectionSuggestionAdapter extends
         }
         selectedCollection = null;
         setCollections(null);
+    }
+
+    public void setMultiSelectEnabled(boolean isEnabled) {
+        this.isMultiSelectEnabled = isEnabled;
     }
 
     static class CollectionSuggestionViewHolder extends RecyclerView.ViewHolder {
@@ -119,7 +132,7 @@ public class CollectionSuggestionAdapter extends
 
         private void bind(
                 Collection collection, @Nullable Collection selectedCollection,
-                ChipView.OnSelectedListener listener
+                ChipView.OnCheckedListener listener
         ) {
             chipView.setCollection(collection);
             if (selectedCollection != null) {
@@ -127,7 +140,7 @@ public class CollectionSuggestionAdapter extends
             } else {
                 chipView.setChecked(false);
             }
-            chipView.setOnSelectedListener(listener);
+            chipView.setOnCheckedListener(listener);
         }
     }
 

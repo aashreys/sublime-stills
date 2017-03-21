@@ -54,4 +54,5 @@ public class CollectionSearchServiceImpl implements CollectionSearchService {
     public List<Collection> getFeatured() {
         return unsplashCollectionSearchService.getFeatured();
     }
+
 }

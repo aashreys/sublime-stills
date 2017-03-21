@@ -94,4 +94,5 @@ public class FlickrTagSearchService implements CollectionSearchService {
     public List<Collection> getFeatured() {
         return new ArrayList<>();
     }
+
 }

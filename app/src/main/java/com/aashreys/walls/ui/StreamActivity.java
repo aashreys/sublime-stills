@@ -39,6 +39,7 @@ import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
+import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamViewPagerAdapter;
@@ -57,6 +58,8 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
 
     private static final String FRAGMENT_TAG_ADD_COLLECTION = "fragment_tag_add_collection";
 
+    public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
+
     @Inject CollectionRepository collectionRepository;
 
     @Inject CollectionFactory collectionFactory;
@@ -64,6 +67,8 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     @Inject ImageCache imageCache;
 
     @Inject StartupHelper startupHelper;
+
+    @Inject KeyValueStore keyValueStore;
 
     @Inject
     FavoriteImageRepository favoriteImageRepository;
@@ -83,11 +88,10 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stream);
         getActivityComponent().inject(this);
-
         addDefaultCollectionsIfMissing();
-
+        startOnboardingIfNeeded();
+        setContentView(R.layout.activity_stream);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -127,6 +131,13 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
             }
         });
         handleIntent(getIntent());
+    }
+
+    private void startOnboardingIfNeeded() {
+        if (!keyValueStore.getBoolean(KEY_IS_ONBOARDING_COMPLETED, false)) {
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+        }
     }
 
     @Override

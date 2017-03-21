@@ -17,16 +17,16 @@
 package com.aashreys.walls.ui.views;
 
 import android.content.Context;
-import android.os.Build;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.ui.helpers.UiHelper;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -36,9 +36,11 @@ import org.apache.commons.lang3.text.WordUtils;
 public class ChipView extends AppCompatTextView {
 
     @Nullable
-    private OnSelectedListener listener;
+    private OnCheckedListener listener;
 
     private boolean isChecked;
+
+    @ColorRes private int checkedColor, uncheckedColor;
 
     public ChipView(Context context) {
         super(context);
@@ -59,10 +61,10 @@ public class ChipView extends AppCompatTextView {
         int paddingVertical = getResources().getDimensionPixelSize(R.dimen.spacing_small);
         int paddingHorizontal = getResources().getDimensionPixelSize(R.dimen
                 .spacing_medium);
-        setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        checkedColor = R.color.white;
+        uncheckedColor = R.color.textColorPrimary;
+        setHeight(getResources().getDimensionPixelSize(R.dimen.height_small));
+        setTextColor(UiHelper.getColor(getContext(), uncheckedColor));
         setGravity(Gravity.CENTER);
         setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
         setBackgroundResource(R.drawable.chip_background_light);
@@ -74,23 +76,29 @@ public class ChipView extends AppCompatTextView {
             @Override
             public void onClick(View v) {
                 if (isChecked()) {
-                    notifyListener(null, null);
+                    notifyDeselection(ChipView.this, collection);
                     setChecked(false);
                 } else {
-                    notifyListener(ChipView.this, collection);
+                    notifySelection(ChipView.this, collection);
                     setChecked(true);
                 }
             }
         });
     }
 
-    private void notifyListener(ChipView chipView, Collection collection) {
+    private void notifySelection(ChipView chipView, Collection collection) {
         if (listener != null) {
-            listener.onChipViewSelected(chipView, collection);
+            listener.onChipViewChecked(chipView, collection);
         }
     }
 
-    public void setOnSelectedListener(OnSelectedListener listener) {
+    private void notifyDeselection(ChipView chipView, Collection collection) {
+        if (listener != null) {
+            listener.onChipViewUnchecked(chipView, collection);
+        }
+    }
+
+    public void setOnCheckedListener(OnCheckedListener listener) {
         this.listener = listener;
     }
 
@@ -101,18 +109,10 @@ public class ChipView extends AppCompatTextView {
     public void setChecked(boolean isChecked) {
         if (isChecked) {
             setBackgroundResource(R.drawable.chip_background_dark);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                setTextColor(getResources().getColor(R.color.white, null));
-            } else {
-                setTextColor(getResources().getColor(R.color.white));
-            }
+            setTextColor(UiHelper.getColor(getContext(), checkedColor));
         } else {
             setBackgroundResource(R.drawable.chip_background_light);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                setTextColor(getResources().getColor(R.color.black, null));
-            } else {
-                setTextColor(getResources().getColor(R.color.black));
-            }
+            setTextColor(UiHelper.getColor(getContext(), uncheckedColor));
         }
         this.isChecked = isChecked;
     }
@@ -121,12 +121,11 @@ public class ChipView extends AppCompatTextView {
         setText(null);
     }
 
-    public interface OnSelectedListener {
+    public interface OnCheckedListener {
 
-        void onChipViewSelected(
-                @Nullable ChipView selectedChipView,
-                @Nullable Collection selectedCollection
-        );
+        void onChipViewChecked(ChipView checkedChipView, Collection checkedCollection);
+
+        void onChipViewUnchecked(ChipView uncheckedChipView, Collection uncheckedCollection);
 
     }
 }
