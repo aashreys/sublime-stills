@@ -6,6 +6,8 @@ project.properties
 walls.properties
 walls.jks
 /app/libs/safeapi.jar
+/resources/
+
 
 ### Android ###
 # Built application files
