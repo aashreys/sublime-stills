@@ -25,43 +25,35 @@ import com.google.auto.factory.Provided;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
- * Created by aashreys on 17/02/17.
+ * Created by aashreys on 21/03/17.
  */
 
 @AutoFactory
-public class CollectionSearchTask extends AsyncTask<String, Void, List<Collection>> {
+public class FeaturedCollectionsTask extends AsyncTask<Void, Void, List<Collection>> {
 
     private CollectionSearchService collectionSearchService;
 
-    private CollectionSearchListener listener;
+    private CollectionSearchTask.CollectionSearchListener listener;
 
-    @Inject
-    public CollectionSearchTask(@Provided CollectionSearchService collectionSearchService) {
+    public FeaturedCollectionsTask(@Provided CollectionSearchService collectionSearchService
+    ) {
         this.collectionSearchService = collectionSearchService;
     }
 
-    public void setListener(CollectionSearchListener listener) {
+    public void setListener(CollectionSearchTask.CollectionSearchListener listener) {
         this.listener = listener;
     }
 
     @Override
-    protected List<Collection> doInBackground(String... searchStrings) {
-        return collectionSearchService.search(searchStrings[0]);
+    protected List<Collection> doInBackground(Void... params) {
+        return collectionSearchService.getFeatured();
     }
 
     @Override
     protected void onPostExecute(List<Collection> collections) {
         if (listener != null) {
-            listener.onSearchComplete(collections, false);
+            listener.onSearchComplete(collections, true);
         }
-    }
-
-    public interface CollectionSearchListener {
-
-        void onSearchComplete(List<Collection> collectionList, boolean isFeatured);
-
     }
 }

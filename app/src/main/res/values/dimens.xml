@@ -42,7 +42,7 @@
     <dimen name="icon_xs">16dp</dimen>
     <dimen name="icon_small">18dp</dimen>
     <dimen name="icon_medium">24dp</dimen>
-    <dimen name="icon_large">32dp</dimen>
+    <dimen name="icon_large">36dp</dimen>
     <dimen name="icon_xl">48dp</dimen>
     <dimen name="icon_xxl">64dp</dimen>
 

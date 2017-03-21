@@ -17,7 +17,6 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
@@ -47,16 +46,28 @@
             android:layout_height="match_parent"
             android:visibility="gone"/>
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        <LinearLayout
+            android:id="@+id/parent_search_progress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/spacing_xs"
-            android:layout_marginRight="@dimen/spacing_xs"
-            android:indeterminate="true"
-            android:visibility="gone"/>
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="@dimen/height_xs"
+                android:layout_height="@dimen/height_xs"
+                android:layout_gravity="center_vertical"
+                android:indeterminate="true"
+                android:layout_marginRight="@dimen/spacing_medium"/>
+
+            <TextView
+                android:id="@+id/text_search_status"
+                android:text="Searching for collections..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
     </FrameLayout>
 

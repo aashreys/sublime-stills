@@ -38,6 +38,8 @@ public interface UnsplashApi {
 
     String GENERAL_CACHE_DURATION = "max-age=900"; // 15 minutes
 
+    String FEATURED_COLLECTION_CACHE_DURATION = "max-age=7200"; // 2 hours
+
     @GET("photos")
     Call<ResponseBody> getRecentPhotos(
             @Query("page") int pageNumber,
@@ -61,6 +63,12 @@ public interface UnsplashApi {
     @GET("photos/{id}")
     Call<ResponseBody> getPhoto(
             @Path("id") String photoId
+    );
+
+    @GET("/collections/featured")
+    Call<ResponseBody> getFeaturedCollections(
+            @Query("page") int pageNumber,
+            @IntRange(from = 1, to = 30) @Query("per_page") int imagesPerPage
     );
 
 }

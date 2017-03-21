@@ -31,4 +31,7 @@ public interface CollectionSearchService {
     @NonNull
     List<Collection> search(String collection);
 
+    @NonNull
+    List<Collection> getFeatured();
+
 }

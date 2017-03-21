@@ -57,24 +57,7 @@
 
     <string name="title_location_elsweyr">Elsweyr, Tamriel</string>
 
-    <string name="hint_collection_search_template">try %s</string>
-
-    <string-array name="hint_collection_suggestions">
-        <item>cats</item>
-        <item>space</item>
-        <item>aurora</item>
-        <item>endless summer</item>
-        <item>classic cars</item>
-        <item>best of nasa</item>
-        <item>drone captures</item>
-        <item>the unsplash book</item>
-        <item>volcanoes</item>
-        <item>mountains</item>
-        <item>winter tones</item>
-        <item>clear skies</item>
-        <item>reflection</item>
-        <item>landscapes</item>
-    </string-array>
+    <string name="hint_collection_search">Try the suggestions below</string>
 
     <string name="error_generic">Photos could not be loaded</string>
     <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images</string>
@@ -96,5 +79,9 @@
     <string name="settings_show_tips_again">Show Tips Again</string>
 
     <string name="confirmation_show_tips_again">Tips will be shown again</string>
+
+    <string name="title_searching">Searching…</string>
+
+    <string name="title_loading_suggested_collections">Loading suggestions…</string>
 
 </resources>

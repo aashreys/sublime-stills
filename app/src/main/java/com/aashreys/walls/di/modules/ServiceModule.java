@@ -32,6 +32,7 @@ import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
 import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
 import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
+import com.aashreys.walls.ui.tasks.FeaturedCollectionsTaskFactory;
 
 import javax.inject.Provider;
 
@@ -56,6 +57,12 @@ public class ServiceModule {
     public CollectionSearchTaskFactory providesCollectionSearchTaskFactory
             (Provider<CollectionSearchService> collectionSearchServiceProvider) {
         return new CollectionSearchTaskFactory(collectionSearchServiceProvider);
+    }
+
+    @Provides
+    public FeaturedCollectionsTaskFactory providesFeaturedCollectionsTaskFactory
+            (Provider<CollectionSearchService> collectionSearchServiceProvider) {
+        return new FeaturedCollectionsTaskFactory(collectionSearchServiceProvider);
     }
 
     @Provides

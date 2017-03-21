@@ -25,6 +25,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +37,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
@@ -46,10 +46,12 @@ import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.ui.adapters.CollectionSuggestionAdapter;
 import com.aashreys.walls.ui.tasks.CollectionSearchTask;
 import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
+import com.aashreys.walls.ui.tasks.FeaturedCollectionsTask;
+import com.aashreys.walls.ui.tasks.FeaturedCollectionsTaskFactory;
 import com.aashreys.walls.ui.views.ChipView;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -66,6 +68,10 @@ public class AddCollectionDialog extends DialogFragment implements
 
     @Inject CollectionSearchTaskFactory collectionSearchTaskFactory;
 
+    @Inject FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory;
+
+    private FeaturedCollectionsTask featuredCollectionsTask;
+
     private CollectionSearchTask collectionSearchTask;
 
     private ViewGroup collectionsParent;
@@ -74,9 +80,13 @@ public class AddCollectionDialog extends DialogFragment implements
 
     private RecyclerView collectionsList;
 
-    private ProgressBar progressBar;
+    private ViewGroup searchProgressParent;
+
+    private TextView searchStatusText;
 
     private Button dialogButton;
+
+    private Collection selectedCollection;
 
     private CollectionSuggestionAdapter adapter;
 
@@ -103,15 +113,12 @@ public class AddCollectionDialog extends DialogFragment implements
                 false
         );
         collectionInput = (EditText) contentView.findViewById(R.id.input_collection);
-        String[] hintArray =
-                getContext().getResources().getStringArray(R.array.hint_collection_suggestions);
-        collectionInput.setHint(getString(
-                R.string.hint_collection_search_template,
-                hintArray[new Random().nextInt(hintArray.length)]
-        ));
+        collectionInput.setHint(R.string.hint_collection_search);
         collectionsParent = (ViewGroup) contentView.findViewById(R.id.parent_collections);
         collectionsList = (RecyclerView) contentView.findViewById(R.id.list_collections);
-        progressBar = (ProgressBar) contentView.findViewById(R.id.progress_bar);
+        searchProgressParent = (ViewGroup) contentView.findViewById(R.id.parent_search_progress);
+        searchStatusText = (TextView) contentView.findViewById(R.id.text_search_status);
+
         adapter = new CollectionSuggestionAdapter();
         adapter.setOnChipViewListener(this);
         collectionsList.setLayoutManager(
@@ -144,12 +151,7 @@ public class AddCollectionDialog extends DialogFragment implements
                 dialogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (adapter.getSelectedCollection() != null) {
-                            insertCollection(adapter.getSelectedCollection());
-                            dialog.dismiss();
-                        } else if (!collectionInput.getText().toString().isEmpty()) {
-                            searchForCollections(collectionInput.getText().toString());
-                        }
+
                     }
                 });
             }
@@ -167,7 +169,10 @@ public class AddCollectionDialog extends DialogFragment implements
 
             @Override
             public void afterTextChanged(Editable s) {
-                dialogButton.setEnabled(!s.toString().isEmpty());
+                setSelectedCollection(null);
+                if (s.length() == 0) {
+                    loadFeaturedCollections();
+                }
             }
         });
         collectionInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -177,6 +182,7 @@ public class AddCollectionDialog extends DialogFragment implements
                 return true;
             }
         });
+        loadFeaturedCollections();
         return dialog;
     }
 
@@ -185,19 +191,35 @@ public class AddCollectionDialog extends DialogFragment implements
     }
 
     private void searchForCollections(String searchString) {
+        if (featuredCollectionsTask != null) {
+            featuredCollectionsTask.cancel(true);
+        }
         if (collectionSearchTask != null) {
             collectionSearchTask.cancel(true);
         }
         collectionSearchTask = collectionSearchTaskFactory.create();
         collectionSearchTask.setListener(this);
         collectionSearchTask.execute(searchString);
-        showProgressBar();
+        showSearchProgress(R.string.title_searching);
+    }
+
+    private void loadFeaturedCollections() {
+        if (featuredCollectionsTask != null) {
+            featuredCollectionsTask.cancel(true);
+        }
+        if (collectionSearchTask != null) {
+            collectionSearchTask.cancel(true);
+        }
+        featuredCollectionsTask = featuredCollectionsTaskFactory.create();
+        featuredCollectionsTask.setListener(this);
+        featuredCollectionsTask.execute();
+        showSearchProgress(R.string.title_loading_suggested_collections);
     }
 
     private void resetState() {
         collectionsParent.setVisibility(View.GONE);
         collectionsList.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+        searchProgressParent.setVisibility(View.GONE);
         adapter.resetState();
         dialogButton.setText(R.string.action_search);
         collectionsList.scrollToPosition(0);
@@ -208,15 +230,16 @@ public class AddCollectionDialog extends DialogFragment implements
         collectionsList.scrollToPosition(0);
     }
 
-    private void showProgressBar() {
+    private void showSearchProgress(@StringRes int searchStatus) {
         collectionsParent.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+        searchStatusText.setText(searchStatus);
+        searchProgressParent.setVisibility(View.VISIBLE);
         collectionsList.setVisibility(View.GONE);
     }
 
     private void showCollectionsList() {
         collectionsParent.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+        searchProgressParent.setVisibility(View.GONE);
         collectionsList.setVisibility(View.VISIBLE);
     }
 
@@ -224,9 +247,35 @@ public class AddCollectionDialog extends DialogFragment implements
     public void onChipViewSelected(
             @Nullable ChipView view, @Nullable Collection collection
     ) {
+        setSelectedCollection(collection);
+    }
+
+    private void setSelectedCollection(final Collection collection) {
+        this.selectedCollection = collection;
         if (dialogButton != null) {
-            dialogButton.setText(collection != null ? R.string.action_add : R.string.action_search);
+            dialogButton.setEnabled(true);
+            if (collection != null) {
+                dialogButton.setEnabled(true);
+                dialogButton.setText(R.string.action_add);
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        collectionRepository.insert(collection);
+                        dismiss();
+                    }
+                });
+            } else {
+                dialogButton.setEnabled(collectionInput.getText().length() > 0);
+                dialogButton.setText(R.string.action_search);
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        searchForCollections(collectionInput.getText().toString());
+                    }
+                });
+            }
         }
+
     }
 
     @Override
@@ -236,10 +285,13 @@ public class AddCollectionDialog extends DialogFragment implements
     }
 
     @Override
-    public void onSearchComplete(List<Collection> collections) {
-        if (collections.size() > 0) {
+    public void onSearchComplete(List<Collection> collectionList, boolean isFeatured) {
+        if (collectionList.size() > 0) {
+            if (isFeatured) {
+                Collections.shuffle(collectionList);
+            }
             showCollectionsList();
-            onCollectionsFound(collections);
+            onCollectionsFound(collectionList);
         } else {
             resetState();
         }

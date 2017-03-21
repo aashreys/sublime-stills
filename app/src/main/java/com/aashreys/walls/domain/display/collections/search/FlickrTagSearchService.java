@@ -87,4 +87,11 @@ public class FlickrTagSearchService implements CollectionSearchService {
         }
         return tagList;
     }
+
+    // TODO: Implement Flickr featured tag search
+    @NonNull
+    @Override
+    public List<Collection> getFeatured() {
+        return new ArrayList<>();
+    }
 }

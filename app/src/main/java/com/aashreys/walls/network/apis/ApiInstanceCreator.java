@@ -62,16 +62,17 @@ public class ApiInstanceCreator {
                             public Response intercept(Chain chain) throws IOException {
                                 Request request = chain.request();
                                 Response response = chain.proceed(request);
-                                return response.newBuilder().header(
-                                        "Cache-Control",
-                                        "public, " +
-                                                (request.url()
-                                                        .toString()
-                                                        .contains("photos/") ?
-                                                        UnsplashApi.PHOTO_INFO_CACHE_DURATION :
-                                                        UnsplashApi.GENERAL_CACHE_DURATION
-                                                )
-                                ).build();
+                                String requestUrl = request.url().toString();
+                                String header = "public, " + UnsplashApi.GENERAL_CACHE_DURATION;
+                                if (requestUrl.contains("photos/")) {
+                                    header = "public, " + UnsplashApi.PHOTO_INFO_CACHE_DURATION;
+                                }
+                                if (requestUrl.contains("/collections/featured")) {
+                                    header = "public, " + UnsplashApi.FEATURED_COLLECTION_CACHE_DURATION;
+                                }
+                                return response.newBuilder()
+                                        .header("Cache-Control", header)
+                                        .build();
                             }
                         })
                         .build())

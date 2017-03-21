@@ -48,4 +48,10 @@ public class CollectionSearchServiceImpl implements CollectionSearchService {
     public List<Collection> search(String collection) {
         return unsplashCollectionSearchService.search(collection);
     }
+
+    @NonNull
+    @Override
+    public List<Collection> getFeatured() {
+        return unsplashCollectionSearchService.getFeatured();
+    }
 }

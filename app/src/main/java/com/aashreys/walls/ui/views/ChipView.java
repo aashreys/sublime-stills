@@ -28,6 +28,8 @@ import android.view.ViewGroup;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 /**
  * Created by aashreys on 04/02/17.
  */
@@ -67,7 +69,7 @@ public class ChipView extends AppCompatTextView {
     }
 
     public void setCollection(final Collection collection) {
-        setText(collection.getName().value().toLowerCase());
+        setText(WordUtils.capitalizeFully(collection.getName().value()));
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -19,6 +19,7 @@ package com.aashreys.walls.domain.display.collections.search;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
+import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.values.Id;
@@ -58,29 +59,52 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
     @WorkerThread
     public List<Collection> search(String searchString) {
         try {
-            Call<ResponseBody> call = unsplashApi.searchCollections(searchString, 0, 20);
+            Call<ResponseBody> call = unsplashApi.searchCollections(searchString, 0, 30);
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
-                List<Collection> collectionList = new ArrayList<>();
-                JSONArray jsonArray = new JSONObject(response.body().string()).getJSONArray(
-                        "results");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    UnsplashCollection c = new UnsplashCollection(
-                            new Id(String.valueOf(jsonObject.getLong("id"))),
-                            new Name(jsonObject.getString("title"))
-                    );
-                    if (c.getId().isValid() && c.getName().isValid()) {
-                        collectionList.add(c);
-                    }
-                }
-                return collectionList;
+                String responseString = response.body().string();
+                JSONArray collectionJsonArray = new JSONObject(responseString).getJSONArray("results");
+                return parseResponse(collectionJsonArray);
             } else {
                 throw new IOException("Unexpected error code" + response.code());
             }
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            LogWrapper.e(TAG, "Failed to search for collections", e);
             return new ArrayList<>();
         }
+    }
+
+    @NonNull
+    @Override
+    public List<Collection> getFeatured() {
+        try {
+            Call<ResponseBody> call = unsplashApi.getFeaturedCollections(0, 30);
+            Response<ResponseBody> response = call.execute();
+            if (response.isSuccessful()) {
+                String responseString = response.body().string();
+                JSONArray collectionJsonArray = new JSONArray(responseString);
+                return parseResponse(collectionJsonArray);
+            } else {
+                throw new IOException("Unexpected error code" + response.code());
+            }
+        } catch (JSONException | IOException e) {
+            LogWrapper.e(TAG, "Failed to get featured collections", e);
+            return new ArrayList<>();
+        }
+    }
+
+    private List<Collection> parseResponse(JSONArray collectionJsonArray) throws JSONException {
+        List<Collection> collectionList = new ArrayList<>();
+        for (int i = 0; i < collectionJsonArray.length(); i++) {
+            JSONObject jsonObject = collectionJsonArray.getJSONObject(i);
+            UnsplashCollection c = new UnsplashCollection(
+                    new Id(String.valueOf(jsonObject.getLong("id"))),
+                    new Name(jsonObject.getString("title"))
+            );
+            if (c.getId().isValid() && c.getName().isValid()) {
+                collectionList.add(c);
+            }
+        }
+        return collectionList;
     }
 }
