@@ -30,8 +30,8 @@ def wallsPropertiesFile = rootProject.file("walls.properties");
 def wallsProperties = new Properties()
 wallsProperties.load(new FileInputStream(wallsPropertiesFile))
 
-int versionCodeInt = 7;
-String versionNameString = "1.1";
+int versionCodeInt = 8;
+String versionNameString = "1.2";
 
 android {
     compileSdkVersion 25
