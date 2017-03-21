@@ -54,6 +54,7 @@ class SetAsDelegate implements ShareDelegate {
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
+        isCancelled = false;
         final Url imageUrl = image.getUrl(deviceResolution.getPortraitWidth() * 2);
         GlideHelper.downloadImageAsync(
                 context,

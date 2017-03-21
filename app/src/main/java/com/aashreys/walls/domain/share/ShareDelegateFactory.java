@@ -25,14 +25,14 @@ import javax.inject.Inject;
  * Created by aashreys on 09/02/17.
  */
 
-public class SharerFactory {
+public class ShareDelegateFactory {
 
     private final DeviceResolution deviceResolution;
 
     private final UrlShortener urlShortener;
 
     @Inject
-    public SharerFactory(
+    public ShareDelegateFactory(
             UrlShortener urlShortener,
             DeviceResolution deviceResolution
     ) {

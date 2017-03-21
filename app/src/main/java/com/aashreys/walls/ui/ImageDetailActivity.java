@@ -52,7 +52,7 @@ import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.domain.share.ShareDelegate;
-import com.aashreys.walls.domain.share.SharerFactory;
+import com.aashreys.walls.domain.share.ShareDelegateFactory;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
@@ -86,7 +86,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     private static final String ARG_IMAGE_SERVICE_NAME = "arg_image_service_name";
 
-    @Inject SharerFactory shareDelegateFactory;
+    @Inject ShareDelegateFactory shareDelegateFactory;
 
     @Inject FavoriteImageRepository favoriteImageRepository;
 
@@ -361,16 +361,6 @@ public class ImageDetailActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        shareLinkDelegate.cancel();
-        setAsShareDelegate.cancel();
-        if (image != null && isFinishing()) {
-            imageCache.remove(image);
-        }
-    }
-
     private void showView() {
         if (isImageLoaded && isInfoLoaded) {
             TransitionManager.beginDelayedTransition(contentParent, new Fade());
@@ -560,6 +550,19 @@ public class ImageDetailActivity extends BaseActivity {
             case COPY_LINK:
                 copyLinkDelegate.share(this, image, listener);
                 Toast.makeText(this, R.string.confirmation_link_copied, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        shareImageDelegate.cancel();
+        shareLinkDelegate.cancel();
+        copyLinkDelegate.cancel();
+        ;
+        setAsShareDelegate.cancel();
+        if (image != null && isFinishing()) {
+            imageCache.remove(image);
         }
     }
 }

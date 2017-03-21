@@ -57,6 +57,7 @@ public class ShareImageDelegate implements ShareDelegate {
     public void share(
             final Context context, final Image image, final Listener listener
     ) {
+        isCancelled = false;
         int width = deviceResolution.getPortraitWidth() > minWidth ?
                 deviceResolution.getPortraitWidth() :
                 minWidth;
@@ -68,12 +69,14 @@ public class ShareImageDelegate implements ShareDelegate {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        uiHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onShareFailed();
-                            }
-                        });
+                        if (!isCancelled) {
+                            uiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onShareFailed();
+                                }
+                            });
+                        }
                     }
 
                     @Override

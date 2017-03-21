@@ -32,6 +32,7 @@ import com.aashreys.walls.ui.utils.UiHandler;
  * Created by aashreys on 08/02/17.
  */
 
+// TODO: Fix cancelling requests. It's broken right now.
 public class ShareLinkDelegate implements ShareDelegate {
 
     private static final String TAG = ShareLinkDelegate.class.getSimpleName();
@@ -52,6 +53,7 @@ public class ShareLinkDelegate implements ShareDelegate {
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
+        isCancelled = false;
         Url imageUrl = image.getShareUrl();
         if (imageUrl.value().length() > MAX_URL_LENGTH) {
             urlShortener.shorten(
