@@ -25,7 +25,7 @@
     <item
         android:id="@+id/menu_item_collections"
         android:icon="@drawable/ic_collections_black_24dp"
-        android:title="@string/title_your_collections"/>
+        android:title="@string/title_collections"/>
 
     <item
         android:id="@+id/menu_item_settings"
