@@ -69,7 +69,7 @@
         style="@style/Walls.Text.Subhead"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_small"
-        android:text="@string/title_tips"/>
+        android:text="@string/title_miscellaneous"/>
 
     <TextView
         android:id="@+id/text_display_tips"
@@ -81,6 +81,20 @@
         android:paddingLeft="@dimen/spacing_medium"
         android:paddingRight="@dimen/spacing_medium"
         android:text="@string/settings_show_tips_again"
+        android:textSize="18sp"/>
+
+    <View style="@style/Walls.Divider"/>
+
+    <TextView
+        android:id="@+id/text_display_onboarding"
+        style="@style/Walls.Text.SingleListItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_medium"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/spacing_medium"
+        android:paddingRight="@dimen/spacing_medium"
+        android:text="@string/settings_show_onboarding_again"
         android:textSize="18sp"/>
 
     <View style="@style/Walls.Divider"/>

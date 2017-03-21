@@ -18,7 +18,6 @@ package com.aashreys.walls.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -34,7 +33,7 @@ public class SettingsActivity extends BaseActivity {
 
     private TextView resetTipsText;
 
-    private Toolbar toolbar;
+    private TextView resetOnboardingText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +56,26 @@ public class SettingsActivity extends BaseActivity {
                 clearTipsSeen();
             }
         });
+
+        resetOnboardingText = (TextView) findViewById(R.id.text_display_onboarding);
+        resetOnboardingText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetOnboardingCompleted();
+            }
+        });
     }
 
     private void clearTipsSeen() {
         keyValueStore.putBoolean(getString(R.string.tag_hint_collection), false);
         keyValueStore.putBoolean(getString(R.string.tag_hint_image_actions), false);
-        Snackbar.make(resetTipsText, R.string.confirmation_show_tips_again, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(resetTipsText, R.string.confirmation_show_tips_again, Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    private void resetOnboardingCompleted() {
+        keyValueStore.putBoolean(StreamActivity.KEY_IS_ONBOARDING_COMPLETED, false);
+        Snackbar.make(resetTipsText, R.string.confirmation_show_onboarding_again, Snackbar.LENGTH_LONG)
+                .show();
     }
 }
