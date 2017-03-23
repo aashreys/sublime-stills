@@ -104,7 +104,7 @@
             <com.aashreys.walls.ui.views.HintView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_medium"
                 app:hv_hint="@string/hint_image_actions"
                 app:hv_seen_key="@string/tag_hint_image_actions"/>
 

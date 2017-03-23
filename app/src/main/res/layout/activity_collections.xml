@@ -76,7 +76,8 @@
     <com.aashreys.walls.ui.views.HintView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_small"
         app:hv_hint="@string/hint_collection"
         app:hv_seen_key="@string/tag_hint_collection"/>
 
@@ -84,7 +85,8 @@
         android:id="@+id/list_image_sources"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/spacing_small"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/spacing_small"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </LinearLayout>
