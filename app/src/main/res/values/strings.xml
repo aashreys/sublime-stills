@@ -41,11 +41,11 @@
     <string name="title_share_link">Share link with</string>
     <string name="title_share_photo">Share photo with</string>
 
-    <string name="share_file_template">Full photo at %1$s. Created by @%2$s, see their content at %3$s.</string>
-    <string name="share_file_template_nouserurl">Full photo at %1$s. Created by @%2$s.</string>
+    <string name="share_file_template">%1$s created by @%2$s, see more of their content at %3$s</string>
+    <string name="share_file_template_nouserurl">%1$s created by @%2$s</string>
 
-    <string name="share_text_template">"%1$s" - "%2$s".</string>
-    <string name="share_text_template_notitle">"%1$s".</string>
+    <string name="share_text_template">"%1$s" - "%2$s"</string>
+    <string name="share_text_template_notitle">"%1$s"</string>
     <string name="share_set_as_title">Set as</string>
 
     <string name="action_add">Add</string>
@@ -67,7 +67,7 @@
     <string name="title_add_collection_dialog">Find a Collection</string>
 
     <string name="hint_add_favorites">Your favorites are displayed here.\nTap an empty heart on an image to favorite it.</string>
-    <string name="hint_collection">Photos in a Collection often follow a theme.\nYou can find new and manage your existing Collections here. </string>
+    <string name="hint_collection">Collections are a set of Photos with a common theme.\nYou can find new and manage your existing Collections here. </string>
     <string name="hint_image_actions">Tap the icons below to Favorite, Share or make this image your Wallpaper.</string>
 
     <string name="title_snackbar_favorite_removed">Favorite removed</string>

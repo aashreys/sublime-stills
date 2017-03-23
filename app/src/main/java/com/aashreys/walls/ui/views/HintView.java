@@ -79,8 +79,6 @@ public class HintView extends FrameLayout {
                 .getUiComponent()
                 .inject(this);
         LayoutInflater.from(context).inflate(R.layout.layout_view_hint, this, true);
-        int verticalPadding = getResources().getDimensionPixelSize(R.dimen.spacing_small);
-        setPadding(0, verticalPadding, 0, verticalPadding);
 
         final String hintString, seenKeyString;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.HintView, 0, 0);
