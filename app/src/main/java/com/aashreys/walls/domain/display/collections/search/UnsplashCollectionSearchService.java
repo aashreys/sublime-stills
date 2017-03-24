@@ -57,7 +57,7 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
 
     @NonNull
     @WorkerThread
-    public List<Collection> search(String searchString) {
+    public List<Collection> search(String searchString, int minPhotos) {
         try {
             Call<ResponseBody> call = unsplashApi.searchCollections(searchString, 0, 30);
             Response<ResponseBody> response = call.execute();
@@ -65,7 +65,7 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
                 String responseString = response.body().string();
                 JSONArray collectionJsonArray = new JSONObject(responseString).getJSONArray(
                         "results");
-                return parseResponse(collectionJsonArray);
+                return parseResponse(collectionJsonArray, minPhotos);
             } else {
                 throw new IOException("Unexpected error code" + response.code());
             }
@@ -84,7 +84,7 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
             if (response.isSuccessful()) {
                 String responseString = response.body().string();
                 JSONArray collectionJsonArray = new JSONArray(responseString);
-                return parseResponse(collectionJsonArray);
+                return parseResponse(collectionJsonArray, 0);
             } else {
                 throw new IOException("Unexpected error code" + response.code());
             }
@@ -94,16 +94,20 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
         }
     }
 
-    private List<Collection> parseResponse(JSONArray collectionJsonArray) throws JSONException {
+    private List<Collection> parseResponse(JSONArray collectionJsonArray, int minPhotos) throws
+            JSONException {
         List<Collection> collectionList = new ArrayList<>();
         for (int i = 0; i < collectionJsonArray.length(); i++) {
             JSONObject jsonObject = collectionJsonArray.getJSONObject(i);
-            UnsplashCollection c = new UnsplashCollection(
-                    new Id(String.valueOf(jsonObject.getLong("id"))),
-                    new Name(jsonObject.getString("title"))
-            );
-            if (c.getId().isValid() && c.getName().isValid()) {
-                collectionList.add(c);
+            int size = jsonObject.getInt("total_photos");
+            if (size >= minPhotos) {
+                UnsplashCollection c = new UnsplashCollection(
+                        new Id(String.valueOf(jsonObject.getLong("id"))),
+                        new Name(jsonObject.getString("title"))
+                );
+                if (c.getId().isValid() && c.getName().isValid()) {
+                    collectionList.add(c);
+                }
             }
         }
         return collectionList;

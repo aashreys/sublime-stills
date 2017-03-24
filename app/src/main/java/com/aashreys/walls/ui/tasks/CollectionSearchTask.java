@@ -38,9 +38,12 @@ public class CollectionSearchTask extends AsyncTask<String, Void, List<Collectio
 
     private CollectionSearchListener listener;
 
+    private int minPhotos;
+
     @Inject
-    public CollectionSearchTask(@Provided CollectionSearchService collectionSearchService) {
+    public CollectionSearchTask(@Provided CollectionSearchService collectionSearchService, int minPhotos) {
         this.collectionSearchService = collectionSearchService;
+        this.minPhotos = minPhotos;
     }
 
     public void setListener(CollectionSearchListener listener) {
@@ -49,7 +52,7 @@ public class CollectionSearchTask extends AsyncTask<String, Void, List<Collectio
 
     @Override
     protected List<Collection> doInBackground(String... searchStrings) {
-        return collectionSearchService.search(searchStrings[0]);
+        return collectionSearchService.search(searchStrings[0], minPhotos);
     }
 
     @Override

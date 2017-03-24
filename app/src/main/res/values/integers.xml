@@ -18,4 +18,5 @@
 <resources>
     <integer name="stream_column_count">1</integer>
     <integer name="image_info_column_count">2</integer>
+    <integer name="min_photos_in_collection">15</integer>
 </resources>

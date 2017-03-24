@@ -54,9 +54,10 @@ public class FlickrTagSearchService implements CollectionSearchService {
         this.flickrApi = flickrApi;
     }
 
+    // TODO: Add support for min items
     @NonNull
     @Override
-    public List<Collection> search(String tag) {
+    public List<Collection> search(String tag, int minPhotos) {
         List<Collection> tagList = new ArrayList<>();
         Call<ResponseBody> call = flickrApi.getRelatedTags(tag);
         try {

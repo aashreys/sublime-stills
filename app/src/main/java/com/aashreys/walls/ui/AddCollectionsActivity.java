@@ -82,6 +82,8 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
 
     private boolean isReturnToStreamActivity;
 
+    private int minPhotos;
+
     public static final Intent createLaunchIntent(Context context, boolean isReturnToStreamActivity) {
         Intent intent =  new Intent(context, AddCollectionsActivity.class);
         intent.putExtra(ARG_RETURN_TO_STREAM, isReturnToStreamActivity);
@@ -103,6 +105,7 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         chipViewHeight = getResources().getDimensionPixelSize(R.dimen.height_small);
         chipViewMargin = getResources().getDimensionPixelOffset(R.dimen.spacing_xs);
+        minPhotos = getResources().getInteger(R.integer.min_photos_in_collection);
         collectionInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -248,7 +251,7 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
         if (collectionSearchTask != null) {
             collectionSearchTask.cancel(true);
         }
-        collectionSearchTask = collectionSearchTaskFactory.create();
+        collectionSearchTask = collectionSearchTaskFactory.create(minPhotos);
         collectionSearchTask.setListener(this);
         collectionSearchTask.execute(searchString);
         showSearchProgress(R.string.title_searching);
