@@ -72,6 +72,11 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         _notifyReplaceAll(collectionList);
     }
 
+    @Override
+    public int size() {
+        return getBook().getAllKeys().size();
+    }
+
     @NonNull
     @Override
     public List<Collection> getAll() {
@@ -108,7 +113,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
             listener.onInsert(collection);
         }
     }
-    
+
     private void _notifyReplaceAll(List<Collection> collections) {
         for (CollectionRepositoryListener listener : listeners) {
             listener.onReplaceAll(collections);

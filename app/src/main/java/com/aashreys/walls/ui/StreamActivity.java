@@ -52,13 +52,13 @@ import javax.inject.Inject;
 public class StreamActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
         ImageStreamFragment.CollectionProvider, NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
+
     private static final String TAG = StreamActivity.class.getSimpleName();
 
     private static final String ARG_TAB_POSITION = "arg_tab_position";
 
     private static final String FRAGMENT_TAG_ADD_COLLECTION = "fragment_tag_add_collection";
-
-    public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
 
     @Inject CollectionRepository collectionRepository;
 
@@ -124,10 +124,7 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
         collectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddCollectionDialog.showNewInstance(
-                        StreamActivity.this,
-                        FRAGMENT_TAG_ADD_COLLECTION
-                );
+                startActivity(AddCollectionsActivity.createLaunchIntent(StreamActivity.this, true));
             }
         });
         handleIntent(getIntent());

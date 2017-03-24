@@ -21,7 +21,7 @@ import com.aashreys.walls.di.modules.FactoryModule;
 import com.aashreys.walls.di.modules.RepositoryModule;
 import com.aashreys.walls.di.modules.ServiceModule;
 import com.aashreys.walls.di.scopes.UiScoped;
-import com.aashreys.walls.ui.AddCollectionDialog;
+import com.aashreys.walls.ui.AddCollectionsActivity;
 import com.aashreys.walls.ui.CollectionsActivity;
 import com.aashreys.walls.ui.ImageDetailActivity;
 import com.aashreys.walls.ui.ImageStreamFragment;
@@ -55,8 +55,6 @@ public interface UiComponent {
 
     void inject(CollectionsActivity collectionsActivity);
 
-    void inject(AddCollectionDialog addCollectionDialog);
-
     void inject(CollectionView collectionView);
 
     void inject(StreamImageView streamImageView);
@@ -66,4 +64,6 @@ public interface UiComponent {
     void inject(SettingsActivity settingsActivity);
 
     void inject(OnboardingActivity onboardingActivity);
+
+    void inject(AddCollectionsActivity addCollectionsActivity);
 }

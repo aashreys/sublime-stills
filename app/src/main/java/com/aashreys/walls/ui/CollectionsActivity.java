@@ -45,8 +45,6 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
 
     private static final String TAG = CollectionsActivity.class.getSimpleName();
 
-    private static final String TAG_ADD_COLLECTION_FRAGMENT = "tag_add_collection_fragment";
-
     @Inject CollectionRepository collectionRepository;
 
     private CollectionsAdapter adapter;
@@ -121,7 +119,7 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
         addCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddCollectionDialog.showNewInstance(CollectionsActivity.this, TAG_ADD_COLLECTION_FRAGMENT);
+                startActivity(AddCollectionsActivity.createLaunchIntent(CollectionsActivity.this, false));
             }
         });
     }

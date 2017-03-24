@@ -37,6 +37,8 @@ public interface CollectionRepository {
 
     void replaceAll(List<Collection> collectionList);
 
+    int size();
+
     @NonNull
     List<Collection> getAll();
 

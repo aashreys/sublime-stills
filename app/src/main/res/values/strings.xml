@@ -64,10 +64,10 @@
     <string name="error_slow_connectivity">Your connection is poor\nLoading images will take longer than usual</string>
     <string name="hint_end_of_collection">You\'ve reached the end of this Collection</string>
 
-    <string name="title_add_collection_dialog">Find a Collection</string>
+    <string name="title_find_a_collection">Find a Collection</string>
 
     <string name="hint_add_favorites">Your favorites are displayed here.\nTap an empty heart on an image to favorite it.</string>
-    <string name="hint_collection">Collections are a set of Photos with a common theme.\nYou can find new and manage your existing Collections here. </string>
+    <string name="hint_collection">Collections are a set of photos with a common theme.\nYou can find new and manage your existing Collections here. </string>
     <string name="hint_image_actions">Tap the icons below to Favorite, Share or make this image your Wallpaper.</string>
 
     <string name="title_snackbar_favorite_removed">Favorite removed</string>
@@ -89,5 +89,9 @@
     <string name="title_onboarding_subtitle">Discover breathtaking photos and wallpapers</string>
 
     <string name="title_onboarding_pick_collections">Pick a few Collections to get started</string>
+
+    <string name="title_featured_collections">Featured Collections</string>
+
+    <string name="title_results_for_collection">Results for %s</string>
 
 </resources>

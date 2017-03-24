@@ -32,7 +32,7 @@
         <activity
             android:name=".ui.StreamActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -51,6 +51,9 @@
             android:value="d1d9ded86a522d4ae7651fac61fdd2cba46ccc22"/>
 
         <activity android:name=".ui.OnboardingActivity">
+        </activity>
+        <activity
+            android:name=".ui.AddCollectionsActivity">
         </activity>
     </application>
 
