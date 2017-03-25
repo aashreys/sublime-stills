@@ -49,7 +49,8 @@ import com.aashreys.walls.ui.views.StreamImageView;
 import javax.inject.Inject;
 
 public class StreamActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
-        ImageStreamFragment.CollectionProvider, NavigationView.OnNavigationItemSelectedListener {
+        ImageStreamFragment.CollectionProvider, NavigationView.OnNavigationItemSelectedListener,
+        ImageStreamViewPagerAdapter.CollectionsModifiedListener {
 
     public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
 
@@ -101,13 +102,7 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
                 collectionRepository
         );
         viewPager.setAdapter(viewPagerAdapter);
-        viewPagerAdapter.setCollectionAddedListener(new ImageStreamViewPagerAdapter
-                .CollectionAddedListener() {
-            @Override
-            public void onCollectionAdded(Collection collection, int position) {
-                viewPager.setCurrentItem(position);
-            }
-        });
+        viewPagerAdapter.setCollectionsModifiedListener(this);
 
         ImageButton menuButton = (ImageButton) findViewById(R.id.button_menu);
         menuButton.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +168,8 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
 
     private void handleIntent(Intent intent) {
         int position = intent.getIntExtra(ARG_TAB_POSITION, 0);
-        if (viewPager.getAdapter().getCount() > 0) {
+        int itemCount = viewPager.getAdapter().getCount();
+        if (itemCount > 0 && position > 0 && position < itemCount) {
             viewPager.setCurrentItem(position);
         }
     }
@@ -232,5 +228,15 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     private void openSettingsActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onCollectionAdded(Collection collection, int position) {
+
+    }
+
+    @Override
+    public void onCollectionRemoved(Collection collection, int position) {
+
     }
 }

@@ -33,10 +33,13 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.ImageStreamFragment;
-import com.aashreys.walls.ui.helpers.GlideHelper;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.utils.ForegroundImageView;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import javax.inject.Inject;
 
@@ -142,12 +145,35 @@ public class StreamImageView extends FrameLayout {
         } else {
             width = deviceResolution.getPortraitHeight() / numStreamColumns;
         }
-        GlideHelper.displayImageAsync(
-                fragment,
-                image.getUrl(width),
-                imageView,
-                fragment.isDisplayed() ? Priority.HIGH : Priority.LOW
-        );
+        Glide.with(fragment)
+                .load(image.getUrl(width).value())
+                .priority(fragment.isDisplayed() ? Priority.HIGH : Priority.LOW)
+                .crossFade()
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(
+                            Exception e,
+                            String model,
+                            Target<GlideDrawable> target,
+                            boolean isFirstResource
+                    ) {
+                        setVisibility(GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(
+                            GlideDrawable resource,
+                            String model,
+                            Target<GlideDrawable> target,
+                            boolean isFromMemoryCache,
+                            boolean isFirstResource
+                    ) {
+                        setVisibility(VISIBLE);
+                        return false;
+                    }
+                })
+                .into(imageView);
         if (callback != null) {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override

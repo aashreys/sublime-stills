@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_xs"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_xs"
             android:gravity="center">
 
             <ProgressBar

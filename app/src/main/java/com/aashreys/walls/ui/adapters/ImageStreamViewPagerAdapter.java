@@ -19,8 +19,6 @@ package com.aashreys.walls.ui.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
@@ -39,9 +37,7 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
 
     private final List<Collection> collectionList;
 
-    private final SparseArray<ImageStreamFragment> positionFragmentArray;
-
-    private CollectionAddedListener collectionAddedListener;
+    private CollectionsModifiedListener collectionsModifiedListener;
 
     private final CollectionRepositoryListener repositoryCallback
             = new CollectionRepositoryListener() {
@@ -56,8 +52,8 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
         public void onInsert(Collection object) {
             collectionList.add(object);
             notifyDataSetChanged();
-            if (collectionAddedListener != null) {
-                collectionAddedListener.onCollectionAdded(object, collectionList.size() - 1);
+            if (collectionsModifiedListener != null) {
+                collectionsModifiedListener.onCollectionAdded(object, collectionList.size() - 1);
             }
         }
 
@@ -68,8 +64,14 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
 
         @Override
         public void onDelete(Collection object) {
-            collectionList.remove(object);
-            notifyDataSetChanged();
+            int index = collectionList.indexOf(object);
+            if (index != -1) {
+                collectionList.remove(object);
+                notifyDataSetChanged();
+                if (collectionsModifiedListener != null) {
+                    collectionsModifiedListener.onCollectionRemoved(object, index);
+                }
+            }
         }
     };
 
@@ -78,7 +80,6 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
             CollectionRepository collectionRepository
     ) {
         super(fm);
-        this.positionFragmentArray = new SparseArray<>();
         this.collectionRepository = collectionRepository;
         this.collectionList = collectionRepository.getAll();
         collectionRepository.addListener(repositoryCallback);
@@ -88,21 +89,6 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
     public Fragment getItem(int position) {
         return ImageStreamFragment.newInstance(position);
     }
-
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        ImageStreamFragment fragment = (ImageStreamFragment)
-                super.instantiateItem(container, position);
-        positionFragmentArray.put(position, fragment);
-        return fragment;
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        positionFragmentArray.remove(position);
-        super.destroyItem(container, position, object);
-    }
-
     @Override
     public int getCount() {
         return collectionList.size();
@@ -110,23 +96,7 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
 
     @Override
     public int getItemPosition(Object object) {
-        if (object instanceof ImageStreamFragment) {
-            int index = positionFragmentArray.indexOfValue((ImageStreamFragment) object);
-            return index >= 0 ? positionFragmentArray.keyAt(index) : POSITION_NONE;
-        }
-        return super.getItemPosition(object);
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        for (int i = 0; i < positionFragmentArray.size(); i++) {
-            ImageStreamFragment fragment = positionFragmentArray.valueAt(i);
-            int position = positionFragmentArray.keyAt(i);
-            if (position < collectionList.size()) {
-                fragment.setCollection(collectionList.get(position));
-            }
-        }
-        super.notifyDataSetChanged();
+        return POSITION_NONE;
     }
 
     @Override
@@ -143,13 +113,15 @@ public class ImageStreamViewPagerAdapter extends FragmentStatePagerAdapter imple
         return collectionList.get(position);
     }
 
-    public void setCollectionAddedListener(CollectionAddedListener collectionAddedListener) {
-        this.collectionAddedListener = collectionAddedListener;
+    public void setCollectionsModifiedListener(CollectionsModifiedListener collectionsModifiedListener) {
+        this.collectionsModifiedListener = collectionsModifiedListener;
     }
 
-    public interface CollectionAddedListener {
+    public interface CollectionsModifiedListener {
 
         void onCollectionAdded(Collection collection, int position);
+
+        void onCollectionRemoved(Collection collection, int position);
 
     }
 }

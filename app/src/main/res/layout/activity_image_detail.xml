@@ -130,15 +130,14 @@
                     android:layout_centerInParent="true">
 
                     <ImageButton
-                        android:id="@+id/button_share"
+                        android:id="@+id/button_set_as"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-
-                        app:srcCompat="@drawable/ic_share_black_24dp"/>
+                        app:srcCompat="@drawable/ic_wallpaper_black_24dp"/>
 
                     <ProgressBar
-                        android:id="@+id/progress_share"
+                        android:id="@+id/progress_set_as"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/transparent"
@@ -154,14 +153,15 @@
                     android:layout_alignParentRight="true">
 
                     <ImageButton
-                        android:id="@+id/button_set_as"
+                        android:id="@+id/button_share"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                        app:srcCompat="@drawable/ic_wallpaper_black_24dp"/>
+
+                        app:srcCompat="@drawable/ic_share_black_24dp"/>
 
                     <ProgressBar
-                        android:id="@+id/progress_set_as"
+                        android:id="@+id/progress_share"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/transparent"

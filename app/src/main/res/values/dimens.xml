@@ -28,7 +28,7 @@
     <dimen name="height_small">48dp</dimen>
     <dimen name="height_medium">56dp</dimen>
     <dimen name="height_large">72dp</dimen>
-    <dimen name="height_xl">120dp</dimen>
+    <dimen name="height_xl">150dp</dimen>
 
     <dimen name="font_xs">12sp</dimen>
     <dimen name="font_small">14sp</dimen>
