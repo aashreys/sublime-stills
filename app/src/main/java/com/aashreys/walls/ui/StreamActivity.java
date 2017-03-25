@@ -38,7 +38,6 @@ import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
@@ -63,8 +62,6 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     @Inject CollectionRepository collectionRepository;
 
     @Inject CollectionFactory collectionFactory;
-
-    @Inject ImageCache imageCache;
 
     @Inject StartupHelper startupHelper;
 
@@ -145,7 +142,6 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
 
     @Override
     public void onImageSelected(Image image) {
-        imageCache.add(image);
         startActivity(ImageDetailActivity.createLaunchIntent(this, image));
     }
 

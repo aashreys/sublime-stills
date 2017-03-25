@@ -50,10 +50,8 @@ import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.User;
-import com.aashreys.walls.domain.display.images.utils.ImageCache;
 import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.domain.share.ShareDelegateFactory;
-import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.domain.values.Value;
@@ -82,17 +80,13 @@ public class ImageDetailActivity extends BaseActivity {
 
     private static final String TAG = ImageDetailActivity.class.getSimpleName();
 
-    private static final String ARG_IMAGE_ID = "arg_image_id";
-
-    private static final String ARG_IMAGE_SERVICE_NAME = "arg_image_service_name";
+    private static final String ARG_IMAGE = "arg_image";
 
     @Inject ShareDelegateFactory shareDelegateFactory;
 
     @Inject FavoriteImageRepository favoriteImageRepository;
 
     @Inject ImageInfoService imageInfoService;
-
-    @Inject ImageCache imageCache;
 
     @Inject DeviceResolution deviceResolution;
 
@@ -121,10 +115,11 @@ public class ImageDetailActivity extends BaseActivity {
 
     private MenuPopupHelper shareMenuHelper;
 
+    private boolean isDataMembersConfigured;
+
     public static Intent createLaunchIntent(Context context, Image image) {
         Intent intent = new Intent(context, ImageDetailActivity.class);
-        intent.putExtra(ARG_IMAGE_ID, image.getId().value());
-        intent.putExtra(ARG_IMAGE_SERVICE_NAME, image.getService().getName().value());
+        intent.putExtra(ARG_IMAGE, image);
         return intent;
     }
 
@@ -132,7 +127,7 @@ public class ImageDetailActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getUiComponent().inject(this);
-        final Image image = getImageFromArgs();
+        final Image image = getIntent().getParcelableExtra(ARG_IMAGE);
         if (image != null) {
             setContentView(R.layout.activity_image_detail);
             this.image = image;
@@ -271,6 +266,7 @@ public class ImageDetailActivity extends BaseActivity {
                     showView();
                 }
             });
+            isDataMembersConfigured = true;
         } else {
             LogWrapper.i(TAG, "No image passed, finishing.");
             finish();
@@ -471,17 +467,6 @@ public class ImageDetailActivity extends BaseActivity {
         return getString(R.string.resolution_formatted_string, resX, resY);
     }
 
-    @Nullable
-    private Image getImageFromArgs() {
-        Id imageId = new Id(getIntent().getStringExtra(ARG_IMAGE_ID));
-        Name serviceName = new Name(getIntent().getStringExtra(ARG_IMAGE_SERVICE_NAME));
-        if (imageId.isValid() && serviceName.isValid()) {
-            return imageCache.get(serviceName, imageId);
-        } else {
-            return null;
-        }
-    }
-
     private void buildShareDelegates() {
         shareImageDelegate = shareDelegateFactory.create(ShareDelegate.Mode.PHOTO);
         shareLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.LINK);
@@ -556,13 +541,11 @@ public class ImageDetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        shareImageDelegate.cancel();
-        shareLinkDelegate.cancel();
-        copyLinkDelegate.cancel();
-        ;
-        setAsShareDelegate.cancel();
-        if (image != null && isFinishing()) {
-            imageCache.remove(image);
+        if (isDataMembersConfigured) {
+            shareImageDelegate.cancel();
+            shareLinkDelegate.cancel();
+            copyLinkDelegate.cancel();
+            setAsShareDelegate.cancel();
         }
     }
 }
