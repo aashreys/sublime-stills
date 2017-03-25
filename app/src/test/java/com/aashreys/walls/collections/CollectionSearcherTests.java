@@ -67,7 +67,7 @@ public class CollectionSearcherTests extends BaseTestCase {
         String searchString = "hallelujah";
         mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(""));
         unsplashApi.searchCollections(searchString, 1, 10);
-        List<Collection> collectionList = collectionSearcher.search(searchString);
+        List<Collection> collectionList = collectionSearcher.search(searchString, 10);
         assertEquals(collectionList.size(), 0);
     }
 
@@ -76,7 +76,7 @@ public class CollectionSearcherTests extends BaseTestCase {
         String searchString = "hallelujah";
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(CollectionSearcherResponse.VALID_RESPONSE));
-        List<Collection> collectionList = collectionSearcher.search(searchString);
+        List<Collection> collectionList = collectionSearcher.search(searchString, 10);
         assertEquals(collectionList.size(), 1);
 
         Collection collection1 = collectionList.get(0);
