@@ -19,7 +19,7 @@ package com.aashreys.walls.domain.display.collections.search;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.values.Id;
@@ -57,7 +57,7 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
 
     @NonNull
     @WorkerThread
-    public List<Collection> search(String searchString, int minPhotos) {
+    public List<Collection> search(String searchString, int minCollectionSize) {
         try {
             Call<ResponseBody> call = unsplashApi.searchCollections(searchString, 0, 30);
             Response<ResponseBody> response = call.execute();
@@ -65,7 +65,7 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
                 String responseString = response.body().string();
                 JSONArray collectionJsonArray = new JSONObject(responseString).getJSONArray(
                         "results");
-                return parseResponse(collectionJsonArray, minPhotos);
+                return parseResponse(collectionJsonArray, minCollectionSize);
             } else {
                 throw new IOException("Unexpected error code" + response.code());
             }

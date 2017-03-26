@@ -16,7 +16,7 @@
 
 package com.aashreys.walls.network.parsers;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.images.FlickrImage;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.metadata.Location;

@@ -35,24 +35,24 @@ public class Resolution implements Parcelable {
         public Resolution[] newArray(int size) {return new Resolution[size];}
     };
 
-    private final Pixel resX, resY;
+    private final Pixel width, height;
 
-    public Resolution(Pixel resX, Pixel resY) {
-        this.resX = resX;
-        this.resY = resY;
+    public Resolution(Pixel width, Pixel height) {
+        this.width = width;
+        this.height = height;
     }
 
     protected Resolution(Parcel in) {
-        this.resX = in.readParcelable(Pixel.class.getClassLoader());
-        this.resY = in.readParcelable(Pixel.class.getClassLoader());
+        this.width = in.readParcelable(Pixel.class.getClassLoader());
+        this.height = in.readParcelable(Pixel.class.getClassLoader());
     }
 
-    public Pixel getResX() {
-        return resX;
+    public Pixel getWidth() {
+        return width;
     }
 
-    public Pixel getResY() {
-        return resY;
+    public Pixel getHeight() {
+        return height;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Resolution implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.resX, flags);
-        dest.writeParcelable(this.resY, flags);
+        dest.writeParcelable(this.width, flags);
+        dest.writeParcelable(this.height, flags);
     }
 }

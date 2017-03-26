@@ -14,25 +14,26 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.network;
+package com.aashreys.walls.utils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.support.annotation.Nullable;
 
 /**
- * Created by aashreys on 03/12/16.
+ * Created by aashreys on 26/03/17.
  */
 
-public class JSONUtils {
+public class TextUtils {
 
-    public static String getString(JSONObject object, String key) throws JSONException {
-        String value = object.getString(key);
-        return (value != null && !value.equals("null")) ? value : null;
-    }
-
-    public static String optString(JSONObject object, String key, String fallback) {
-        String value = object.optString(key, fallback);
-        return (value != null && !value.equals("null")) ? value : null;
+    public static boolean stringIsNotEqualsTo(@Nullable String string, String... values) {
+        for (String value : values) {
+            if (string == null && value == null) {
+                return false;
+            }
+            if (string != null && string.equals(value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

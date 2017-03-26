@@ -25,7 +25,7 @@ import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
-import com.aashreys.walls.domain.display.images.utils.FlickrBaseEncoder;
+import com.aashreys.walls.utils.FlickrBaseEncoder;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;

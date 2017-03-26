@@ -22,7 +22,7 @@ import com.aashreys.walls.domain.display.images.UnsplashImage;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
-import com.aashreys.walls.domain.display.images.utils.FlickrBaseEncoder;
+import com.aashreys.walls.utils.FlickrBaseEncoder;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
@@ -134,8 +134,8 @@ public class ImageTests extends BaseTestCase {
         unsplashImage.setTitle(new Name(title));
         assertEquals(unsplashImage.getTitle().value(), title);
 
-        assertEquals(unsplashImage.getResolution().getResX().value(), x);
-        assertEquals(unsplashImage.getResolution().getResY().value(), y);
+        assertEquals(unsplashImage.getResolution().getWidth().value(), x);
+        assertEquals(unsplashImage.getResolution().getHeight().value(), y);
 
         assertEquals(unsplashImage.getUploadDate().getTime(), createdAtTime);
 

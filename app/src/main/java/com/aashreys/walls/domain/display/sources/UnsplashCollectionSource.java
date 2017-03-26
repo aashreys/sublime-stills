@@ -19,7 +19,6 @@ package com.aashreys.walls.domain.display.sources;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
-import com.aashreys.walls.Config;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.network.apis.UnsplashApi;
@@ -69,8 +68,8 @@ public class UnsplashCollectionSource implements Source {
         try {
             Call<ResponseBody> call = unsplashApi.getCollectionPhotos(
                     collectionId.value(),
-                    UiHelper.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
-                    Config.Unsplash.ITEMS_PER_PAGE
+                    UiHelper.getPageNumber(fromIndex, UnsplashApi.ITEMS_PER_PAGE),
+                    UnsplashApi.ITEMS_PER_PAGE
             );
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {

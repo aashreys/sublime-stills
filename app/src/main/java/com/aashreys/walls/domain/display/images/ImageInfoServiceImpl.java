@@ -16,12 +16,12 @@
 
 package com.aashreys.walls.domain.display.images;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.network.apis.FlickrApi;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.parsers.FlickrExifParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
-import com.aashreys.walls.network.parsers.Utils;
+import com.aashreys.walls.utils.JSONParsingUtils;
 
 import java.io.IOException;
 
@@ -82,7 +82,7 @@ public class ImageInfoServiceImpl implements ImageInfoService {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        unsplashPhotoInfoParser.parse(
+                        unsplashPhotoInfoParser.setExifAndLocation(
                                 response.body().string(),
                                 (UnsplashImage) image
                         );
@@ -119,7 +119,7 @@ public class ImageInfoServiceImpl implements ImageInfoService {
                 if (response.isSuccessful()) {
                     try {
                         image.setExif(
-                                flickrExifParser.parse(Utils.removeFlickrResponseBrackets(
+                                flickrExifParser.parse(JSONParsingUtils.removeFlickrResponseBrackets(
                                 response.body().string()
                         )));
                     } catch (IOException e) {

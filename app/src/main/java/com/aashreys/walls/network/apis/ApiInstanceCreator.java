@@ -18,7 +18,6 @@ package com.aashreys.walls.network.apis;
 
 import com.aashreys.safeapi.SafeApi;
 import com.aashreys.walls.BuildConfig;
-import com.aashreys.walls.Config;
 
 import java.io.IOException;
 
@@ -52,7 +51,7 @@ public class ApiInstanceCreator {
                                                         SafeApi.decrypt(BuildConfig
                                                                 .UNSPLASH_API_KEY)
                                         )
-                                        .addHeader("Accept-Version", Config.Unsplash.API_VERSION)
+                                        .addHeader("Accept-Version", UnsplashApi.API_VERSION)
                                         .build();
                                 return chain.proceed(requestWithHeaders);
                             }

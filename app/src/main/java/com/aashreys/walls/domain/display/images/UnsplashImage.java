@@ -27,7 +27,6 @@ import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.Pixel;
 import com.aashreys.walls.domain.values.Url;
 
 import java.util.Date;
@@ -73,21 +72,17 @@ public class UnsplashImage implements Image {
 
     public UnsplashImage(
             @NonNull Id id,
-            @NonNull Pixel resX,
-            @NonNull Pixel resY,
+            @Nullable Resolution resolution,
             @NonNull Date createdAt,
-            @NonNull Id userId,
-            @NonNull Name userRealName,
-            @NonNull Url userProfileUrl,
-            @NonNull Url userPortfolioUrl,
+            @Nullable User user,
             @NonNull Url rawImageUrl,
             @NonNull Url imageShareUrl
     ) {
         this.id = id;
         this.rawImageUrl = rawImageUrl;
         this.imageShareUrl = imageShareUrl;
-        this.resolution = new Resolution(resX, resY);
-        this.user = new User(userId, userRealName, userProfileUrl, userPortfolioUrl);
+        this.resolution = resolution;
+        this.user = user;
         this.createdAt = createdAt;
     }
 

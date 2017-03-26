@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls;
+package com.aashreys.walls.utils;
 
 import android.util.Log;
 

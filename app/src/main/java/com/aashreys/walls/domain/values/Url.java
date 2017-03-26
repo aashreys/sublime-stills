@@ -18,7 +18,7 @@ package com.aashreys.walls.domain.values;
 
 import android.os.Parcel;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 
 import java.net.MalformedURLException;
 import java.net.URL;

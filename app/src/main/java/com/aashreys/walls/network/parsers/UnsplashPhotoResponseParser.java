@@ -18,14 +18,16 @@ package com.aashreys.walls.network.parsers;
 
 import android.support.annotation.NonNull;
 
-import com.aashreys.walls.LogWrapper;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.UnsplashImage;
+import com.aashreys.walls.domain.display.images.metadata.Resolution;
+import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.network.JSONUtils;
+import com.aashreys.walls.utils.JSONUtils;
+import com.aashreys.walls.utils.LogWrapper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,16 +70,13 @@ public class UnsplashPhotoResponseParser {
 
     private Image _parse(JSONObject response) {
         try {
-            JSONObject user = response.getJSONObject("user");
+            User user = createUser(response.getJSONObject("user"));
+            Resolution resolution = createResolution(response);
             return new UnsplashImage(
                     new Id(JSONUtils.getString(response, "id")),
-                    new Pixel(response.getInt("width")),
-                    new Pixel(response.getInt("height")),
+                    resolution,
                     DATE_PARSER.parse(JSONUtils.getString(response, "created_at")),
-                    new Id(user.getString("id")),
-                    new Name(JSONUtils.getString(user, "name")),
-                    new Url(JSONUtils.getString(user.getJSONObject("links"), "html")),
-                    new Url(JSONUtils.optString(user, "portfolio_url", null)),
+                    user,
                     new Url(JSONUtils.getString(response.getJSONObject("urls"), "raw")),
                     new Url(JSONUtils.getString(response.getJSONObject("links"), "html"))
             );
@@ -85,5 +84,27 @@ public class UnsplashPhotoResponseParser {
             LogWrapper.e(TAG, "Unable to parse image response", e);
             return null;
         }
+    }
+
+    private Resolution createResolution(JSONObject unsplashResponse) {
+        Resolution resolution = null;
+        int width = unsplashResponse.optInt("width", 0);
+        int height = unsplashResponse.optInt("height", 0);
+        if (width > 0 && height > 0) {
+            resolution = new Resolution(new Pixel(width), new Pixel(height));
+        }
+        return resolution;
+    }
+
+    private User createUser(JSONObject userJson) {
+        User user = null;
+        String id = JSONUtils.optString(userJson, "id", null);
+        if (id != null) {
+            String name = JSONUtils.optString(userJson, "name", null);
+            String profile = JSONUtils.optString(userJson.optJSONObject("links"), "html", null);
+            String portfolio = JSONUtils.optString(userJson, "portfolio_url", null);
+            user = new User(new Id(id), new Name(name), new Url(profile), new Url(portfolio));
+        }
+        return user;
     }
 }

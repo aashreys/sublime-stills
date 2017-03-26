@@ -45,8 +45,8 @@ public class CollectionSearchServiceImpl implements CollectionSearchService {
 
     @NonNull
     @Override
-    public List<Collection> search(String collection, int minPhotos) {
-        return unsplashCollectionSearchService.search(collection, minPhotos);
+    public List<Collection> search(String collection, int minCollectionSize) {
+        return unsplashCollectionSearchService.search(collection, minCollectionSize);
     }
 
     @NonNull

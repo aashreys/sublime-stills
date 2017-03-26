@@ -18,12 +18,12 @@ package com.aashreys.walls.domain.display.collections.search;
 
 import android.support.annotation.NonNull;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.FlickrTag;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.network.apis.FlickrApi;
-import com.aashreys.walls.network.parsers.Utils;
+import com.aashreys.walls.utils.JSONParsingUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,14 +57,14 @@ public class FlickrTagSearchService implements CollectionSearchService {
     // TODO: Add support for min items
     @NonNull
     @Override
-    public List<Collection> search(String tag, int minPhotos) {
+    public List<Collection> search(String tag, int minCollectionSize) {
         List<Collection> tagList = new ArrayList<>();
         Call<ResponseBody> call = flickrApi.getRelatedTags(tag);
         try {
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 String responseString = response.body().string();
-                responseString = Utils.removeFlickrResponseBrackets(responseString);
+                responseString = JSONParsingUtils.removeFlickrResponseBrackets(responseString);
                 JSONArray tagJsonArray = new JSONObject(responseString)
                         .getJSONObject("tags")
                         .getJSONArray("tag");

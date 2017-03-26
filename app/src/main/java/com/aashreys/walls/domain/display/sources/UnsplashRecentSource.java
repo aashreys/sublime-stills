@@ -19,7 +19,6 @@ package com.aashreys.walls.domain.display.sources;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.aashreys.walls.Config;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
@@ -63,8 +62,8 @@ public class UnsplashRecentSource implements Source {
     public List<Image> getImages(int fromIndex) throws IOException {
         try {
             Call<ResponseBody> call = unsplashApi.getRecentPhotos(
-                    UiHelper.getPageNumber(fromIndex, Config.Unsplash.ITEMS_PER_PAGE),
-                    Config.Unsplash.ITEMS_PER_PAGE
+                    UiHelper.getPageNumber(fromIndex, UnsplashApi.ITEMS_PER_PAGE),
+                    UnsplashApi.ITEMS_PER_PAGE
             );
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {

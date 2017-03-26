@@ -37,6 +37,8 @@ public interface FlickrApi {
 
     String PHOTO_EXTRAS = "date_taken, owner_name, geo";
 
+    int ITEMS_PER_PAGE = 250;
+
     @GET("?method=flickr.interestingness.getList")
     Call<ResponseBody> getInterestingPhotos(
             @Query("extras") String extras,

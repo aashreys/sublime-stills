@@ -18,6 +18,8 @@ package com.aashreys.walls;
 
 import android.support.annotation.CallSuper;
 
+import com.aashreys.walls.utils.LogWrapper;
+
 import org.junit.Before;
 
 /**

@@ -41,7 +41,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
@@ -306,8 +306,8 @@ public class ImageDetailActivity extends BaseActivity {
             putValueIconPair(
                     infoList,
                     new Name(formatResolution(
-                            resolution.getResX().value(),
-                            resolution.getResY().value()
+                            resolution.getWidth().value(),
+                            resolution.getHeight().value()
                     )),
                     R.drawable.ic_dimensions_black_24dp
             );

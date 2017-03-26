@@ -16,7 +16,7 @@
 
 package com.aashreys.walls.network.parsers;
 
-import com.aashreys.walls.LogWrapper;
+import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.values.Name;
 

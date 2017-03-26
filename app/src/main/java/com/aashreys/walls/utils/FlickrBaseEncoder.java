@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.domain.display.images.utils;
+package com.aashreys.walls.utils;
 
 /**
  * A class to encode number for use with Flickr's short url template.

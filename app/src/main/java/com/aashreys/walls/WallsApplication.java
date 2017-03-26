@@ -23,6 +23,7 @@ import com.aashreys.walls.di.DaggerApplicationComponent;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
 import com.aashreys.walls.persistence.WallsDatabase;
+import com.aashreys.walls.utils.LogWrapper;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
