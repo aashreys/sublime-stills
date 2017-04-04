@@ -42,7 +42,7 @@ import static junit.framework.Assert.assertEquals;
  * Created by aashreys on 10/02/17.
  */
 
-public class CollectionSearcherTests extends BaseTestCase {
+public class CollectionSearchServiceTests extends BaseTestCase {
 
     private MockWebServer mockWebServer;
 
