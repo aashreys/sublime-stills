@@ -19,12 +19,15 @@ package com.aashreys.walls.domain.display.collections;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 
+import javax.inject.Inject;
+
 /**
  * Created by aashreys on 04/02/17.
  */
 
 public class CollectionFactory {
 
+    @Inject
     public CollectionFactory() {}
 
     public Collection create(@Collection.Type String type, Id id, Name name) {

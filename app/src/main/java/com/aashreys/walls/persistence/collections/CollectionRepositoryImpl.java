@@ -19,7 +19,6 @@ package com.aashreys.walls.persistence.collections;
 import android.support.annotation.NonNull;
 
 import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.CollectionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +38,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
     private static final String BOOK_NAME = "collections_book";
 
-    private final CollectionFactory collectionFactory;
-
-    public CollectionRepositoryImpl(CollectionFactory collectionFactory) {
-        this.collectionFactory = collectionFactory;
-    }
+    public CollectionRepositoryImpl() {}
 
     @Override
     public void insert(Collection collection) {

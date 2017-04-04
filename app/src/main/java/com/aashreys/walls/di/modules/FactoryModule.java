@@ -17,7 +17,6 @@
 package com.aashreys.walls.di.modules;
 
 import com.aashreys.walls.domain.device.DeviceResolution;
-import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
 import com.aashreys.walls.domain.display.sources.FlickrRecentSourceFactory;
 import com.aashreys.walls.domain.display.sources.FlickrTagSourceFactory;
@@ -62,11 +61,6 @@ public class FactoryModule {
             DeviceResolution deviceResolution
     ) {
         return new ShareDelegateFactory(urlShortener, deviceResolution);
-    }
-
-    @Provides
-    public CollectionFactory providesCollectionFactory() {
-        return new CollectionFactory();
     }
 
 }

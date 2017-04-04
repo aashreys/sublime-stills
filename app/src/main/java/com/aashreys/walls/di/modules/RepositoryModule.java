@@ -18,7 +18,6 @@ package com.aashreys.walls.di.modules;
 
 import android.content.SharedPreferences;
 
-import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.KeyValueStoreImpl;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
@@ -41,8 +40,8 @@ public class RepositoryModule {
     public RepositoryModule() {}
 
     @Provides
-    public CollectionRepository providesCollectionRepository(CollectionFactory collectionFactory) {
-        return new CollectionRepositoryImpl(collectionFactory);
+    public CollectionRepository providesCollectionRepository() {
+        return new CollectionRepositoryImpl();
     }
 
     @Provides
