@@ -1,14 +1,3 @@
-buildscript {
-    repositories { maven { url 'https://maven.fabric.io/public' } }
-    dependencies {
-        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
-        classpath 'io.fabric.tools:gradle:1.21.6'
-    }
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
-
 /*
  * Copyright {2017} {Aashrey Kamal Sharma}
  *
@@ -24,6 +13,17 @@ apply plugin: 'io.fabric'
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
+buildscript {
+    repositories { maven { url 'https://maven.fabric.io/public' } }
+    dependencies {
+        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
+        classpath 'io.fabric.tools:gradle:1.21.6'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 // Load walls properties
 def wallsPropertiesFile = rootProject.file("walls.properties");

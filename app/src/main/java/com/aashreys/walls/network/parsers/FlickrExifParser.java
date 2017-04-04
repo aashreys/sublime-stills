@@ -16,6 +16,8 @@
 
 package com.aashreys.walls.network.parsers;
 
+import android.util.Log;
+
 import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.values.Name;
@@ -38,18 +40,19 @@ public class FlickrExifParser {
     public FlickrExifParser() {}
 
     public Exif parse(String exifString) {
-        Exif exif = new Exif();
+        Exif exif = null;
         try {
             JSONObject exifJson = new JSONObject(exifString);
             JSONArray exifJsonArray = exifJson.getJSONObject("photo").getJSONArray("exif");
-            readExif(exifJsonArray, exif);
+            exif = createExif(exifJsonArray);
         } catch (JSONException e) {
             LogWrapper.e(TAG, "Unable to read exif for flickr image", e);
         }
         return exif;
     }
 
-    private void readExif(JSONArray exifArray, Exif exif) {
+    private Exif createExif(JSONArray exifArray) {
+        Exif exif = new Exif();
         for (int i = 0; i < exifArray.length(); i++) {
             try {
                 JSONObject exifJson = exifArray.getJSONObject(i);
@@ -92,9 +95,10 @@ public class FlickrExifParser {
                         break;
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.d(TAG, "Unable to read exif property", e);
             }
         }
+        return exif;
     }
 
     private String getExifValue(JSONObject exifJson) {

@@ -16,13 +16,12 @@
 
 package com.aashreys.walls;
 
-import com.aashreys.walls.domain.display.images.FlickrImage;
-import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.UnsplashImage;
+import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
+import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
-import com.aashreys.walls.utils.FlickrBaseEncoder;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
@@ -54,39 +53,16 @@ public class ImageTests extends BaseTestCase {
     ) {
         return new UnsplashImage(
                 new Id(id),
-                new Pixel(x),
-                new Pixel(y),
+                new Resolution(new Pixel(x), new Pixel(y)),
                 new Date(createdAtTime),
-                new Id(userId),
-                new Name(userRealName),
-                new Url(userProfileUrl),
-                new Url(userPortfolioUrl),
+                new User(
+                        new Id(userId),
+                        new Name(userRealName),
+                        new Url(userProfileUrl),
+                        new Url(userPortfolioUrl)
+                ),
                 new Url(rawImageUrl),
                 new Url(imageShareUrl)
-        );
-    }
-
-    public static FlickrImage _createFlickImage(
-            String id,
-            String ownerId,
-            String serverId,
-            String farmId,
-            String secret,
-            String title,
-            String userName,
-            Date createdAt,
-            Location location
-            ) {
-        return new FlickrImage(
-                new Id(id),
-                new Id(ownerId),
-                new Id(serverId),
-                new Id(farmId),
-                new Id(secret),
-                new Name(title),
-                new Name(userName),
-                createdAt,
-                location
         );
     }
 
@@ -94,7 +70,7 @@ public class ImageTests extends BaseTestCase {
     public void test_image_constructor_args() {
         // Constructing image with valid arguments
         int deviceWidth = 1080;
-        String id = "116"; // Not John-117
+        String id = "116";
         String title = "The Composer";
         String rawImageUrl = "http://composer.com/theComposed.jpg";
         String imageShareUrl = "http://imageShareUrl.com";
@@ -105,12 +81,24 @@ public class ImageTests extends BaseTestCase {
         String userRealName = "The Diadact";
         String userProfileUrl = "http://composeAllTheThings.com";
         String userPortfolioUrl = "http://composerLibrary.com";
-        String serviceName = "The Composer";
-        String serviceUrl = "http://composer.com";
+
         String locationNameString = "The Hilltop";
         double latitude = 24.12;
         double longitude = 23.42;
         Location location = new Location(new Name(locationNameString), longitude, latitude);
+
+        String camera = "Nikon D500";
+        String exposureTime = "400 ms";
+        String aperture = "f/4.0";
+        String focalLength = "24 mm";
+        String iso = "1000";
+        Exif exif = new Exif(
+                new Name(camera),
+                new Name(exposureTime),
+                new Name(aperture),
+                new Name(focalLength),
+                new Name(iso)
+        );
 
         UnsplashImage unsplashImage = _createUnsplashImage(
                 id,
@@ -124,9 +112,13 @@ public class ImageTests extends BaseTestCase {
                 rawImageUrl,
                 imageShareUrl
         );
+        unsplashImage.setLocation(location);
+        unsplashImage.setExif(exif);
+
         assertEquals(unsplashImage.getId().value(), id);
-        assertEquals(unsplashImage.getUrl(deviceWidth).value(),
-                rawImageUrl.concat(String.format(Unsplash.IMAGE_URL_CONFIG, deviceWidth))
+        assertEquals(
+                unsplashImage.getUrl(deviceWidth).value(),
+                rawImageUrl.concat(String.format(UnsplashImage.IMAGE_URL_CONFIG, deviceWidth))
         );
         assertEquals(unsplashImage.getShareUrl().value(), imageShareUrl);
         assertEquals(unsplashImage.getTitle(), null);
@@ -149,35 +141,17 @@ public class ImageTests extends BaseTestCase {
         assertEquals(unsplashService.getName().value(), "Unsplash");
         assertEquals(unsplashService.getUrl().value(), "https://unsplash.com");
 
-        // Flickr specific data
-        String serverId = "3123";
-        String farmId = "4";
-        String secret = "31243535";
-        // Urls constructed from Flickr's photo url template using the data above.
-        String imageUrl = "https://farm4.staticflickr.com/3123/116_31243535_b.jpg";
-        imageShareUrl = "https://flic.kr/p/" + FlickrBaseEncoder.encode(Long.valueOf(id)) + "/";
-        Image flickrImage = _createFlickImage(
-                id,
-                userId,
-                serverId,
-                farmId,
-                secret,
-                title,
-                userRealName,
-                new Date(createdAtTime),
-                location
-        );
-        assertEquals(flickrImage.getId().value(), id);
-        assertEquals(flickrImage.getUrl(deviceWidth).value(), imageUrl);
-        assertEquals(flickrImage.getShareUrl().value(), imageShareUrl);
-    }
+        location = unsplashImage.getLocation();
+        assertEquals(location.getName().value(), locationNameString);
+        assertEquals(location.getLongitude(), longitude, 0);
+        assertEquals(location.getLatitude(), latitude, 0);
 
-
-
-    private static class Unsplash {
-
-        private static final String IMAGE_URL_CONFIG = "?q=80&fm=jpg&w=600&fit=max";
-
+        exif = unsplashImage.getExif();
+        assertEquals(exif.camera.value(), camera);
+        assertEquals(exif.exposureTime.value(), exposureTime);
+        assertEquals(exif.aperture.value(), aperture);
+        assertEquals(exif.focalLength.value(), focalLength);
+        assertEquals(exif.iso.value(), iso);
     }
 
 }

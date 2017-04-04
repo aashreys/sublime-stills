@@ -50,7 +50,7 @@ public class UnsplashImage implements Image {
         public UnsplashImage[] newArray(int size) {return new UnsplashImage[size];}
     };
 
-    private static final String IMAGE_URL_CONFIG = "?q=75&cs=tinysrgb&fm=jpg&w=%s&fit=max";
+    public static final String IMAGE_URL_CONFIG = "?q=75&cs=tinysrgb&fm=jpg&w=%s&fit=max";
 
     private final Id id;
 

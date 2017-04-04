@@ -50,7 +50,23 @@ public class Exif implements Parcelable {
     @Nullable
     public Name iso;
 
-    public Exif() {}
+    public Exif() {
+
+    }
+
+    public Exif(
+            @Nullable Name camera,
+            @Nullable Name exposureTime,
+            @Nullable Name aperture,
+            @Nullable Name focalLength,
+            @Nullable Name iso
+    ) {
+        this.camera = camera;
+        this.exposureTime = exposureTime;
+        this.aperture = aperture;
+        this.focalLength = focalLength;
+        this.iso = iso;
+    }
 
     protected Exif(Parcel in) {
         this.camera = in.readParcelable(Name.class.getClassLoader());

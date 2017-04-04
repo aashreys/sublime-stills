@@ -54,8 +54,8 @@ public class UrlShortenerTests extends BaseTestCase {
 
     private static final String MOCK_RESPONSE = "{\n" +
             "  \"kind\": \"urlshortener#url\",\n" +
-            "  \"id\": \"https://apple.com\",\n" +
-            "  \"longUrl\": \"https://google.com\"\n" +
+            "  \"id\": \"https://sampleimage.com/2314255349_sunset.jpg\",\n" +
+            "  \"longUrl\": \"https://sampleimage.com/user/profile/image/231424wrsafsf2414.jpg\"\n" +
             "}";
 
     @Rule
@@ -127,17 +127,13 @@ public class UrlShortenerTests extends BaseTestCase {
     @Test
     public void test_url_caching() throws InterruptedException {
         // Long url must be greater than 40 characters to be shortened.
-        final Url longUrl = new Url("https://google.com");
-        final String shortUrlString = "https://apple.com";
+        final Url longUrl = new Url("https://sampleimage.com/user/profile/image/231424wrsafsf2414.jpg");
+        final String expectedShortUrlString = "https://sampleimage.com/2314255349_sunset.jpg";
         mockWebServer.enqueue(new MockResponse().setBody(MOCK_RESPONSE));
         urlShortener.shorten(longUrl, new UrlShortener.Listener() {
             @Override
             public void onComplete(@NonNull Url shortUrl) {
-                assertEquals(shortUrl.value(), shortUrlString);
-
-                // Verify short url was cached
-                Mockito.verify(shortUrlRepository, Mockito.times(1)).save(longUrl, shortUrl);
-                assertEquals(shortUrlRepository.get(longUrl).value(), shortUrlString);
+                assertEquals(shortUrl.value(), expectedShortUrlString);
             }
 
             @Override
@@ -153,13 +149,16 @@ public class UrlShortenerTests extends BaseTestCase {
                 new UrlShortener.Listener() {
                     @Override
                     public void onComplete(@NonNull Url shortUrl) {
-                        assertEquals(shortUrl.value(), shortUrlString);
-                        Mockito.verify(shortUrlRepository, Mockito.times(3)).get(longUrl);
+                        assertEquals(shortUrl.value(), expectedShortUrlString);
+
+                        // Verify short url was cached and retrieved from cache
+                        Mockito.verify(shortUrlRepository, Mockito.times(1)).save(longUrl, shortUrl);
+                        Mockito.verify(shortUrlRepository, Mockito.times(2)).get(longUrl);
                     }
 
                     @Override
                     public void onError(@NonNull UrlShortener.UrlShortenerException e) {
-
+                        fail();
                     }
                 }
         );

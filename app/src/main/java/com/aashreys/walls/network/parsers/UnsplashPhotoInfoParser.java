@@ -58,12 +58,19 @@ public class UnsplashPhotoInfoParser {
             longitude = positionJson.optDouble("longitude", 0);
             latitude = positionJson.optDouble("latitude", 0);
         }
-        String locationName = getFormattedLocationName(city,country, latitude, longitude);
-        return locationName != null ? new Location(new Name(locationName), longitude, latitude) : null;
+        String locationName = getFormattedLocationName(city, country, latitude, longitude);
+        return locationName != null ?
+                new Location(new Name(locationName), longitude, latitude) :
+                null;
 
     }
 
-    private String getFormattedLocationName(String city, String country, double latitude, double longitude) {
+    private String getFormattedLocationName(
+            String city,
+            String country,
+            double latitude,
+            double longitude
+    ) {
         String locationString = null;
         if (city != null || country != null) {
             locationString = city;
@@ -93,12 +100,13 @@ public class UnsplashPhotoInfoParser {
         JSONObject exifJson = response.optJSONObject("exif");
         Exif exif = null;
         if (exifJson != null) {
-            exif = new Exif();
-            exif.camera = createCamera(exifJson);
-            exif.iso = createIso(exifJson);
-            exif.aperture = createAperture(exifJson);
-            exif.focalLength = createFocalLength(exifJson);
-            exif.exposureTime = createExposureTime(exifJson);
+            exif = new Exif(
+                    createCamera(exifJson),
+                    createExposureTime(exifJson),
+                    createAperture(exifJson),
+                    createFocalLength(exifJson),
+                    createIso(exifJson)
+            );
         }
         image.setExif(exif);
     }
@@ -113,7 +121,7 @@ public class UnsplashPhotoInfoParser {
 
     private Name createExposureTime(JSONObject exifJson) {
         String exposureTime = JSONUtils.optString(exifJson, "exposure_time", null);
-        if (exposureTime != null ) {
+        if (exposureTime != null) {
             new Name(getFormattedExposureTime(exposureTime));
         }
         return null;
