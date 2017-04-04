@@ -41,7 +41,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
@@ -59,6 +58,7 @@ import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.helpers.ChromeTabHelper;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.InfoView;
+import com.aashreys.walls.utils.LogWrapper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -302,7 +302,7 @@ public class ImageDetailActivity extends BaseActivity {
         }
 
         Resolution resolution = image.getResolution();
-        if (resolution != null) {
+        if (resolution != null && resolution.getWidth() != null && resolution.getHeight() != null) {
             putValueIconPair(
                     infoList,
                     new Name(formatResolution(
