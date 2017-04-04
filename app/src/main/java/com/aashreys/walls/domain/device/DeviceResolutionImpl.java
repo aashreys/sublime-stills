@@ -26,28 +26,28 @@ import android.util.DisplayMetrics;
 
 public class DeviceResolutionImpl implements DeviceResolution {
 
-    private final int width, height;
+    private final int portraitWidth, portraitHeight;
 
     public DeviceResolutionImpl(Context context) {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         boolean isPortrait = context.getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_PORTRAIT;
         if (isPortrait) {
-            this.width = dm.widthPixels;
-            this.height = dm.heightPixels;
+            this.portraitWidth = dm.widthPixels;
+            this.portraitHeight = dm.heightPixels;
         } else {
-            this.width = dm.heightPixels;
-            this.height = dm.widthPixels;
+            this.portraitWidth = dm.heightPixels;
+            this.portraitHeight = dm.widthPixels;
         }
     }
 
 
     public int getPortraitWidth() {
-        return width;
+        return portraitWidth;
     }
 
     public int getPortraitHeight() {
-        return height;
+        return portraitHeight;
     }
 }
 
