@@ -14,35 +14,28 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.domain.share;
+package com.aashreys.walls.domain.share.actions;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 
-import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.share.actions.CopyLinkAction;
+import com.aashreys.walls.R;
+import com.aashreys.walls.domain.values.Url;
 
 /**
- * Created by aashreys on 20/03/17.
+ * Created by aashreys on 05/04/17.
  */
 
-public class CopyLinkDelegate implements ShareDelegate {
+public class CopyLinkAction {
 
-    private final CopyLinkAction copyLinkAction;
-
-    CopyLinkDelegate(CopyLinkAction copyLinkAction) {
-        this.copyLinkAction = copyLinkAction;
+    public void copy(Context context, Url url) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(
+                context.getResources().getString(R.string.title_image_link_clipboard_label),
+                url.value()
+        );
+        clipboard.setPrimaryClip(clip);
     }
 
-    @Override
-    public void share(
-            Context context, Image image, Listener listener
-    ) {
-        copyLinkAction.copy(context, image.getShareUrl());
-        listener.onShareComplete();
-    }
-
-    @Override
-    public void cancel() {
-
-    }
 }

@@ -17,13 +17,11 @@
 package com.aashreys.walls.domain.share;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.values.Name;
+import com.aashreys.walls.domain.share.actions.ShareImageLinkAction;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.network.UrlShortener;
 import com.aashreys.walls.ui.utils.UiHandler;
@@ -33,22 +31,23 @@ import com.aashreys.walls.ui.utils.UiHandler;
  */
 
 // TODO: Fix cancelling requests. It's broken right now.
-public class ShareLinkDelegate implements ShareDelegate {
+public class ShareImageLinkDelegate implements ShareDelegate {
 
-    private static final String TAG = ShareLinkDelegate.class.getSimpleName();
-
-    private static final String MIME_TYPE = "text/plain";
+    private static final String TAG = ShareImageLinkDelegate.class.getSimpleName();
 
     private static final int MAX_URL_LENGTH = 40;
 
     private final UrlShortener urlShortener;
 
+    private final ShareImageLinkAction shareImageLinkAction;
+
     private boolean isCancelled;
 
     private UiHandler uiHandler = new UiHandler();
 
-    ShareLinkDelegate(UrlShortener urlShortener) {
+    ShareImageLinkDelegate(UrlShortener urlShortener, ShareImageLinkAction shareImageLinkAction) {
         this.urlShortener = urlShortener;
+        this.shareImageLinkAction = shareImageLinkAction;
     }
 
     @Override
@@ -62,7 +61,11 @@ public class ShareLinkDelegate implements ShareDelegate {
                         @Override
                         public void onComplete(@NonNull Url shortUrl) {
                             if (!isCancelled) {
-                                startSharingIntent(context, shortUrl, image.getTitle());
+                                shareImageLinkAction.shareImageLink(
+                                        context,
+                                        image.getTitle(),
+                                        shortUrl
+                                );
                                 uiHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -87,7 +90,7 @@ public class ShareLinkDelegate implements ShareDelegate {
                     }
             );
         } else {
-            startSharingIntent(context, imageUrl, image.getTitle());
+            shareImageLinkAction.shareImageLink(context, image.getTitle(), imageUrl);
             listener.onShareComplete();
         }
     }
@@ -95,29 +98,5 @@ public class ShareLinkDelegate implements ShareDelegate {
     @Override
     public void cancel() {
         this.isCancelled = true;
-    }
-
-    private void startSharingIntent(Context context, Url imageUrl, Name title) {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        String contentString;
-        if (title != null && title.isValid()) {
-            contentString = context.getResources().getString(
-                    R.string.share_text_template,
-                    title.value(),
-                    imageUrl.value()
-            );
-        } else {
-            contentString = context.getResources().getString(
-                    R.string.share_text_template_notitle,
-                    imageUrl.value()
-            );
-        }
-        shareIntent.putExtra(Intent.EXTRA_TEXT, contentString);
-        shareIntent.setType(MIME_TYPE);
-        context.startActivity(Intent.createChooser(
-                shareIntent,
-                context.getResources().getText(R.string.title_share_link)
-        ));
     }
 }

@@ -17,6 +17,7 @@
 package com.aashreys.walls.domain.share;
 
 import com.aashreys.walls.domain.device.DeviceResolution;
+import com.aashreys.walls.domain.share.actions.ShareActionFactory;
 import com.aashreys.walls.network.UrlShortener;
 
 import javax.inject.Inject;
@@ -31,25 +32,35 @@ public class ShareDelegateFactory {
 
     private final UrlShortener urlShortener;
 
+    private final ShareActionFactory shareActionFactory;
+
     @Inject
     public ShareDelegateFactory(
             UrlShortener urlShortener,
-            DeviceResolution deviceResolution
+            DeviceResolution deviceResolution,
+            ShareActionFactory shareActionFactory
     ) {
         this.urlShortener = urlShortener;
         this.deviceResolution = deviceResolution;
+        this.shareActionFactory = shareActionFactory;
     }
 
     public ShareDelegate create(ShareDelegate.Mode mode) {
         switch (mode) {
             case LINK:
-                return new ShareLinkDelegate(urlShortener);
+                return new ShareImageLinkDelegate(
+                        urlShortener,
+                        shareActionFactory.createShareImageLinkAction()
+                );
             case COPY_LINK:
-                return new CopyLinkDelegate();
+                return new CopyLinkDelegate(shareActionFactory.createCopyLinkAction());
             case PHOTO:
-                return new ShareImageDelegate(deviceResolution);
+                return new ShareImageDelegate(
+                        deviceResolution,
+                        shareActionFactory.createShareImageAction()
+                );
             case SET_AS:
-                return new SetAsDelegate(deviceResolution);
+                return new SetAsDelegate(deviceResolution, shareActionFactory.createSetAsAction());
         }
         throw new IllegalArgumentException("Unexpected share mode");
     }

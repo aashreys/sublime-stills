@@ -17,13 +17,11 @@
 package com.aashreys.walls.domain.share;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 
-import com.aashreys.walls.R;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.share.actions.SetAsAction;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.ui.helpers.GlideHelper;
 import com.aashreys.walls.ui.utils.UiHandler;
@@ -40,16 +38,17 @@ class SetAsDelegate implements ShareDelegate {
 
     private static final String TAG = SetAsDelegate.class.getSimpleName();
 
-    private static final String MIME_TYPE = "image/*";
+    private final DeviceResolution deviceResolution;
+
+    private SetAsAction setAsAction;
 
     private boolean isCancelled;
 
     private UiHandler uiHandler = new UiHandler();
 
-    private final DeviceResolution deviceResolution;
-
-    public SetAsDelegate(DeviceResolution deviceResolution) {
+    public SetAsDelegate(DeviceResolution deviceResolution, SetAsAction setAsAction) {
         this.deviceResolution = deviceResolution;
+        this.setAsAction = setAsAction;
     }
 
     @Override
@@ -78,15 +77,7 @@ class SetAsDelegate implements ShareDelegate {
                         if (!isCancelled) {
                             // Glide has been configured to use an external cache so that cached
                             // images are shareable by default. See {@link @GlideConfiguration}.
-                            Uri imageUri = Uri.fromFile(resource);
-                            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-                            intent.addCategory(Intent.CATEGORY_DEFAULT);
-                            intent.setDataAndType(imageUri, MIME_TYPE);
-                            intent.putExtra("mimeType", MIME_TYPE);
-                            context.startActivity(Intent.createChooser(
-                                    intent,
-                                    context.getString(R.string.share_set_as_title)
-                            ));
+                            setAsAction.setAs(context, resource);
                             uiHandler.post(new Runnable() {
                                 @Override
                                 public void run() {

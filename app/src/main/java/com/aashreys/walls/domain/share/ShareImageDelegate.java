@@ -17,14 +17,12 @@
 package com.aashreys.walls.domain.share;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
-import com.aashreys.walls.R;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.metadata.User;
+import com.aashreys.walls.domain.share.actions.ShareImageAction;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.ui.helpers.GlideHelper;
 import com.aashreys.walls.ui.utils.UiHandler;
@@ -41,7 +39,7 @@ public class ShareImageDelegate implements ShareDelegate {
 
     private static final int minWidth = 720;
 
-    private static final String MIME_IMAGE = "image/*";
+    private final ShareImageAction shareImageAction;
 
     private final DeviceResolution deviceResolution;
 
@@ -49,8 +47,9 @@ public class ShareImageDelegate implements ShareDelegate {
 
     private boolean isCancelled;
 
-    ShareImageDelegate(DeviceResolution deviceResolution) {
+    ShareImageDelegate(DeviceResolution deviceResolution, ShareImageAction shareImageAction) {
         this.deviceResolution = deviceResolution;
+        this.shareImageAction = shareImageAction;
     }
 
     @Override
@@ -87,7 +86,7 @@ public class ShareImageDelegate implements ShareDelegate {
                             // Glide has been configured to use an external cache so that cached
                             // images are shareable by default. See {@link @GlideConfiguration}.
                             Uri imageUri = Uri.fromFile(resource);
-                            startSharingIntent(context, imageUri, image);
+                            shareImageAction.shareImage(context, image, imageUri);
                             uiHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -98,55 +97,6 @@ public class ShareImageDelegate implements ShareDelegate {
                     }
                 }
         );
-    }
-
-    private void startSharingIntent(Context context, Uri imageUri, Image image) {
-        String shareText = buildShareText(context, image);
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        intent.putExtra(Intent.EXTRA_TITLE, "Hello World");
-        if (shareText != null) {
-            intent.putExtra(Intent.EXTRA_TEXT, shareText);
-        }
-        intent.setType(MIME_IMAGE);
-        context.startActivity(Intent.createChooser(
-                intent,
-                context.getResources().getText(R.string.title_share_photo)
-        ));
-
-    }
-
-    private String buildShareText(Context context, Image image) {
-        User user = image.getUser();
-        String shareText = null;
-        if (user != null && user.getName() != null) {
-            String imageUrl = image.getShareUrl().value();
-            String userName = user.getName().value();
-            String userUrl = null;
-            if (user.getProfileUrl() != null) {
-                userUrl = user.getProfileUrl().value();
-            }
-            if (userUrl == null && user.getPortfolioUrl() != null) {
-                userUrl = user.getPortfolioUrl().value();
-            }
-
-            if (userUrl != null) {
-                shareText = context.getString(
-                        R.string.share_file_template,
-                        imageUrl,
-                        userName,
-                        userUrl
-                );
-            } else {
-                shareText = context.getString(
-                        R.string.share_file_template_nouserurl,
-                        imageUrl,
-                        userName
-                );
-            }
-        }
-        return shareText;
     }
 
     @Override
