@@ -18,6 +18,7 @@ package com.aashreys.walls.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.transition.Fade;
@@ -32,6 +33,7 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,14 +58,11 @@ import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.helpers.ChromeTabHelper;
+import com.aashreys.walls.ui.helpers.ImageDownloader;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.InfoView;
 import com.aashreys.walls.utils.LogWrapper;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,11 +89,12 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Inject DeviceResolution deviceResolution;
 
+    @Inject ImageDownloader imageDownloader;
+
     private ShareDelegate shareImageDelegate, shareLinkDelegate, copyLinkDelegate;
 
     private ShareDelegate setAsShareDelegate;
 
-    @Nullable
     private Image image;
 
     private ImageView imageView;
@@ -209,31 +209,15 @@ public class ImageDetailActivity extends BaseActivity {
             } else {
                 width = deviceResolution.getPortraitHeight();
             }
-            Glide.with(this)
-                    .load(image.getUrl(width).value())
-                    .priority(Priority.IMMEDIATE)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(
-                                Exception e,
-                                String model,
-                                Target<GlideDrawable> target,
-                                boolean isFirstResource
-                        ) {
-                            LogWrapper.i(TAG, "Error loading image, finishing", e);
-                            finish();
-                            return true;
-                        }
 
+            imageDownloader.asDrawable(
+                    this,
+                    image.getUrl(width),
+                    Priority.IMMEDIATE,
+                    imageView,
+                    new ImageDownloader.Listener<Drawable>() {
                         @Override
-                        public boolean onResourceReady(
-                                GlideDrawable resource,
-                                String model,
-                                Target<GlideDrawable> target,
-                                boolean isFromMemoryCache,
-                                boolean isFirstResource
-                        ) {
-
+                        public void onComplete(Drawable result) {
                             imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                                 @Override
                                 public void onLayoutChange(
@@ -252,10 +236,16 @@ public class ImageDetailActivity extends BaseActivity {
                                     showView();
                                 }
                             });
-                            return false;
+                            imageView.setImageDrawable(result);
                         }
-                    })
-                    .into(imageView);
+
+                        @Override
+                        public void onError(Exception e) {
+                            LogWrapper.i(TAG, "Error loading image, finishing", e);
+                            finish();
+                        }
+                    }
+            );
 
             imageInfoService.addInfo(image, new ImageInfoService.Listener() {
                 @Override
@@ -359,7 +349,10 @@ public class ImageDetailActivity extends BaseActivity {
 
     private void showView() {
         if (isImageLoaded && isInfoLoaded) {
-            TransitionManager.beginDelayedTransition(contentParent, new Fade());
+            TransitionManager.beginDelayedTransition(
+                    contentParent,
+                    new Fade().setInterpolator(new AccelerateDecelerateInterpolator())
+            );
             progressBar.setVisibility(View.INVISIBLE);
             contentParent.setVisibility(View.VISIBLE);
         }

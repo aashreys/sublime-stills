@@ -14,20 +14,22 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.ui.utils;
+package com.aashreys.walls.sharedelegates.mocks;
 
+import android.content.Context;
 
-import android.os.Handler;
-import android.os.Looper;
+import com.aashreys.walls.domain.share.actions.CopyLinkAction;
+import com.aashreys.walls.domain.values.Url;
 
 /**
- * Created by aashreys on 21/02/17.
+ * Created by aashreys on 05/04/17.
  */
 
-public class UiHandler extends Handler {
+public class MockCopyLinkAction extends CopyLinkAction {
 
-    UiHandler() {
-        super(Looper.getMainLooper());
+    @Override
+    public void copy(Context context, Url url) {
+
     }
 
 }

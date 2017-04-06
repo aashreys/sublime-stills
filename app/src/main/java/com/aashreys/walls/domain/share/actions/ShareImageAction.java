@@ -24,6 +24,8 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.metadata.User;
 
+import java.io.File;
+
 /**
  * Created by aashreys on 05/04/17.
  */
@@ -32,12 +34,11 @@ public class ShareImageAction {
 
     private static final String MIME_IMAGE = "image/*";
 
-    public void shareImage(Context context, Image image, Uri imageUri) {
+    public void shareImage(Context context, Image image, File file) {
         String shareText = buildShareText(context, image);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        intent.putExtra(Intent.EXTRA_TITLE, "Hello World");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
         if (shareText != null) {
             intent.putExtra(Intent.EXTRA_TEXT, shareText);
         }

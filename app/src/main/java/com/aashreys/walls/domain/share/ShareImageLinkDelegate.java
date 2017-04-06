@@ -43,11 +43,16 @@ public class ShareImageLinkDelegate implements ShareDelegate {
 
     private boolean isCancelled;
 
-    private UiHandler uiHandler = new UiHandler();
+    private final UiHandler uiHandler;
 
-    ShareImageLinkDelegate(UrlShortener urlShortener, ShareImageLinkAction shareImageLinkAction) {
+    public ShareImageLinkDelegate(
+            UrlShortener urlShortener,
+            ShareImageLinkAction shareImageLinkAction,
+            UiHandler uiHandler
+    ) {
         this.urlShortener = urlShortener;
         this.shareImageLinkAction = shareImageLinkAction;
+        this.uiHandler = uiHandler;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class CopyLinkDelegate implements ShareDelegate {
 
     private final CopyLinkAction copyLinkAction;
 
-    CopyLinkDelegate(CopyLinkAction copyLinkAction) {
+    public CopyLinkDelegate(CopyLinkAction copyLinkAction) {
         this.copyLinkAction = copyLinkAction;
     }
 

@@ -14,25 +14,21 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.ui.helpers;
+package com.aashreys.walls.ui.utils;
 
-import android.content.Context;
-
-import com.aashreys.walls.domain.values.Url;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
-
-import java.io.File;
+import javax.inject.Inject;
 
 /**
- * Created by aashreys on 03/03/17.
+ * Created by aashreys on 06/04/17.
  */
 
-public class GlideHelper {
+public class UiHandlerFactory {
 
-    public static void downloadImageAsync(Context context, Url imageUrl, Target<File> target) {
-        Glide.with(context)
-                .load(imageUrl.value())
-                .downloadOnly(target);
+    @Inject
+    public UiHandlerFactory() {}
+
+    public UiHandler create() {
+        return new UiHandler();
     }
+
 }

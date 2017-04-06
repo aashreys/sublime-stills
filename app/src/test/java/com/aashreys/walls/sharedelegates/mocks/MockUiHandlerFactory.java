@@ -14,20 +14,25 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.ui.utils;
+package com.aashreys.walls.sharedelegates.mocks;
 
-
-import android.os.Handler;
-import android.os.Looper;
+import com.aashreys.walls.ui.utils.UiHandler;
+import com.aashreys.walls.ui.utils.UiHandlerFactory;
 
 /**
- * Created by aashreys on 21/02/17.
+ * Created by aashreys on 06/04/17.
  */
 
-public class UiHandler extends Handler {
+public class MockUiHandlerFactory extends UiHandlerFactory {
 
-    UiHandler() {
-        super(Looper.getMainLooper());
+    private UiHandler mockUiHandler;
+
+    @Override
+    public UiHandler create() {
+        return mockUiHandler;
     }
 
+    public void setMockUiHandler(UiHandler uiHandler) {
+        this.mockUiHandler = uiHandler;
+    }
 }

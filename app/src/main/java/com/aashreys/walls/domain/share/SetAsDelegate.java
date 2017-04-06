@@ -17,16 +17,13 @@
 package com.aashreys.walls.domain.share;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.SetAsAction;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.ui.helpers.GlideHelper;
+import com.aashreys.walls.ui.helpers.ImageDownloader;
 import com.aashreys.walls.ui.utils.UiHandler;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.File;
 
@@ -34,7 +31,7 @@ import java.io.File;
  * Created by aashreys on 05/12/16.
  */
 
-class SetAsDelegate implements ShareDelegate {
+public class SetAsDelegate implements ShareDelegate {
 
     private static final String TAG = SetAsDelegate.class.getSimpleName();
 
@@ -44,50 +41,50 @@ class SetAsDelegate implements ShareDelegate {
 
     private boolean isCancelled;
 
-    private UiHandler uiHandler = new UiHandler();
+    private final UiHandler uiHandler;
 
-    public SetAsDelegate(DeviceResolution deviceResolution, SetAsAction setAsAction) {
+    private final ImageDownloader imageDownloader;
+
+    public SetAsDelegate(
+            DeviceResolution deviceResolution,
+            SetAsAction setAsAction,
+            UiHandler uiHandler,
+            ImageDownloader imageDownloader
+    ) {
         this.deviceResolution = deviceResolution;
         this.setAsAction = setAsAction;
+        this.uiHandler = uiHandler;
+        this.imageDownloader = imageDownloader;
     }
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
         isCancelled = false;
         final Url imageUrl = image.getUrl(deviceResolution.getPortraitWidth() * 2);
-        GlideHelper.downloadImageAsync(
-                context,
-                imageUrl,
-                new SimpleTarget<File>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        uiHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onShareFailed();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResourceReady(
-                            File resource, GlideAnimation<? super File> glideAnimation
-                    ) {
-                        if (!isCancelled) {
-                            // Glide has been configured to use an external cache so that cached
-                            // images are shareable by default. See {@link @GlideConfiguration}.
-                            setAsAction.setAs(context, resource);
-                            uiHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onShareComplete();
-                                }
-                            });
+        imageDownloader.asFile(context, imageUrl, new ImageDownloader.Listener<File>() {
+            @Override
+            public void onComplete(File result) {
+                if (!isCancelled) {
+                    setAsAction.setAs(context, result);
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onShareComplete();
                         }
-                    }
+                    });
                 }
-        );
+            }
+
+            @Override
+            public void onError(Exception e) {
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onShareFailed();
+                    }
+                });
+            }
+        });
     }
 
     @Override

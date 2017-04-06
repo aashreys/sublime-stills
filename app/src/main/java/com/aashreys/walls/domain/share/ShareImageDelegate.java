@@ -17,17 +17,13 @@
 package com.aashreys.walls.domain.share;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.ShareImageAction;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.ui.helpers.GlideHelper;
+import com.aashreys.walls.ui.helpers.ImageDownloader;
 import com.aashreys.walls.ui.utils.UiHandler;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.File;
 
@@ -43,13 +39,22 @@ public class ShareImageDelegate implements ShareDelegate {
 
     private final DeviceResolution deviceResolution;
 
-    private final UiHandler uiHandler = new UiHandler();
+    private final UiHandler uiHandler;
+
+    private final ImageDownloader imageDownloader;
 
     private boolean isCancelled;
 
-    ShareImageDelegate(DeviceResolution deviceResolution, ShareImageAction shareImageAction) {
+    public ShareImageDelegate(
+            DeviceResolution deviceResolution,
+            ShareImageAction shareImageAction,
+            UiHandler uiHandler,
+            ImageDownloader imageDownloader
+    ) {
         this.deviceResolution = deviceResolution;
         this.shareImageAction = shareImageAction;
+        this.uiHandler = uiHandler;
+        this.imageDownloader = imageDownloader;
     }
 
     @Override
@@ -61,42 +66,33 @@ public class ShareImageDelegate implements ShareDelegate {
                 deviceResolution.getPortraitWidth() :
                 minWidth;
         final Url imageUrl = image.getUrl(width);
-        GlideHelper.downloadImageAsync(
-                context,
-                imageUrl,
-                new SimpleTarget<File>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        if (!isCancelled) {
-                            uiHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onShareFailed();
-                                }
-                            });
-                        }
-                    }
 
-                    @Override
-                    public void onResourceReady(
-                            File resource, GlideAnimation<? super File> glideAnimation
-                    ) {
-                        if (!isCancelled) {
-                            // Glide has been configured to use an external cache so that cached
-                            // images are shareable by default. See {@link @GlideConfiguration}.
-                            Uri imageUri = Uri.fromFile(resource);
-                            shareImageAction.shareImage(context, image, imageUri);
-                            uiHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onShareComplete();
-                                }
-                            });
+        imageDownloader.asFile(context, imageUrl, new ImageDownloader.Listener<File>() {
+            @Override
+            public void onComplete(File result) {
+                if (!isCancelled) {
+                    shareImageAction.shareImage(context, image, result);
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onShareComplete();
                         }
-                    }
+                    });
                 }
-        );
+            }
+
+            @Override
+            public void onError(Exception e) {
+                if (!isCancelled) {
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onShareFailed();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override

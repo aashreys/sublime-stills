@@ -19,6 +19,8 @@ package com.aashreys.walls.domain.share;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.share.actions.ShareActionFactory;
 import com.aashreys.walls.network.UrlShortener;
+import com.aashreys.walls.ui.helpers.ImageDownloader;
+import com.aashreys.walls.ui.utils.UiHandlerFactory;
 
 import javax.inject.Inject;
 
@@ -34,15 +36,23 @@ public class ShareDelegateFactory {
 
     private final ShareActionFactory shareActionFactory;
 
+    private final UiHandlerFactory uiHandlerFactory;
+
+    private final ImageDownloader imageDownloader;
+
     @Inject
     public ShareDelegateFactory(
             UrlShortener urlShortener,
             DeviceResolution deviceResolution,
-            ShareActionFactory shareActionFactory
+            ShareActionFactory shareActionFactory,
+            UiHandlerFactory uiHandlerFactory,
+            ImageDownloader imageDownloader
     ) {
         this.urlShortener = urlShortener;
         this.deviceResolution = deviceResolution;
         this.shareActionFactory = shareActionFactory;
+        this.uiHandlerFactory = uiHandlerFactory;
+        this.imageDownloader = imageDownloader;
     }
 
     public ShareDelegate create(ShareDelegate.Mode mode) {
@@ -50,17 +60,25 @@ public class ShareDelegateFactory {
             case LINK:
                 return new ShareImageLinkDelegate(
                         urlShortener,
-                        shareActionFactory.createShareImageLinkAction()
+                        shareActionFactory.createShareImageLinkAction(),
+                        uiHandlerFactory.create()
                 );
             case COPY_LINK:
                 return new CopyLinkDelegate(shareActionFactory.createCopyLinkAction());
             case PHOTO:
                 return new ShareImageDelegate(
                         deviceResolution,
-                        shareActionFactory.createShareImageAction()
+                        shareActionFactory.createShareImageAction(),
+                        uiHandlerFactory.create(),
+                        imageDownloader
                 );
             case SET_AS:
-                return new SetAsDelegate(deviceResolution, shareActionFactory.createSetAsAction());
+                return new SetAsDelegate(
+                        deviceResolution,
+                        shareActionFactory.createSetAsAction(),
+                        uiHandlerFactory.create(),
+                        imageDownloader
+                );
         }
         throw new IllegalArgumentException("Unexpected share mode");
     }

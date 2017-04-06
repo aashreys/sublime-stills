@@ -17,12 +17,14 @@
 package com.aashreys.walls.ui.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -33,13 +35,10 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.helpers.ImageDownloader;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.utils.ForegroundImageView;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import javax.inject.Inject;
 
@@ -52,6 +51,8 @@ public class StreamImageView extends FrameLayout {
     @Inject FavoriteImageRepository favoriteImageRepository;
 
     @Inject DeviceResolution deviceResolution;
+
+    @Inject ImageDownloader imageDownloader;
 
     private FavoriteSyncTask favoriteSyncTask;
 
@@ -145,35 +146,26 @@ public class StreamImageView extends FrameLayout {
         } else {
             width = deviceResolution.getPortraitHeight() / numStreamColumns;
         }
-        Glide.with(fragment)
-                .load(image.getUrl(width).value())
-                .priority(fragment.isDisplayed() ? Priority.HIGH : Priority.LOW)
-                .crossFade()
-                .listener(new RequestListener<String, GlideDrawable>() {
+        imageDownloader.asDrawable(
+                fragment,
+                image.getUrl(width),
+                fragment.isDisplayed() ? Priority.HIGH : Priority.LOW,
+                imageView,
+                new ImageDownloader.Listener<Drawable>() {
                     @Override
-                    public boolean onException(
-                            Exception e,
-                            String model,
-                            Target<GlideDrawable> target,
-                            boolean isFirstResource
-                    ) {
-                        setVisibility(GONE);
-                        return false;
+                    public void onComplete(Drawable result) {
+                        setVisibility(VISIBLE);
+                        imageView.setAlpha(0f);
+                        imageView.setImageDrawable(result);
+                        imageView.animate().alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
                     }
 
                     @Override
-                    public boolean onResourceReady(
-                            GlideDrawable resource,
-                            String model,
-                            Target<GlideDrawable> target,
-                            boolean isFromMemoryCache,
-                            boolean isFirstResource
-                    ) {
-                        setVisibility(VISIBLE);
-                        return false;
+                    public void onError(Exception e) {
+                        setVisibility(GONE);
                     }
-                })
-                .into(imageView);
+                }
+        );
         if (callback != null) {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
