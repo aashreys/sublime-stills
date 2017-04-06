@@ -60,15 +60,15 @@
     <string name="hint_collection_search">Try the suggestions below</string>
 
     <string name="error_generic">Photos could not be loaded</string>
-    <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load images</string>
-    <string name="error_slow_connectivity">Your connection is poor\nLoading images will take longer than usual</string>
+    <string name="error_no_connectivity">Please enable WiFi or Mobile Data to load photos</string>
+    <string name="error_slow_connectivity">Your connection is poor\nLoading photos will take longer than usual</string>
     <string name="hint_end_of_collection">You\'ve reached the end of this Collection</string>
 
     <string name="title_find_a_collection">Find a Collection</string>
 
-    <string name="hint_add_favorites">Your favorites are displayed here.\nTap an empty heart on an image to favorite it.</string>
-    <string name="hint_collection">Collections are a set of photos with a common theme.\nYou can find new and manage your existing Collections here. </string>
-    <string name="hint_image_actions">Tap the icons below to Favorite, Share or make this image your Wallpaper.</string>
+    <string name="hint_add_favorites">Your favorites are displayed here\nTap an empty heart on an photo to favorite it</string>
+    <string name="hint_collection">Collections are a set of photos with a common theme\nYou can find new and manage your existing Collections here</string>
+    <string name="hint_image_actions">Tap the icons below to Favorite, Share or make this photo your Wallpaper</string>
 
     <string name="title_snackbar_favorite_removed">Favorite removed</string>
 
