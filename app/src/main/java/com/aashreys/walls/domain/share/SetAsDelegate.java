@@ -37,13 +37,13 @@ public class SetAsDelegate implements ShareDelegate {
 
     private final DeviceResolution deviceResolution;
 
-    private SetAsAction setAsAction;
-
-    private boolean isCancelled;
-
     private final UiHandler uiHandler;
 
     private final ImageDownloader imageDownloader;
+
+    private SetAsAction setAsAction;
+
+    private ImageFileDownloadListener imageFileDownloadListener;
 
     public SetAsDelegate(
             DeviceResolution deviceResolution,
@@ -59,9 +59,16 @@ public class SetAsDelegate implements ShareDelegate {
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
-        isCancelled = false;
+        imageFileDownloadListener = createImageFileDownloadListener(context, listener);
         final Url imageUrl = image.getUrl(deviceResolution.getPortraitWidth() * 2);
-        imageDownloader.asFile(context, imageUrl, new ImageDownloader.Listener<File>() {
+        imageDownloader.asFile(context, imageUrl, imageFileDownloadListener);
+    }
+
+    private ImageFileDownloadListener createImageFileDownloadListener(
+            final Context context,
+            final Listener listener
+    ) {
+        return new ImageFileDownloadListener() {
             @Override
             public void onComplete(File result) {
                 if (!isCancelled) {
@@ -84,11 +91,14 @@ public class SetAsDelegate implements ShareDelegate {
                     }
                 });
             }
-        });
+        };
     }
 
     @Override
     public void cancel() {
-        isCancelled = true;
+        if (imageFileDownloadListener != null) {
+            imageFileDownloadListener.isCancelled = true;
+        }
     }
+
 }

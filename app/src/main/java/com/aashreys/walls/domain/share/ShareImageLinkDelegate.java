@@ -30,7 +30,6 @@ import com.aashreys.walls.ui.utils.UiHandler;
  * Created by aashreys on 08/02/17.
  */
 
-// TODO: Fix cancelling requests. It's broken right now.
 public class ShareImageLinkDelegate implements ShareDelegate {
 
     private static final String TAG = ShareImageLinkDelegate.class.getSimpleName();
@@ -41,9 +40,9 @@ public class ShareImageLinkDelegate implements ShareDelegate {
 
     private final ShareImageLinkAction shareImageLinkAction;
 
-    private boolean isCancelled;
-
     private final UiHandler uiHandler;
+
+    private UrlShortenerListener urlShortenerListener;
 
     public ShareImageLinkDelegate(
             UrlShortener urlShortener,
@@ -57,51 +56,64 @@ public class ShareImageLinkDelegate implements ShareDelegate {
 
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
-        isCancelled = false;
+        urlShortenerListener = createUrlShortenerListener(context, image, listener);
         Url imageUrl = image.getShareUrl();
         if (imageUrl.value().length() > MAX_URL_LENGTH) {
-            urlShortener.shorten(
-                    imageUrl,
-                    new UrlShortener.Listener() {
-                        @Override
-                        public void onComplete(@NonNull Url shortUrl) {
-                            if (!isCancelled) {
-                                shareImageLinkAction.shareImageLink(
-                                        context,
-                                        image.getTitle(),
-                                        shortUrl
-                                );
-                                uiHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        listener.onShareComplete();
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onError(@NonNull UrlShortener.UrlShortenerException e) {
-                            if (!isCancelled) {
-                                Log.e(TAG, "Unable to shorten image url", e);
-                                uiHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        listener.onShareFailed();
-                                    }
-                                });
-                            }
-                        }
-                    }
-            );
+            urlShortener.shorten(imageUrl, urlShortenerListener);
         } else {
             shareImageLinkAction.shareImageLink(context, image.getTitle(), imageUrl);
             listener.onShareComplete();
         }
     }
 
+    public UrlShortenerListener createUrlShortenerListener(
+            final Context context,
+            final Image image,
+            final Listener listener
+    ) {
+        return new UrlShortenerListener() {
+            @Override
+            public void onComplete(@NonNull Url shortUrl) {
+                if (!isCancelled) {
+                    shareImageLinkAction.shareImageLink(
+                            context,
+                            image.getTitle(),
+                            shortUrl
+                    );
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onShareComplete();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(@NonNull UrlShortener.UrlShortenerException e) {
+                if (!isCancelled) {
+                    Log.e(TAG, "Unable to shorten image url", e);
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onShareFailed();
+                        }
+                    });
+                }
+            }
+        };
+    }
+
     @Override
     public void cancel() {
-        this.isCancelled = true;
+        if (urlShortenerListener != null) {
+            urlShortenerListener.isCancelled = true;
+        }
+    }
+
+    private abstract class UrlShortenerListener implements UrlShortener.Listener {
+
+        boolean isCancelled;
+
     }
 }
