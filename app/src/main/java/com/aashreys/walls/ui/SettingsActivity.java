@@ -74,7 +74,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void resetOnboardingCompleted() {
-        keyValueStore.putBoolean(StreamActivity.KEY_IS_ONBOARDING_COMPLETED, false);
+        keyValueStore.putBoolean(StreamActivityViewModel.KEY_IS_ONBOARDING_COMPLETED, false);
         Snackbar.make(resetTipsText, R.string.confirmation_show_onboarding_again, Snackbar.LENGTH_LONG)
                 .show();
     }

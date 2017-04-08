@@ -28,6 +28,7 @@ import com.aashreys.walls.ui.ImageStreamFragment;
 import com.aashreys.walls.ui.OnboardingActivity;
 import com.aashreys.walls.ui.SettingsActivity;
 import com.aashreys.walls.ui.StreamActivity;
+import com.aashreys.walls.ui.StreamActivityViewModel;
 import com.aashreys.walls.ui.views.CollectionView;
 import com.aashreys.walls.ui.views.HintView;
 import com.aashreys.walls.ui.views.StreamImageView;
@@ -66,4 +67,6 @@ public interface UiComponent {
     void inject(OnboardingActivity onboardingActivity);
 
     void inject(AddCollectionsActivity addCollectionsActivity);
+
+    void inject(StreamActivityViewModel vm);
 }

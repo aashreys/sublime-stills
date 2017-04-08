@@ -14,28 +14,22 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.di;
+package com.aashreys.walls.ui;
 
-import com.aashreys.maestro.ViewModelStore;
-import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.di.modules.ApiModule;
-import com.aashreys.walls.di.modules.ApplicationModule;
-import com.aashreys.walls.di.scopes.ApplicationScoped;
-
-import dagger.Component;
+import com.aashreys.maestro.ViewModel;
 
 /**
- * Created by aashreys on 17/02/17.
+ * Created by aashreys on 08/04/17.
  */
 
-@ApplicationScoped
-@Component(modules = {ApplicationModule.class, ApiModule.class})
-public interface ApplicationComponent {
+class ActivityViewModel implements ViewModel {
 
-    void inject(WallsApplication application);
+    /**
+     * This method is called once the ViewModel has created and set on the associated Activity.
+     * Use this method to create data members and do ViewModel setup.
+     */
+    protected void didCreate() {
 
-    UiComponent getUiComponent();
-
-    ViewModelStore viewModelStore();
+    }
 
 }

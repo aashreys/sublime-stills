@@ -67,7 +67,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     @Nullable private RepositoryCallback<Image> favoriteRepoListener;
 
-    private CollectionProvider collectionProvider;
+    private StreamActivity.CollectionProvider collectionProvider;
 
     private Collection collection;
 
@@ -79,7 +79,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     private LoadImagesTask loadImagesTask;
 
-    private StreamImageView.ImageSelectedCallback imageSelectedListener;
+    private StreamImageView.InteractionCallback imageSelectedListener;
 
     private boolean isDisplayed;
 
@@ -109,13 +109,12 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         ((WallsApplication) context.getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
                 .inject(this);
-        if (context instanceof StreamImageView.ImageSelectedCallback &&
-                context instanceof CollectionProvider) {
-            this.imageSelectedListener = (StreamImageView.ImageSelectedCallback) context;
-            this.collectionProvider = (CollectionProvider) context;
+        if (context instanceof StreamActivity) {
+            StreamActivity activity = (StreamActivity) context;
+            this.imageSelectedListener = activity.getImageInteractionCallback();
+            this.collectionProvider = activity.getCollectionProvider();
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnImageSelectedListener and CollectionProvider");
+            throw new RuntimeException(context.toString() + " must be an instance of StreamActivity");
         }
     }
 
@@ -301,9 +300,4 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
         return collection != null && collection instanceof FavoriteCollection;
     }
 
-    public interface CollectionProvider {
-
-        Collection getCollection(int position);
-
-    }
 }

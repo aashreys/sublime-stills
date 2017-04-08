@@ -31,49 +31,22 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.di.UiComponent;
 import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.CollectionFactory;
-import com.aashreys.walls.domain.display.collections.DiscoverCollection;
-import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.persistence.KeyValueStore;
-import com.aashreys.walls.persistence.collections.CollectionRepository;
-import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.ui.adapters.ImageStreamViewPagerAdapter;
-import com.aashreys.walls.ui.helpers.StartupHelper;
+import com.aashreys.walls.ui.adapters.StreamViewPagerAdapter;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.StreamImageView;
 
-import javax.inject.Inject;
-
-public class StreamActivity extends BaseActivity implements StreamImageView.ImageSelectedCallback,
-        ImageStreamFragment.CollectionProvider, NavigationView.OnNavigationItemSelectedListener,
-        ImageStreamViewPagerAdapter.CollectionsModifiedListener {
-
-    public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
+public class StreamActivity extends BaseActivity<StreamActivityViewModel> implements
+        NavigationView.OnNavigationItemSelectedListener, StreamActivityModelEventListener {
 
     private static final String TAG = StreamActivity.class.getSimpleName();
 
     private static final String ARG_TAB_POSITION = "arg_tab_position";
 
-    private static final String FRAGMENT_TAG_ADD_COLLECTION = "fragment_tag_add_collection";
-
-    @Inject CollectionRepository collectionRepository;
-
-    @Inject CollectionFactory collectionFactory;
-
-    @Inject StartupHelper startupHelper;
-
-    @Inject KeyValueStore keyValueStore;
-
-    @Inject
-    FavoriteImageRepository favoriteImageRepository;
-
     private DrawerLayout drawerLayout;
 
-    private ImageStreamViewPagerAdapter viewPagerAdapter;
+    private StreamViewPagerAdapter viewPagerAdapter;
 
     private ViewPager viewPager;
 
@@ -86,74 +59,95 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivityComponent().inject(this);
-        addDefaultCollectionsIfMissing();
-        startOnboardingIfNeeded();
-        setContentView(R.layout.activity_stream);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        getUiComponent().inject(this);
+        getViewModel().setEventListener(this);
+        getViewModel().beforeActivityInit();
+        if (getViewModel().shouldOnboardingBeDisplayed()) {
+            startOnboardingAndFinish();
+        } else {
+            setContentView(R.layout.activity_stream);
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+            NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+            navigationView.setNavigationItemSelectedListener(this);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        TabLayout tabs = (TabLayout) findViewById(R.id.tablayout);
-        tabs.setupWithViewPager(viewPager);
-        viewPagerAdapter = new ImageStreamViewPagerAdapter(
-                getSupportFragmentManager(),
-                collectionRepository
-        );
-        viewPager.setAdapter(viewPagerAdapter);
-        viewPagerAdapter.setCollectionsModifiedListener(this);
+            viewPager = (ViewPager) findViewById(R.id.viewpager);
+            TabLayout tabs = (TabLayout) findViewById(R.id.tablayout);
+            tabs.setupWithViewPager(viewPager);
+            viewPagerAdapter = new StreamViewPagerAdapter(
+                    getSupportFragmentManager(),
+                    getViewModel()
+            );
+            viewPager.setAdapter(viewPagerAdapter);
 
-        ImageButton menuButton = (ImageButton) findViewById(R.id.button_menu);
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
+            ImageButton menuButton = (ImageButton) findViewById(R.id.button_menu);
+            menuButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getViewModel().onMenuButtonClicked();
+                }
+            });
 
-        ImageButton collectionsButton = (ImageButton) findViewById(R.id.button_add);
-        collectionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(AddCollectionsActivity.createLaunchIntent(StreamActivity.this, true));
-            }
-        });
-        handleIntent(getIntent());
+            ImageButton addCollectionsButton = (ImageButton) findViewById(R.id.button_add);
+            addCollectionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getViewModel().onAddCollectionButtonClicked();
+                }
+            });
+            handleIntent(getIntent());
+        }
     }
 
-    private void startOnboardingIfNeeded() {
-        if (!keyValueStore.getBoolean(KEY_IS_ONBOARDING_COMPLETED, false)) {
-            startActivity(new Intent(this, OnboardingActivity.class));
-            finish();
-        }
+    private void startOnboardingAndFinish() {
+        startActivity(new Intent(this, OnboardingActivity.class));
+        finish();
+    }
+
+    @Override
+    protected StreamActivityViewModel createViewModel() {
+        StreamActivityViewModel vm = new StreamActivityViewModel();
+        getUiComponent().inject(vm);
+        return vm;
     }
 
     @Override
     protected void onDestroy() {
+        getViewModel().setEventListener(null);
         super.onDestroy();
-        viewPagerAdapter.release();
     }
 
     @Override
-    public void onImageSelected(Image image) {
+    public void onImageClicked(Image image) {
         startActivity(ImageDetailActivity.createLaunchIntent(this, image));
     }
 
     @Override
-    public void onImageFavorited(Image image) {
-
+    public void onMenuButtonClicked() {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     @Override
-    public void onImageUnfavorited(final Image image) {
-        Snackbar snackbar = Snackbar
-                .make(viewPager, R.string.title_snackbar_favorite_removed, Snackbar.LENGTH_LONG);
+    public void onAddCollectionsButtonClicked() {
+        startActivity(AddCollectionsActivity.createLaunchIntent(StreamActivity.this, true));
+    }
+
+    @Override
+    public void onCollectionsModified() {
+        viewPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onImageFavoriteButtonClicked(final Image image, boolean isFavorite) {
+        Snackbar snackbar = Snackbar.make(
+                viewPager,
+                R.string.title_snackbar_favorite_removed,
+                Snackbar.LENGTH_LONG
+        );
         snackbar.setActionTextColor(UiHelper.getColor(this, R.color.white));
         snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                favoriteImageRepository.favorite(image);
+                getViewModel().onFavoriteRemovedUndoButtonClicked(image);
             }
         });
 
@@ -163,80 +157,62 @@ public class StreamActivity extends BaseActivity implements StreamImageView.Imag
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        handleIntent(intent);
+        if (getViewModel().shouldOnboardingBeDisplayed()) {
+            startOnboardingAndFinish();
+        } else {
+            handleIntent(intent);
+        }
     }
 
     private void handleIntent(Intent intent) {
-        int position = intent.getIntExtra(ARG_TAB_POSITION, 0);
-        int itemCount = viewPager.getAdapter().getCount();
-        if (itemCount > 0 && position > 0 && position < itemCount) {
-            viewPager.setCurrentItem(position);
-        }
-    }
-
-    private void addDefaultCollectionsIfMissing() {
-        DiscoverCollection discoverCollection = (DiscoverCollection) collectionFactory.create(
-                Collection.Type.DISCOVER,
-                null,
-                null
-        );
-        FavoriteCollection favoriteCollection = (FavoriteCollection) collectionFactory.create(
-                Collection.Type.FAVORITE,
-                null,
-                null
-        );
-        if (!collectionRepository.exists(discoverCollection)) {
-            collectionRepository.insert(discoverCollection);
-        }
-        if (!collectionRepository.exists(favoriteCollection)) {
-            collectionRepository.insert(favoriteCollection);
-        }
-    }
-
-    private UiComponent getActivityComponent() {
-        return ((WallsApplication) getApplication()).getApplicationComponent()
-                .getUiComponent();
-    }
-
-    @Override
-    public Collection getCollection(int position) {
-        return viewPagerAdapter.getCollection(position);
+        int tabPosition = intent.getIntExtra(ARG_TAB_POSITION, 0);
+        int totalTabs = viewPager != null ? viewPager.getAdapter().getCount() : 0;
+        getViewModel().onReceiveTabPositionFromIntent(tabPosition, totalTabs);
     }
 
     private void openCollectionsActivity() {
-        Intent intent = new Intent(this, CollectionsActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, CollectionsActivity.class));
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        drawerLayout.closeDrawers();
-        switch (item.getItemId()) {
-
-            case R.id.menu_item_settings:
-                openSettingsActivity();
-                return true;
-
-            case R.id.menu_item_collections:
-                openCollectionsActivity();
-                return true;
-
-        }
-        return false;
+        return getViewModel().onNavigationItemSelected(item.getItemId());
     }
 
     private void openSettingsActivity() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override
-    public void onCollectionAdded(Collection collection, int position) {
-
+    public void onSettingsNavigationItemSelected() {
+        drawerLayout.closeDrawers();
+        openSettingsActivity();
     }
 
     @Override
-    public void onCollectionRemoved(Collection collection, int position) {
+    public void onCollectionsNavigationItemSelected() {
+        drawerLayout.closeDrawers();
+        openCollectionsActivity();
+    }
+
+    @Override
+    public void onNewTabSelected(int tabPosition) {
+        viewPager.setCurrentItem(tabPosition);
+    }
+
+    public StreamImageView.InteractionCallback getImageInteractionCallback() {
+        return getViewModel();
+    }
+
+    public CollectionProvider getCollectionProvider() {
+        return getViewModel();
+    }
+
+    public interface CollectionProvider {
+
+        Collection getCollection(int position);
+
+        int size();
 
     }
 }

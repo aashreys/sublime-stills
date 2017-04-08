@@ -33,7 +33,7 @@ import com.aashreys.walls.ui.views.StreamImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aashreys.walls.ui.views.StreamImageView.ImageSelectedCallback;
+import static com.aashreys.walls.ui.views.StreamImageView.InteractionCallback;
 
 /**
  * Created by aashreys on 04/02/17.
@@ -49,7 +49,7 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final ImageStreamFragment fragment;
 
     @NonNull
-    private final ImageSelectedCallback imageSelectedCallback;
+    private final InteractionCallback streamImageViewInteractionCallback;
 
     @NonNull
     private final List<Image> imageList;
@@ -79,10 +79,10 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public ImageStreamAdapter(
             @NonNull ImageStreamFragment fragment,
-            @NonNull ImageSelectedCallback listener
+            @NonNull InteractionCallback listener
     ) {
         this.fragment = fragment;
-        this.imageSelectedCallback = listener;
+        this.streamImageViewInteractionCallback = listener;
         this.imageList = new ArrayList<>();
     }
 
@@ -152,7 +152,7 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((ImageViewHolder) holder).bind(
                     imageList.get(position),
                     fragment,
-                    imageSelectedCallback
+                    streamImageViewInteractionCallback
             );
         }
         int currentPosition = holder.getAdapterPosition();
@@ -236,7 +236,7 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private void bind(
                 final Image image,
                 ImageStreamFragment fragment,
-                final ImageSelectedCallback listener
+                final InteractionCallback listener
         ) {
             view.bind(fragment, image, listener);
         }

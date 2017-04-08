@@ -160,7 +160,7 @@ public class OnboardingActivity extends BaseActivity implements CollectionSearch
         for (Collection collection : checkedCollectionList) {
             collectionRepository.insert(collection);
         }
-        keyValueStore.putBoolean(StreamActivity.KEY_IS_ONBOARDING_COMPLETED, true);
+        keyValueStore.putBoolean(StreamActivityViewModel.KEY_IS_ONBOARDING_COMPLETED, true);
         finish();
         startActivity(new Intent(this, StreamActivity.class));
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

@@ -14,28 +14,30 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.di;
+package com.aashreys.walls.ui;
 
-import com.aashreys.maestro.ViewModelStore;
-import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.di.modules.ApiModule;
-import com.aashreys.walls.di.modules.ApplicationModule;
-import com.aashreys.walls.di.scopes.ApplicationScoped;
-
-import dagger.Component;
+import com.aashreys.walls.domain.display.images.Image;
 
 /**
- * Created by aashreys on 17/02/17.
+ * Created by aashreys on 08/04/17.
  */
 
-@ApplicationScoped
-@Component(modules = {ApplicationModule.class, ApiModule.class})
-public interface ApplicationComponent {
+interface StreamActivityModelEventListener {
 
-    void inject(WallsApplication application);
+    void onSettingsNavigationItemSelected();
 
-    UiComponent getUiComponent();
+    void onCollectionsNavigationItemSelected();
 
-    ViewModelStore viewModelStore();
+    void onNewTabSelected(int tabPosition);
+
+    void onImageFavoriteButtonClicked(Image image, boolean isFavorite);
+
+    void onImageClicked(Image image);
+
+    void onMenuButtonClicked();
+
+    void onAddCollectionsButtonClicked();
+
+    void onCollectionsModified();
 
 }

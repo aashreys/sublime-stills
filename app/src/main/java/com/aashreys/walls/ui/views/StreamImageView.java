@@ -62,7 +62,7 @@ public class StreamImageView extends FrameLayout {
 
     private Image image;
 
-    private ImageSelectedCallback callback;
+    private InteractionCallback callback;
 
     private int numStreamColumns;
 
@@ -133,7 +133,7 @@ public class StreamImageView extends FrameLayout {
     public void bind(
             ImageStreamFragment fragment,
             final Image image,
-            final ImageSelectedCallback callback
+            final InteractionCallback callback
     ) {
         this.image = image;
         this.callback = callback;
@@ -170,7 +170,7 @@ public class StreamImageView extends FrameLayout {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callback.onImageSelected(image);
+                    callback.onImageClicked(image);
                 }
             });
         }
@@ -211,12 +211,12 @@ public class StreamImageView extends FrameLayout {
                                 favoriteImageRepository.unfavorite(image);
                                 favoriteButton.setImageResource(R.drawable
                                         .ic_favorite_border_light_24dp);
-                                callback.onImageUnfavorited(image);
+                                callback.onFavoriteButtonClicked(image, false);
                             } else {
                                 favoriteImageRepository.favorite(image);
                                 favoriteButton.setImageResource(R.drawable
                                         .ic_favorite_light_24dp);
-                                callback.onImageFavorited(image);
+                                callback.onFavoriteButtonClicked(image, true);
                             }
                             isFavorite2 = !isFavorite2;
                         }
@@ -225,13 +225,11 @@ public class StreamImageView extends FrameLayout {
         }
     }
 
-    public interface ImageSelectedCallback {
+    public interface InteractionCallback {
 
-        void onImageSelected(Image image);
+        void onImageClicked(Image image);
 
-        void onImageFavorited(Image image);
-
-        void onImageUnfavorited(Image image);
+        void onFavoriteButtonClicked(Image image, boolean isFavorited);
 
     }
 

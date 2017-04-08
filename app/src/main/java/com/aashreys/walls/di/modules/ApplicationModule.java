@@ -19,6 +19,7 @@ package com.aashreys.walls.di.modules;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.aashreys.maestro.ViewModelStore;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.device.DeviceResolutionImpl;
@@ -35,8 +36,11 @@ public class ApplicationModule {
 
     private final WallsApplication application;
 
+    private ViewModelStore viewModelStore;
+
     public ApplicationModule(WallsApplication application) {
         this.application = application;
+        this.viewModelStore = new ViewModelStore();
     }
 
     @Provides
@@ -47,6 +51,11 @@ public class ApplicationModule {
     @Provides
     public DeviceResolution providesDeviceResolution() {
         return new DeviceResolutionImpl(application);
+    }
+
+    @Provides
+    public ViewModelStore providesViewModelStore() {
+        return viewModelStore;
     }
 
 }
