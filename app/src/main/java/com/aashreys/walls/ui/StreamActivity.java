@@ -61,7 +61,7 @@ public class StreamActivity extends BaseActivity<StreamActivityViewModel> implem
         super.onCreate(savedInstanceState);
         getUiComponent().inject(this);
         getViewModel().setEventListener(this);
-        getViewModel().beforeActivityInit();
+        getViewModel().onActivityCreated();
         if (getViewModel().shouldOnboardingBeDisplayed()) {
             startOnboardingAndFinish();
         } else {
@@ -112,8 +112,8 @@ public class StreamActivity extends BaseActivity<StreamActivityViewModel> implem
 
     @Override
     protected void onDestroy() {
-        getViewModel().setEventListener(null);
         super.onDestroy();
+        getViewModel().onActivityDestroyed();
     }
 
     @Override

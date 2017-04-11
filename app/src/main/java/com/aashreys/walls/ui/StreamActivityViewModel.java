@@ -39,7 +39,8 @@ import javax.inject.Inject;
  * Created by aashreys on 08/04/17.
  */
 
-public class StreamActivityViewModel extends ActivityViewModel implements StreamImageView.InteractionCallback,
+public class StreamActivityViewModel extends ActivityViewModel implements StreamImageView
+        .InteractionCallback,
         CollectionRepository.CollectionRepositoryListener, StreamActivity.CollectionProvider {
 
     public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
@@ -71,8 +72,9 @@ public class StreamActivityViewModel extends ActivityViewModel implements Stream
         return !keyValueStore.getBoolean(KEY_IS_ONBOARDING_COMPLETED, false);
     }
 
-    void beforeActivityInit() {
+    void onActivityCreated() {
         addDefaultCollectionsIfMissing();
+        collectionRepository.addListener(this);
     }
 
     private void addDefaultCollectionsIfMissing() {
@@ -193,5 +195,10 @@ public class StreamActivityViewModel extends ActivityViewModel implements Stream
     @Override
     public int size() {
         return collectionsList.size();
+    }
+
+    void onActivityDestroyed() {
+        collectionRepository.removeListener(this);
+        eventListener = null;
     }
 }
