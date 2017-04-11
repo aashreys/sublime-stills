@@ -17,7 +17,6 @@
 package com.aashreys.walls.ui.adapters;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,6 @@ import android.view.ViewGroup;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
-import com.aashreys.walls.ui.views.LoadingView;
-import com.aashreys.walls.ui.views.LoadingView.ViewMode;
 import com.aashreys.walls.ui.views.StreamImageView;
 
 import java.util.ArrayList;
@@ -45,6 +42,8 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private static final int VIEW_TYPE_IMAGE = 0, VIEW_TYPE_LOADING = 1;
 
+    private View loadingView;
+
     @NonNull
     private final StreamFragment fragment;
 
@@ -55,17 +54,6 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final List<Image> imageList;
 
     /**
-     * To store the current loading view mode. We can't store this directly in the
-     * {@link LoadingViewHolder} since we don't have access when this adapter is created, hence
-     * storing it in the adapter. This value is delivered via
-     * {@link LoadingView#setViewMode(int)} when the {@link LoadingViewHolder} is bound in
-     * {@link #onBindViewHolder(RecyclerView.ViewHolder, int)} and via the
-     * {@link #setLoadingState(int)}.
-     */
-    @ViewMode
-    private int loadingViewMode;
-
-    /**
      * How many items from the end of the list should the adapter request for more data to be
      * loaded via an instance of {@link LoadingCallback} set via
      * {@link #setLoadingCallback(LoadingCallback)}
@@ -74,9 +62,6 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private LoadingCallback loadingCallback;
 
-    @Nullable
-    private LoadingViewHolder loadingViewHolder;
-
     public StreamAdapter(
             @NonNull StreamFragment fragment,
             @NonNull InteractionCallback listener
@@ -84,6 +69,11 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.fragment = fragment;
         this.streamImageViewInteractionCallback = listener;
         this.imageList = new ArrayList<>();
+    }
+
+    public void setLoadingView(View loadingView) {
+        this.loadingView = loadingView;
+        notifyItemInserted(imageList.size());
     }
 
     public void add(List<Image> images) {
@@ -134,12 +124,7 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 );
 
             case VIEW_TYPE_LOADING:
-                loadingViewHolder = new LoadingViewHolder(
-                        LayoutInflater
-                                .from(parent.getContext())
-                                .inflate(R.layout.view_loading, parent, false)
-                );
-                return loadingViewHolder;
+                return new RecyclerView.ViewHolder(loadingView) {};
 
             default:
                 return null;
@@ -159,32 +144,32 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         int thresholdDiff = getItemCount() - currentPosition;
         if (loadingThreshold >= thresholdDiff && loadingCallback != null) {
             loadingCallback.onLoadRequested();
-            if (holder instanceof LoadingViewHolder) {
-                if (loadingViewHolder != null) {
-                    loadingViewHolder.loadingView.setLoadingCallback(loadingCallback);
-                    loadingViewHolder.loadingView.setViewMode(this.loadingViewMode);
-                }
-            }
         }
     }
 
     public int getImageCount() {
-        // Removing 1 to discount the loading view
-        return getItemCount() - 1;
+        return imageList.size();
     }
 
     @Override
     public int getItemCount() {
-        // Adding one to count the loading view.
-        return imageList.size() + 1;
+        if (loadingView != null) {
+            return imageList.size() + 1;
+        } else {
+            return imageList.size();
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position < getItemCount() - 1) {
-            return VIEW_TYPE_IMAGE;
+        if (loadingView != null) {
+            if (position < getItemCount() - 1) {
+                return VIEW_TYPE_IMAGE;
+            } else {
+                return VIEW_TYPE_LOADING;
+            }
         } else {
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_IMAGE;
         }
     }
 
@@ -198,24 +183,6 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setLoadingCallback(LoadingCallback loadingCallback) {
         this.loadingCallback = loadingCallback;
-        if (loadingViewHolder != null) {
-            loadingViewHolder.loadingView.setLoadingCallback(loadingCallback);
-        }
-    }
-
-    /**
-     * Tells the adapter which loading state it should display.
-     *
-     * @param mode integer value from {@link LoadingView.ViewMode}
-     */
-    public void setLoadingState(@ViewMode int mode) {
-        this.loadingViewMode = mode;
-        if (loadingViewHolder != null) {
-            loadingViewHolder.loadingView.setViewMode(this.loadingViewMode);
-            if (loadingCallback != null) {
-                loadingViewHolder.loadingView.setLoadingCallback(this.loadingCallback);
-            }
-        }
     }
 
     public interface LoadingCallback {
@@ -239,16 +206,6 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 final InteractionCallback listener
         ) {
             view.bind(fragment, image, listener);
-        }
-    }
-
-    private static class LoadingViewHolder extends RecyclerView.ViewHolder {
-
-        private LoadingView loadingView;
-
-        private LoadingViewHolder(View itemView) {
-            super(itemView);
-            this.loadingView = (LoadingView) itemView;
         }
     }
 

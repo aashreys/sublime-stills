@@ -19,8 +19,11 @@ package com.aashreys.walls.ui;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.transition.AutoTransition;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +55,14 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.END_OF_COLLECTION;
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.FAVORITE;
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.GENERIC_ERROR;
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.LOADING;
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.NOT_LOADING;
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.NO_INTERNET;
+import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.SLOW_INTERNET;
+
 public class StreamFragment extends Fragment implements StreamAdapter.LoadingCallback,
         LoadImagesTask.LoadCallback {
 
@@ -81,9 +92,15 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
 
     private LoadImagesTask loadImagesTask;
 
+    private LoadingViewStateManager loadingViewStateManager;
+
+    private LoadingView loadingView;
+
     private StreamImageView.InteractionCallback imageSelectedListener;
 
     private boolean isDisplayed;
+
+    private boolean isFavoritesStream;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -100,12 +117,6 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
     }
 
     @Override
-    public void setUserVisibleHint(boolean visible) {
-        super.setUserVisibleHint(visible);
-        isDisplayed = visible;
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         ((WallsApplication) context.getApplicationContext()).getApplicationComponent()
@@ -115,8 +126,12 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
             StreamActivity activity = (StreamActivity) context;
             this.imageSelectedListener = activity.getImageInteractionCallback();
             this.collectionProvider = activity.getCollectionProvider();
+            this.collection = collectionProvider.getCollection(getArguments().getInt(ARG_POSITION));
+            this.imageSource = sourceFactory.create(collection);
+            isFavoritesStream = collection instanceof FavoriteCollection;
         } else {
-            throw new RuntimeException(context.toString() + " must be an instance of StreamActivity");
+            throw new RuntimeException(
+                    context.toString() + " must be an instance of StreamActivity");
         }
     }
 
@@ -126,8 +141,8 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
         if (!getArguments().containsKey(ARG_POSITION)) {
             throw new RuntimeException("Must pass position as an argument.");
         }
+        loadingViewStateManager = new LoadingViewStateManager();
     }
-
 
     @Override
     public View onCreateView(
@@ -135,17 +150,51 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
             Bundle savedInstanceState
     ) {
         View view = inflater.inflate(R.layout.fragment_stream, container, false);
-        this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        setupRecyclerView(this.recyclerView);
+        setupRecyclerView(view);
+        setupLoadingView();
         adapter = new StreamAdapter(this, imageSelectedListener);
         recyclerView.setAdapter(adapter);
+        adapter.setLoadingView(loadingView);
         adapter.setLoadingCallback(this);
-        setCollection(collectionProvider.getCollection(getArguments().getInt(ARG_POSITION)));
-
+        if (isFavoritesStream) {
+            startListeningToFavoritesRepo();
+        } else {
+            stopListeningToFavoritesRepo();
+        }
+        loadImages();
         return view;
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releaseResources();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        imageSelectedListener = null;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean visible) {
+        super.setUserVisibleHint(visible);
+        isDisplayed = visible;
+    }
+
+
+    private void setupLoadingView() {
+        this.loadingView = (LoadingView) LayoutInflater.from(getContext()).inflate(
+                R.layout.view_loading,
+                recyclerView,
+                false
+        );
+        loadingViewStateManager.loadingView = this.loadingView;
+    }
+
+    private void setupRecyclerView(View parentView) {
+        this.recyclerView = (RecyclerView) parentView.findViewById(R.id.recyclerview);
         int columnCount = deviceInfo.getNumberOfStreamColumns();
         RecyclerView.LayoutManager manager = null;
         if (columnCount == 1) {
@@ -164,25 +213,6 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
         recyclerView.setLayoutManager(manager);
     }
 
-    /**
-     * Setter for this fragment's collection. This fragment expects its collection to be set
-     * using this method only as there are many actions which must be taken after a collection is
-     * set. This method contains code to take all associated actions.
-     */
-    public void setCollection(Collection collection) {
-        if (!collection.equals(this.collection)) {
-            this.collection = collection;
-            imageSource = sourceFactory.create(collection);
-            adapter.clear();
-            if (isFavoritesStream()) {
-                startListeningToFavoritesRepo();
-            } else {
-                stopListeningToFavoritesRepo();
-            }
-            loadImages();
-        }
-    }
-
     private void loadImages() {
         Log.i(TAG, collection.getName().value() + " - loading images");
         if (loadImagesTask != null) {
@@ -194,23 +224,22 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
                 AsyncTask.THREAD_POOL_EXECUTOR,
                 adapter.getImageCount()
         );
-        if (!isFavoritesStream()) {
+        if (!isFavoritesStream) {
             Context context = getContext();
             if (context != null) {
                 if (!NetworkHelper.isConnected(context)) {
-                    adapter.setLoadingState(LoadingView.ViewMode.NO_INTERNET);
+                    loadingViewStateManager.setState(NO_INTERNET);
                 } else if (!NetworkHelper.isFastNetworkConnected(context)) {
-                    adapter.setLoadingState(LoadingView.ViewMode.SLOW_INTERNET);
+                    loadingViewStateManager.setState(SLOW_INTERNET);
                 } else {
-                    adapter.setLoadingState(LoadingView.ViewMode.LOADING);
+                    loadingViewStateManager.setState(LOADING);
                 }
             } else {
-                adapter.setLoadingState(LoadingView.ViewMode.LOADING);
+                loadingViewStateManager.setState(LOADING);
             }
         } else {
-            adapter.setLoadingState(LoadingView.ViewMode.FAVORITE);
+            loadingViewStateManager.setState(FAVORITE);
         }
-
     }
 
     private void startListeningToFavoritesRepo() {
@@ -248,24 +277,12 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releaseResources();
-    }
-
     private void releaseResources() {
         stopListeningToFavoritesRepo();
         if (loadImagesTask != null) {
             loadImagesTask.release();
             loadImagesTask = null;
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        imageSelectedListener = null;
     }
 
     public boolean isDisplayed() {
@@ -282,24 +299,174 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
     @Override
     public void onLoadComplete(@NonNull List<Image> images) {
         adapter.add(images);
-        if (isFavoritesStream()) {
-            adapter.setLoadingState(LoadingView.ViewMode.FAVORITE);
+        if (isFavoritesStream) {
+            loadingViewStateManager.setState(FAVORITE);
         } else {
             if (images.size() > 0) {
-                adapter.setLoadingState(LoadingView.ViewMode.NOT_LOADING);
+                loadingViewStateManager.setState(NOT_LOADING);
             } else {
-                adapter.setLoadingState(LoadingView.ViewMode.END_OF_COLLECTION);
+                loadingViewStateManager.setState(END_OF_COLLECTION);
             }
         }
     }
 
     @Override
     public void onLoadError() {
-        adapter.setLoadingState(LoadingView.ViewMode.ERROR);
+        loadingViewStateManager.setState(GENERIC_ERROR);
     }
 
-    private boolean isFavoritesStream() {
-        return collection != null && collection instanceof FavoriteCollection;
+    static class LoadingViewStateManager {
+
+        private int state;
+
+        private LoadingView loadingView;
+
+        private StreamAdapter.LoadingCallback loadingCallback;
+
+        void setState(@State int state) {
+            if (this.state != state) {
+                this.state = state;
+                TransitionManager.beginDelayedTransition(loadingView, new AutoTransition());
+                resetLoadingViewState();
+                switch (state) {
+                    case LOADING:
+                        showLoadingState();
+                        break;
+
+                    case GENERIC_ERROR:
+                        showGenericErrorState();
+                        break;
+
+                    case NO_INTERNET:
+                        showNoInternetErrorState();
+                        break;
+
+                    case SLOW_INTERNET:
+                        showSlowInternetState();
+                        break;
+
+                    case END_OF_COLLECTION:
+                        showEndOfCollectionState();
+                        break;
+
+                    case FAVORITE:
+                        showFavoriteState();
+                        break;
+
+                    case NOT_LOADING:
+                        showNotLoadingState();
+                }
+            }
+        }
+
+        private void showNotLoadingState() {
+            resetLoadingViewState();
+            loadingView.hide();
+        }
+
+        private void showLoadingState() {
+            loadingView.showProgressBar();
+        }
+
+        private void showGenericErrorState() {
+            loadingView.setText(R.string.error_generic);
+            loadingView.showText();
+
+            loadingView.setIcon(R.drawable.ic_info_outline_black_24dp);
+            loadingView.showIcon();
+
+            loadingView.setActionButtonText(R.string.action_try_again);
+            loadingView.setActionButtonOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadingCallback.onLoadRequested();
+                }
+            });
+            loadingView.showActionButton();
+        }
+
+        private void showNoInternetErrorState() {
+            loadingView.setText(R.string.error_no_connectivity);
+            loadingView.showText();
+
+            loadingView.setIcon(R.drawable.ic_info_outline_black_24dp);
+            loadingView.showIcon();
+
+            loadingView.setActionButtonText(R.string.action_try_again);
+            loadingView.setActionButtonOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadingCallback.onLoadRequested();
+                }
+            });
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingView.showActionButton();
+                }
+            }, 7000);
+        }
+
+        private void showSlowInternetState() {
+            loadingView.setText(R.string.error_slow_connectivity);
+            loadingView.showText();
+
+            loadingView.showProgressBar();
+
+            loadingView.setActionButtonText(R.string.action_try_again);
+            loadingView.setActionButtonOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadingCallback.onLoadRequested();
+                }
+            });
+
+            loadingView.showActionButton();
+        }
+
+        private void showFavoriteState() {
+            loadingView.setText(R.string.hint_add_favorites);
+            loadingView.showText();
+
+            loadingView.setIcon(R.drawable.ic_favorite_black_24dp);
+            loadingView.showIcon();
+        }
+
+        private void showEndOfCollectionState() {
+            loadingView.setText(R.string.hint_end_of_collection);
+            loadingView.showText();
+
+            loadingView.setIcon(R.drawable.ic_info_outline_black_24dp);
+            loadingView.showIcon();
+        }
+
+        private void resetLoadingViewState() {
+            loadingView.hideProgressBar();
+            loadingView.hideIcon();
+            loadingView.hideText();
+            loadingView.hideActionButton();
+            loadingView.setActionButtonOnClickListener(null);
+            loadingView.show();
+        }
+
+        @interface State {
+
+            int LOADING = 0;
+
+            int GENERIC_ERROR = 1;
+
+            int NO_INTERNET = 2;
+
+            int SLOW_INTERNET = 3;
+
+            int END_OF_COLLECTION = 4;
+
+            int FAVORITE = 5;
+
+            int NOT_LOADING = 6;
+
+        }
+
     }
 
 }
