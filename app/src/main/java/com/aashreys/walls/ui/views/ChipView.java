@@ -79,8 +79,8 @@ public class ChipView extends AppCompatTextView implements ChipViewModel.EventCa
     }
 
     @Override
-    public void onCollectionSet() {
-        setText(viewModel.getCollectionName());
+    public void onCollectionChanged(String collectionName) {
+        setText(collectionName);
     }
 
     @Override

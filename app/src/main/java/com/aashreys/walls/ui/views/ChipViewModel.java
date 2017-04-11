@@ -26,8 +26,6 @@ import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 /**
  * Created by aashreys on 09/04/17.
  */
@@ -93,42 +91,32 @@ class ChipViewModel implements ViewModel {
     void setCollection(Collection collection) {
         this.collection = collection;
         if (eventCallback != null) {
-            eventCallback.onCollectionSet();
+            eventCallback.onCollectionChanged(collection.getName().value());
         }
-
-    }
-
-    String getCollectionName() {
-        return collection != null ? WordUtils.capitalizeFully(collection.getName().value()) : null;
     }
 
     void onChipClicked() {
         if (collection != null) {
-            if (isChecked()) {
-                notifyDeselection(collection);
-                setChecked(false);
-                if (eventCallback != null) {
-                    eventCallback.onUnchecked();
-                }
-            } else {
-                notifySelection(collection);
-                setChecked(true);
-                if (eventCallback != null) {
-                    eventCallback.onChecked();
-                }
+            setChecked(!isChecked());
+            onCheckedChanged();
+        }
+    }
+
+    private void onCheckedChanged() {
+        if (isChecked()) {
+            if (eventCallback != null) {
+                eventCallback.onChecked();
             }
-        }
-    }
-
-    private void notifySelection(Collection collection) {
-        if (listener != null) {
-            listener.onChipViewChecked(collection);
-        }
-    }
-
-    private void notifyDeselection(Collection collection) {
-        if (listener != null) {
-            listener.onChipViewUnchecked(collection);
+            if (collection != null && listener != null) {
+                listener.onChipViewChecked(collection);
+            }
+        } else {
+            if (eventCallback != null) {
+                eventCallback.onUnchecked();
+            }
+            if (collection != null && listener != null) {
+                listener.onChipViewUnchecked(collection);
+            }
         }
     }
 
@@ -142,7 +130,7 @@ class ChipViewModel implements ViewModel {
 
     interface EventCallback {
 
-        void onCollectionSet();
+        void onCollectionChanged(String collectionName);
 
         void onChecked();
 
