@@ -20,7 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.StreamActivity;
 
 /**
@@ -40,7 +40,7 @@ public class StreamViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ImageStreamFragment.newInstance(position);
+        return StreamFragment.newInstance(position);
     }
 
     @Override

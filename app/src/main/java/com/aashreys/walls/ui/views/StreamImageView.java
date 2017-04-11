@@ -30,7 +30,7 @@ import android.widget.ImageButton;
 import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.utils.ForegroundImageView;
 
 /**
@@ -106,7 +106,7 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
     }
 
     public void bind(
-            ImageStreamFragment fragment,
+            StreamFragment fragment,
             final Image image,
             final InteractionCallback callback
     ) {

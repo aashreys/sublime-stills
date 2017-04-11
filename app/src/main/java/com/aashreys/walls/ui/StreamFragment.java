@@ -40,7 +40,7 @@ import com.aashreys.walls.domain.display.sources.Source;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.ui.adapters.ImageStreamAdapter;
+import com.aashreys.walls.ui.adapters.StreamAdapter;
 import com.aashreys.walls.ui.helpers.NetworkHelper;
 import com.aashreys.walls.ui.tasks.LoadImagesTask;
 import com.aashreys.walls.ui.views.LoadingView;
@@ -52,10 +52,10 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 
-public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.LoadingCallback,
-        LoadImagesTask.ImageLoadCallback {
+public class StreamFragment extends Fragment implements StreamAdapter.LoadingCallback,
+        LoadImagesTask.LoadCallback {
 
-    private static final String TAG = ImageStreamFragment.class.getSimpleName();
+    private static final String TAG = StreamFragment.class.getSimpleName();
 
     private static final String ARG_POSITION = "arg_position";
 
@@ -75,7 +75,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
 
     private Source imageSource;
 
-    private ImageStreamAdapter adapter;
+    private StreamAdapter adapter;
 
     private RecyclerView recyclerView;
 
@@ -89,12 +89,12 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ImageStreamFragment() {}
+    public StreamFragment() {}
 
-    public static ImageStreamFragment newInstance(int position) {
+    public static StreamFragment newInstance(int position) {
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, position);
-        ImageStreamFragment fragment = new ImageStreamFragment();
+        StreamFragment fragment = new StreamFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -134,10 +134,10 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        View view = inflater.inflate(R.layout.fragment_image_stream, container, false);
+        View view = inflater.inflate(R.layout.fragment_stream, container, false);
         this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         setupRecyclerView(this.recyclerView);
-        adapter = new ImageStreamAdapter(this, imageSelectedListener);
+        adapter = new StreamAdapter(this, imageSelectedListener);
         recyclerView.setAdapter(adapter);
         adapter.setLoadingCallback(this);
         setCollection(collectionProvider.getCollection(getArguments().getInt(ARG_POSITION)));

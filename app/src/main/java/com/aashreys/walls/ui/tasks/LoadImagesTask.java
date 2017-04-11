@@ -33,7 +33,7 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
 
     private Source source;
 
-    private ImageLoadCallback listener;
+    private LoadCallback listener;
 
     private boolean isReleased;
 
@@ -41,7 +41,7 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
 
     public LoadImagesTask(
             @NonNull Source source,
-            @NonNull ImageLoadCallback listener
+            @NonNull LoadCallback listener
     ) {
         this.source = source;
         this.listener = listener;
@@ -84,7 +84,7 @@ public class LoadImagesTask extends AsyncTask<Integer, Void, List<Image>> {
         isReleased = true;
     }
 
-    public interface ImageLoadCallback {
+    public interface LoadCallback {
 
         @MainThread
         void onLoadComplete(@NonNull List<Image> images);

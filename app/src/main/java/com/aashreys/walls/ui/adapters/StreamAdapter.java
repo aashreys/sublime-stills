@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.views.LoadingView;
 import com.aashreys.walls.ui.views.LoadingView.ViewMode;
 import com.aashreys.walls.ui.views.StreamImageView;
@@ -39,14 +39,14 @@ import static com.aashreys.walls.ui.views.StreamImageView.InteractionCallback;
  * Created by aashreys on 04/02/17.
  */
 
-public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = ImageStreamAdapter.class.getSimpleName();
+    private static final String TAG = StreamAdapter.class.getSimpleName();
 
     private static final int VIEW_TYPE_IMAGE = 0, VIEW_TYPE_LOADING = 1;
 
     @NonNull
-    private final ImageStreamFragment fragment;
+    private final StreamFragment fragment;
 
     @NonNull
     private final InteractionCallback streamImageViewInteractionCallback;
@@ -77,8 +77,8 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Nullable
     private LoadingViewHolder loadingViewHolder;
 
-    public ImageStreamAdapter(
-            @NonNull ImageStreamFragment fragment,
+    public StreamAdapter(
+            @NonNull StreamFragment fragment,
             @NonNull InteractionCallback listener
     ) {
         this.fragment = fragment;
@@ -190,7 +190,7 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     /**
      * Set how many items before the end of the image list should this adapter request a new load.
-     * See {@link ImageStreamAdapter#loadingThreshold}.
+     * See {@link StreamAdapter#loadingThreshold}.
      */
     public void setLoadingThreshold(int lastNItems) {
         this.loadingThreshold = lastNItems;
@@ -235,7 +235,7 @@ public class ImageStreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         private void bind(
                 final Image image,
-                ImageStreamFragment fragment,
+                StreamFragment fragment,
                 final InteractionCallback listener
         ) {
             view.bind(fragment, image, listener);

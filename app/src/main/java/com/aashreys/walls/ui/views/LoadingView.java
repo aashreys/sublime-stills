@@ -34,7 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.ui.adapters.ImageStreamAdapter;
+import com.aashreys.walls.ui.adapters.StreamAdapter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -66,7 +66,7 @@ public class LoadingView extends LinearLayout {
     @ViewMode
     private int currentMode = -1;
 
-    private ImageStreamAdapter.LoadingCallback loadingCallback;
+    private StreamAdapter.LoadingCallback loadingCallback;
 
     public LoadingView(Context context) {
         super(context);
@@ -276,7 +276,7 @@ public class LoadingView extends LinearLayout {
         infoText.setText(R.string.hint_add_favorites);
     }
 
-    public void setLoadingCallback(ImageStreamAdapter.LoadingCallback callback) {
+    public void setLoadingCallback(StreamAdapter.LoadingCallback callback) {
         this.loadingCallback = callback;
     }
 

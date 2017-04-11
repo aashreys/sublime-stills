@@ -27,7 +27,7 @@ import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.ui.ImageStreamFragment;
+import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.helpers.ImageDownloader;
 import com.bumptech.glide.Priority;
 
@@ -73,7 +73,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
         this.interactionCallback = interactionCallback;
     }
 
-    void setData(ImageStreamFragment fragment, ImageView imageView, Image image) {
+    void setData(StreamFragment fragment, ImageView imageView, Image image) {
         this.image = image;
         downloadImage(fragment, imageView);
         syncFavoriteState();
@@ -108,7 +108,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
         favoriteSyncTask.execute();
     }
 
-    private void downloadImage(ImageStreamFragment fragment, ImageView imageView) {
+    private void downloadImage(StreamFragment fragment, ImageView imageView) {
         imageDownloader.asDrawable(
                 fragment,
                 image.getUrl(getIdealImageWidth()),
