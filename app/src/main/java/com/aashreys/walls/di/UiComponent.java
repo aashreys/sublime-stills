@@ -29,9 +29,9 @@ import com.aashreys.walls.ui.OnboardingActivity;
 import com.aashreys.walls.ui.SettingsActivity;
 import com.aashreys.walls.ui.StreamActivity;
 import com.aashreys.walls.ui.StreamActivityViewModel;
-import com.aashreys.walls.ui.views.CollectionView;
-import com.aashreys.walls.ui.views.HintView;
-import com.aashreys.walls.ui.views.StreamImageView;
+import com.aashreys.walls.ui.views.CollectionViewModel;
+import com.aashreys.walls.ui.views.HintViewModel;
+import com.aashreys.walls.ui.views.StreamImageViewModel;
 
 import dagger.Subcomponent;
 
@@ -56,11 +56,11 @@ public interface UiComponent {
 
     void inject(CollectionsActivity collectionsActivity);
 
-    void inject(CollectionView collectionView);
+    void inject(CollectionViewModel collectionViewModel);
 
-    void inject(StreamImageView streamImageView);
+    void inject(StreamImageViewModel streamImageViewModel);
 
-    void inject(HintView hintView);
+    void inject(HintViewModel hintViewModel);
 
     void inject(SettingsActivity settingsActivity);
 

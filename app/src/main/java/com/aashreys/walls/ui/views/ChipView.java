@@ -17,30 +17,19 @@
 package com.aashreys.walls.ui.views;
 
 import android.content.Context;
-import android.support.annotation.ColorRes;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 
-import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.ui.helpers.UiHelper;
-
-import org.apache.commons.lang3.text.WordUtils;
 
 /**
  * Created by aashreys on 04/02/17.
  */
-public class ChipView extends AppCompatTextView {
+public class ChipView extends AppCompatTextView implements ChipViewModel.EventCallback {
 
-    @Nullable
-    private OnCheckedListener listener;
-
-    private boolean isChecked;
-
-    @ColorRes private int checkedColor, uncheckedColor;
+    private ChipViewModel viewModel;
 
     public ChipView(Context context) {
         super(context);
@@ -58,74 +47,59 @@ public class ChipView extends AppCompatTextView {
     }
 
     private void _init(Context context) {
-        int paddingVertical = getResources().getDimensionPixelSize(R.dimen.spacing_small);
-        int paddingHorizontal = getResources().getDimensionPixelSize(R.dimen
-                .spacing_medium);
-        checkedColor = R.color.white;
-        uncheckedColor = R.color.textColorPrimary;
-        setHeight(getResources().getDimensionPixelSize(R.dimen.height_small));
-        setTextColor(UiHelper.getColor(getContext(), uncheckedColor));
-        setGravity(Gravity.CENTER);
+        viewModel = new ChipViewModel();
+        int paddingVertical =
+                getResources().getDimensionPixelSize(viewModel.getVerticalPaddingRes());
+        int paddingHorizontal =
+                getResources().getDimensionPixelSize(viewModel.getHorizontalPaddingRes());
+        setHeight(getResources().getDimensionPixelSize(viewModel.getHeightRes()));
+        setTextColor(UiHelper.getColor(getContext(), viewModel.getUncheckedTextColorRes()));
+        setGravity(viewModel.getGravity());
         setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
-        setBackgroundResource(R.drawable.chip_background_light);
-    }
-
-    public void setCollection(final Collection collection) {
-        setText(WordUtils.capitalizeFully(collection.getName().value()));
+        setBackgroundResource(viewModel.getUncheckedBackgroundDrawableRes());
+        viewModel.setEventCallback(this);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isChecked()) {
-                    notifyDeselection(ChipView.this, collection);
-                    setChecked(false);
-                } else {
-                    notifySelection(ChipView.this, collection);
-                    setChecked(true);
-                }
+                viewModel.onChipClicked();
             }
         });
     }
 
-    private void notifySelection(ChipView chipView, Collection collection) {
-        if (listener != null) {
-            listener.onChipViewChecked(chipView, collection);
-        }
-    }
-
-    private void notifyDeselection(ChipView chipView, Collection collection) {
-        if (listener != null) {
-            listener.onChipViewUnchecked(chipView, collection);
-        }
+    public void setCollection(final Collection collection) {
+        viewModel.setCollection(collection);
     }
 
     public void setOnCheckedListener(OnCheckedListener listener) {
-        this.listener = listener;
-    }
-
-    public boolean isChecked() {
-        return isChecked;
+        viewModel.setOnCheckedListener(listener);
     }
 
     public void setChecked(boolean isChecked) {
-        if (isChecked) {
-            setBackgroundResource(R.drawable.chip_background_dark);
-            setTextColor(UiHelper.getColor(getContext(), checkedColor));
-        } else {
-            setBackgroundResource(R.drawable.chip_background_light);
-            setTextColor(UiHelper.getColor(getContext(), uncheckedColor));
-        }
-        this.isChecked = isChecked;
+        viewModel.setChecked(isChecked);
     }
 
-    public void resetState() {
-        setText(null);
+    @Override
+    public void onCollectionSet() {
+        setText(viewModel.getCollectionName());
+    }
+
+    @Override
+    public void onChecked() {
+        setBackgroundResource(viewModel.getCheckedBackgroundDrawableRes());
+        setTextColor(UiHelper.getColor(getContext(), viewModel.getCheckedTextColorRes()));
+    }
+
+    @Override
+    public void onUnchecked() {
+        setBackgroundResource(viewModel.getUncheckedBackgroundDrawableRes());
+        setTextColor(UiHelper.getColor(getContext(), viewModel.getUncheckedTextColorRes()));
     }
 
     public interface OnCheckedListener {
 
-        void onChipViewChecked(ChipView checkedChipView, Collection checkedCollection);
+        void onChipViewChecked(Collection checkedCollection);
 
-        void onChipViewUnchecked(ChipView uncheckedChipView, Collection uncheckedCollection);
+        void onChipViewUnchecked(Collection uncheckedCollection);
 
     }
 }

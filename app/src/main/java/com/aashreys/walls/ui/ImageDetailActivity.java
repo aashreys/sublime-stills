@@ -44,7 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.device.DeviceResolution;
+import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.ImageInfoService;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
@@ -59,7 +59,6 @@ import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.helpers.ChromeTabHelper;
 import com.aashreys.walls.ui.helpers.ImageDownloader;
-import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.InfoView;
 import com.aashreys.walls.utils.LogWrapper;
 import com.bumptech.glide.Priority;
@@ -87,7 +86,7 @@ public class ImageDetailActivity extends BaseActivity {
 
     @Inject ImageInfoService imageInfoService;
 
-    @Inject DeviceResolution deviceResolution;
+    @Inject DeviceInfo deviceInfo;
 
     @Inject ImageDownloader imageDownloader;
 
@@ -203,16 +202,9 @@ public class ImageDetailActivity extends BaseActivity {
                 }
             });
 
-            int width;
-            if (UiHelper.isPortrait(this)) {
-                width = deviceResolution.getPortraitWidth();
-            } else {
-                width = deviceResolution.getPortraitHeight();
-            }
-
             imageDownloader.asDrawable(
                     this,
-                    image.getUrl(width),
+                    image.getUrl(deviceInfo.getDeviceResolution().getWidth()),
                     Priority.IMMEDIATE,
                     imageView,
                     new ImageDownloader.Listener<Drawable>() {

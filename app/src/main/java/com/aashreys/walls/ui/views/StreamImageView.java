@@ -18,7 +18,6 @@ package com.aashreys.walls.ui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -30,58 +29,21 @@ import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.persistence.RepositoryCallback;
-import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.ImageStreamFragment;
-import com.aashreys.walls.ui.helpers.ImageDownloader;
-import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.utils.ForegroundImageView;
-import com.bumptech.glide.Priority;
-
-import javax.inject.Inject;
 
 /**
  * Created by aashreys on 09/02/17.
  */
 
-public class StreamImageView extends FrameLayout {
+public class StreamImageView extends FrameLayout implements StreamImageViewModel.EventCallback {
 
-    @Inject FavoriteImageRepository favoriteImageRepository;
-
-    @Inject DeviceResolution deviceResolution;
-
-    @Inject ImageDownloader imageDownloader;
-
-    private FavoriteSyncTask favoriteSyncTask;
+    private StreamImageViewModel viewModel;
 
     private ForegroundImageView imageView;
 
     private ImageButton favoriteButton;
-
-    private Image image;
-
-    private InteractionCallback callback;
-
-    private int numStreamColumns;
-
-    private RepositoryCallback<Image> repositoryCallback = new RepositoryCallback<Image>() {
-        @Override
-        public void onInsert(Image object) {
-            onFavoriteStateChanged(object, true);
-        }
-
-        @Override
-        public void onUpdate(Image object) {
-
-        }
-
-        @Override
-        public void onDelete(Image object) {
-            onFavoriteStateChanged(object, false);
-        }
-    };
 
     public StreamImageView(Context context) {
         super(context);
@@ -110,22 +72,35 @@ public class StreamImageView extends FrameLayout {
     }
 
     private void _init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        viewModel = new StreamImageViewModel();
         ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
-                .inject(this);
+                .inject(viewModel);
+        viewModel.setEventCallback(this);
         LayoutInflater.from(context).inflate(R.layout.layout_item_stream_image, this, true);
-        numStreamColumns = UiHelper.getStreamColumnCount(getContext());
         imageView = (ForegroundImageView) findViewById(R.id.image);
         favoriteButton = (ImageButton) findViewById(R.id.button_action);
+        imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.onImageClicked();
+            }
+        });
+        favoriteButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.onFavoriteButtonClicked();
+            }
+        });
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                favoriteImageRepository.addListener(repositoryCallback);
+                viewModel.onViewOnScreen();
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                favoriteImageRepository.removeListener(repositoryCallback);
+                viewModel.onViewOffScreen();
             }
         });
     }
@@ -135,94 +110,35 @@ public class StreamImageView extends FrameLayout {
             final Image image,
             final InteractionCallback callback
     ) {
-        this.image = image;
-        this.callback = callback;
-        favoriteButton.setVisibility(View.GONE);
-
-
-        int width;
-        if (UiHelper.isPortrait(getContext())) {
-            width = deviceResolution.getPortraitWidth() / numStreamColumns;
-        } else {
-            width = deviceResolution.getPortraitHeight() / numStreamColumns;
-        }
-        imageDownloader.asDrawable(
-                fragment,
-                image.getUrl(width),
-                fragment.isDisplayed() ? Priority.HIGH : Priority.LOW,
-                imageView,
-                new ImageDownloader.Listener<Drawable>() {
-                    @Override
-                    public void onComplete(Drawable result) {
-                        setVisibility(VISIBLE);
-                        imageView.setAlpha(0f);
-                        imageView.setImageDrawable(result);
-                        imageView.animate().alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        setVisibility(GONE);
-                    }
-                }
-        );
-        if (callback != null) {
-            imageView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    callback.onImageClicked(image);
-                }
-            });
-        }
-        syncFavoriteState();
+        viewModel.setInteractionCallback(callback);
+        viewModel.setData(fragment, imageView, image);
     }
 
-    private void syncFavoriteState() {
-        if (favoriteSyncTask != null &&
-                favoriteSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-            favoriteSyncTask.cancel(true);
-            favoriteSyncTask = null;
-        }
-        favoriteSyncTask = new FavoriteSyncTask(image, favoriteImageRepository) {
-            @Override
-            protected void onSyncComplete(Image oldImage, final boolean isFavorite) {
-                onFavoriteStateChanged(oldImage, isFavorite);
-            }
-        };
-        favoriteSyncTask.execute();
+    @Override
+    public void onImageDownloaded(Drawable image) {
+        setVisibility(VISIBLE);
+        imageView.setAlpha(0f);
+        imageView.setImageDrawable(image);
+        imageView.animate()
+                .alpha(1f)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
     }
 
-    private void onFavoriteStateChanged(Image newImage, final boolean isFavorite) {
-        // Check equality since favorite state is relayed on a background thread and this view
-        // may have been rebound to a different image by then.
-        if (newImage.equals(image)) {
-            favoriteButton.setImageResource(isFavorite
-                    ? R.drawable.ic_favorite_light_24dp
-                    : R.drawable.ic_favorite_border_light_24dp
-            );
-            favoriteButton.setVisibility(View.VISIBLE);
-            favoriteButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        private boolean isFavorite2 = isFavorite;
+    @Override
+    public void onImageDownloadFailed() {
+        setVisibility(GONE);
+    }
 
-                        @Override
-                        public void onClick(View v) {
-                            if (isFavorite2) {
-                                favoriteImageRepository.unfavorite(image);
-                                favoriteButton.setImageResource(R.drawable
-                                        .ic_favorite_border_light_24dp);
-                                callback.onFavoriteButtonClicked(image, false);
-                            } else {
-                                favoriteImageRepository.favorite(image);
-                                favoriteButton.setImageResource(R.drawable
-                                        .ic_favorite_light_24dp);
-                                callback.onFavoriteButtonClicked(image, true);
-                            }
-                            isFavorite2 = !isFavorite2;
-                        }
-                    }
-            );
-        }
+    @Override
+    public void onFavoriteSyncStarted() {
+        favoriteButton.setVisibility(INVISIBLE);
+    }
+
+    @Override
+    public void onFavoriteStateChanged() {
+        favoriteButton.setVisibility(VISIBLE);
+        favoriteButton.setImageResource(viewModel.getFavoriteButtonIconRes());
     }
 
     public interface InteractionCallback {
@@ -231,31 +147,6 @@ public class StreamImageView extends FrameLayout {
 
         void onFavoriteButtonClicked(Image image, boolean isFavorited);
 
-    }
-
-    private static abstract class FavoriteSyncTask extends AsyncTask<Void, Void, Boolean> {
-
-        private Image image;
-
-        private FavoriteImageRepository repository;
-
-        private FavoriteSyncTask(Image image, FavoriteImageRepository repository) {
-            this.image = image;
-            this.repository = repository;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return repository.isFavorite(image);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isFavorite) {
-            super.onPostExecute(isFavorite);
-            onSyncComplete(image, isFavorite);
-        }
-
-        protected abstract void onSyncComplete(Image image, boolean isFavorite);
     }
 
 }

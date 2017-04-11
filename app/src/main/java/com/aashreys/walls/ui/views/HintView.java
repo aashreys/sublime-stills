@@ -38,13 +38,15 @@ import javax.inject.Inject;
  * Created by aashreys on 11/03/17.
  */
 
-public class HintView extends FrameLayout {
+public class HintView extends FrameLayout implements HintViewModel.EventListener {
 
     @Inject KeyValueStore keyValueStore;
 
     private TextView hintText;
 
     private ImageButton closeButton;
+
+    private HintViewModel viewModel;
 
     public HintView(Context context) {
         super(context);
@@ -75,10 +77,21 @@ public class HintView extends FrameLayout {
     }
 
     private void _init(Context context, @Nullable AttributeSet attrs) {
+        viewModel = new HintViewModel();
         ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
-                .inject(this);
+                .inject(viewModel);
+        viewModel.setEventListener(this);
         LayoutInflater.from(context).inflate(R.layout.layout_view_hint, this, true);
+
+        hintText = (TextView) findViewById(R.id.text_hint);
+        closeButton = (ImageButton) findViewById(R.id.button_close);
+        closeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.onCloseButtonClicked();
+            }
+        });
 
         final String hintString, seenKeyString;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.HintView, 0, 0);
@@ -89,25 +102,17 @@ public class HintView extends FrameLayout {
             a.recycle();
         }
 
-        hintText = (TextView) findViewById(R.id.text_hint);
-        closeButton = (ImageButton) findViewById(R.id.button_close);
-        closeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setVisibility(GONE);
-                if (seenKeyString != null) {
-                    keyValueStore.putBoolean(seenKeyString, true);
-                }
-            }
-        });
-        if (hintString != null) {
-            hintText.setText(hintString);
-        }
-        if (seenKeyString != null) {
-            if (keyValueStore.getBoolean(seenKeyString, false)) {
-                setVisibility(GONE);
-            }
-        }
+        viewModel.setHint(hintString);
+        viewModel.setSeenKey(seenKeyString);
     }
 
+    @Override
+    public void onHintSet() {
+        hintText.setText(viewModel.getHint());
+    }
+
+    @Override
+    public void onHintDismissed() {
+        setVisibility(GONE);
+    }
 }

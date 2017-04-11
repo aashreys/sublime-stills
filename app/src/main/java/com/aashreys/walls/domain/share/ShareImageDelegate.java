@@ -62,8 +62,8 @@ public class ShareImageDelegate implements ShareDelegate {
             final Context context, final Image image, final Listener listener
     ) {
         imageFileDownloadListener = createImageFileDownloadListener(context, image, listener);
-        int width = deviceResolution.getPortraitWidth() > minWidth ?
-                deviceResolution.getPortraitWidth() :
+        int width = deviceResolution.getWidth() > minWidth ?
+                deviceResolution.getWidth() :
                 minWidth;
         final Url imageUrl = image.getUrl(width);
 

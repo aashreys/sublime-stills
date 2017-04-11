@@ -16,33 +16,16 @@
 
 package com.aashreys.walls.domain.device;
 
-import android.content.Context;
-import android.util.DisplayMetrics;
-
 /**
- * Created by aashreys on 19/03/17.
+ * Created by aashreys on 09/04/17.
  */
 
-class DeviceResolutionImpl implements DeviceResolution {
+public interface DeviceInfo {
 
-    private Context context;
+    DeviceResolution getDeviceResolution();
 
-    DeviceResolutionImpl(Context context) {
-        this.context = context.getApplicationContext();
-    }
+    Orientation getOrientation();
 
-    private DisplayMetrics getDm() {
-        return context.getResources().getDisplayMetrics();
-    }
+    int getNumberOfStreamColumns();
 
-    @Override
-    public int getWidth() {
-        return getDm().widthPixels;
-    }
-
-    @Override
-    public int getHeight() {
-        return getDm().heightPixels;
-    }
 }
-

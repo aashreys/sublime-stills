@@ -60,7 +60,7 @@ public class SetAsDelegate implements ShareDelegate {
     @Override
     public void share(final Context context, final Image image, final Listener listener) {
         imageFileDownloadListener = createImageFileDownloadListener(context, listener);
-        final Url imageUrl = image.getUrl(deviceResolution.getPortraitWidth() * 2);
+        final Url imageUrl = image.getUrl(deviceResolution.getWidth() * 2);
         imageDownloader.asFile(context, imageUrl, imageFileDownloadListener);
     }
 

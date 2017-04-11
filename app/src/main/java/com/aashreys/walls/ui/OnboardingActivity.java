@@ -139,18 +139,14 @@ public class OnboardingActivity extends BaseActivity implements CollectionSearch
     }
 
     @Override
-    public void onChipViewChecked(
-            ChipView checkedChipView, Collection checkedCollection
-    ) {
+    public void onChipViewChecked(Collection checkedCollection) {
         if (checkedCollection != null) {
             checkedCollectionList.add(checkedCollection);
         }
     }
 
     @Override
-    public void onChipViewUnchecked(
-            ChipView uncheckedChipView, Collection uncheckedCollection
-    ) {
+    public void onChipViewUnchecked(Collection uncheckedCollection) {
         if (uncheckedCollection != null) {
             checkedCollectionList.remove(uncheckedCollection);
         }

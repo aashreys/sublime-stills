@@ -21,8 +21,8 @@ import android.preference.PreferenceManager;
 
 import com.aashreys.maestro.ViewModelStore;
 import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.domain.device.DeviceResolution;
-import com.aashreys.walls.domain.device.DeviceResolutionImpl;
+import com.aashreys.walls.domain.device.DeviceInfo;
+import com.aashreys.walls.domain.device.DeviceInfoImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,9 +38,12 @@ public class ApplicationModule {
 
     private ViewModelStore viewModelStore;
 
+    private DeviceInfo deviceInfo;
+
     public ApplicationModule(WallsApplication application) {
         this.application = application;
         this.viewModelStore = new ViewModelStore();
+        this.deviceInfo = new DeviceInfoImpl(application);
     }
 
     @Provides
@@ -49,8 +52,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    public DeviceResolution providesDeviceResolution() {
-        return new DeviceResolutionImpl(application);
+    public DeviceInfo providesDeviceInfo() {
+        return deviceInfo;
     }
 
     @Provides

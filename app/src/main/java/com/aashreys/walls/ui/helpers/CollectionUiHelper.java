@@ -28,7 +28,7 @@ import com.aashreys.walls.domain.display.collections.Collection;
 public class CollectionUiHelper {
 
     @DrawableRes
-    public static int getIconForCollectionType(@Collection.Type String type) {
+    private static int getIconForCollectionType(@Collection.Type String type) {
         switch (type) {
             case Collection.Type.FAVORITE:
                 return R.drawable.ic_favorite_black_24dp;

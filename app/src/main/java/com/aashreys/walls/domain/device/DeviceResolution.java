@@ -22,8 +22,8 @@ package com.aashreys.walls.domain.device;
 
 public interface DeviceResolution {
 
-    int getPortraitWidth();
+    int getWidth();
 
-    int getPortraitHeight();
+    int getHeight();
 
 }

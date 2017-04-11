@@ -103,7 +103,7 @@ public class ShareDelegateTests extends MockitoTestCase {
         Mockito.when(image.getTitle()).thenReturn(IMAGE_TITLE);
         Mockito.when(image.getShareUrl()).thenReturn(IMAGE_SHARE_URL);
 
-        Mockito.when(deviceResolution.getPortraitWidth()).thenReturn(DEVICE_WIDTH);
+        Mockito.when(deviceResolution.getWidth()).thenReturn(DEVICE_WIDTH);
 
         // Creating a handler which executes runnables immediately
         Mockito.when(uiHandler.post(Mockito.any(Runnable.class))).thenAnswer(

@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
+import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
@@ -41,7 +42,6 @@ import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.adapters.ImageStreamAdapter;
 import com.aashreys.walls.ui.helpers.NetworkHelper;
-import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.tasks.LoadImagesTask;
 import com.aashreys.walls.ui.views.LoadingView;
 import com.aashreys.walls.ui.views.StreamImageView;
@@ -60,6 +60,8 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     private static final String ARG_POSITION = "arg_position";
 
     @Inject Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy;
+
+    @Inject DeviceInfo deviceInfo;
 
     @Inject SourceFactory sourceFactory;
 
@@ -144,7 +146,7 @@ public class ImageStreamFragment extends Fragment implements ImageStreamAdapter.
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        int columnCount = UiHelper.getStreamColumnCount(getContext());
+        int columnCount = deviceInfo.getNumberOfStreamColumns();
         RecyclerView.LayoutManager manager = null;
         if (columnCount == 1) {
             manager = new LinearLayoutManager(getContext());

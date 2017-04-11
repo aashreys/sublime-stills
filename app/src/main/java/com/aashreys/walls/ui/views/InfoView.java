@@ -23,7 +23,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,13 +34,15 @@ import com.aashreys.walls.R;
  * Created by aashreys on 17/03/17.
  */
 
-public class InfoView extends LinearLayout {
+public class InfoView extends LinearLayout implements InfoViewModel.EventListener {
 
-    private TextView keyText;
+    private TextView titleText;
 
-    private TextView valueText;
+    private TextView infoText;
 
-    private ImageView keyIcon;
+    private ImageView titleIcon;
+
+    private InfoViewModel viewModel;
 
     public InfoView(Context context) {
         super(context);
@@ -69,12 +70,14 @@ public class InfoView extends LinearLayout {
     }
 
     private void _init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        setGravity(Gravity.CENTER_VERTICAL);
+        viewModel = new InfoViewModel();
+        viewModel.setEventListener(this);
+        setGravity(viewModel.getGravity());
         LayoutInflater.from(context).inflate(R.layout.layout_info_view, this, true);
 
-        keyText = (TextView) findViewById(R.id.text_key);
-        keyIcon = (ImageView) findViewById(R.id.icon_key);
-        valueText = (TextView) findViewById(R.id.text_value);
+        titleText = (TextView) findViewById(R.id.text_key);
+        titleIcon = (ImageView) findViewById(R.id.icon_key);
+        infoText = (TextView) findViewById(R.id.text_value);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
@@ -83,38 +86,49 @@ public class InfoView extends LinearLayout {
         );
 
         int iconKeyRes;
-        String keyString, valueString;
+        String keyString, infoString;
         try {
             iconKeyRes = a.getResourceId(R.styleable.InfoView_iv_key_icon, 0);
             keyString = a.getString(R.styleable.InfoView_iv_key_string);
-            valueString = a.getString(R.styleable.InfoView_iv_value);
+            infoString = a.getString(R.styleable.InfoView_iv_value);
         } finally {
             a.recycle();
         }
 
         if (iconKeyRes != 0) {
-            setInfoWithIcon(iconKeyRes, valueString);
+            viewModel.setTitleIcon(iconKeyRes);
         } else if (keyString != null) {
-            setInfo(keyString, valueString);
+            viewModel.setTitle(keyString);
         }
+        viewModel.setInfo(infoString);
     }
 
-    public void setInfoWithIcon(@DrawableRes int keyIconRes, String value) {
-        keyText.setVisibility(GONE);
-        keyIcon.setVisibility(VISIBLE);
-        keyIcon.setImageResource(keyIconRes);
-        setValue(value);
+    public void setInfoWithIcon(@DrawableRes int titleIcon, String info) {
+        viewModel.setTitleIcon(titleIcon);
+        viewModel.setInfo(info);
     }
 
-    public void setInfo(String keyString, String value) {
-        keyIcon.setVisibility(GONE);
-        keyText.setVisibility(VISIBLE);
-        keyText.setText(keyString);
-        setValue(value);
+    public void setInfo(String title, String info) {
+        viewModel.setTitle(title);
+        viewModel.setInfo(info);
     }
 
-    private void setValue(String value) {
-        valueText.setText(value);
+    @Override
+    public void onTitleSet(String title) {
+        titleIcon.setVisibility(GONE);
+        titleText.setVisibility(VISIBLE);
+        titleText.setText(title);
     }
 
+    @Override
+    public void onTitleIconSet(@DrawableRes int icon) {
+        titleText.setVisibility(GONE);
+        titleIcon.setVisibility(VISIBLE);
+        titleIcon.setImageResource(icon);
+    }
+
+    @Override
+    public void onInfoSet(String info) {
+        infoText.setText(info);
+    }
 }

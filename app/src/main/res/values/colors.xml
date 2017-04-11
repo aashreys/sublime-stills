@@ -19,7 +19,7 @@
     <!--theme colors-->
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/white</color>
-    <color name="colorAccent">@color/black_87p</color>
+    <color name="colorAccent">@color/black</color>
     <color name="statusBarBackground">#E0E0E0</color>
     <color name="appBarBackground">#F5F5F5</color>
     <color name="navigationDrawerBackground">#F5F5F5</color>

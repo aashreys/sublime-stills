@@ -180,7 +180,7 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
     }
 
     @Override
-    public void onChipViewChecked(ChipView checkedChipView, Collection checkedCollection) {
+    public void onChipViewChecked(Collection checkedCollection) {
         if (checkedCollection != null) {
             checkedCollectionList.add(checkedCollection);
             onCheckedCollectionsModified();
@@ -188,7 +188,7 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
     }
 
     @Override
-    public void onChipViewUnchecked(ChipView uncheckedChipView, Collection uncheckedCollection) {
+    public void onChipViewUnchecked(Collection uncheckedCollection) {
         if (uncheckedCollection != null) {
             checkedCollectionList.remove(uncheckedCollection);
             onCheckedCollectionsModified();

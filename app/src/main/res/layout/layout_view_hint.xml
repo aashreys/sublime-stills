@@ -35,8 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|left"
         android:layout_marginLeft="72dp"
-        android:layout_marginRight="72dp"
-        android:text="@string/hint_image_actions"/>
+        android:layout_marginRight="72dp"/>
 
     <ImageButton
         android:id="@+id/button_close"

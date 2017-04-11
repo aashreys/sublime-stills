@@ -19,6 +19,7 @@ package com.aashreys.walls.sharedelegates.mocks;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
+import android.widget.ImageView;
 
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.ui.helpers.ImageDownloader;
@@ -69,7 +70,11 @@ public class MockImageDownloader extends ImageDownloader {
 
     @Override
     public void asDrawable(
-            Context context, Url url, Priority priority, Listener<Drawable> listener
+            Context context,
+            Url url,
+            Priority priority,
+            ImageView imageView,
+            Listener<Drawable> listener
     ) {
         if (shouldFail) {
             listener.onError(mockException);
@@ -83,6 +88,7 @@ public class MockImageDownloader extends ImageDownloader {
             Fragment fragment,
             Url url,
             Priority priority,
+            ImageView imageView,
             Listener<Drawable> listener
     ) {
         if (shouldFail) {

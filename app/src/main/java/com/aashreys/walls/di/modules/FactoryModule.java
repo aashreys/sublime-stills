@@ -16,7 +16,7 @@
 
 package com.aashreys.walls.di.modules;
 
-import com.aashreys.walls.domain.device.DeviceResolution;
+import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
 import com.aashreys.walls.domain.display.sources.FlickrRecentSourceFactory;
 import com.aashreys.walls.domain.display.sources.FlickrTagSourceFactory;
@@ -61,14 +61,14 @@ public class FactoryModule {
     @Provides
     public ShareDelegateFactory providesSharerFactory(
             UrlShortener urlShortener,
-            DeviceResolution deviceResolution,
+            DeviceInfo deviceInfo,
             ShareActionFactory shareActionFactory,
             UiHandlerFactory uiHandlerFactory,
             ImageDownloader imageDownloader
     ) {
         return new ShareDelegateFactory(
                 urlShortener,
-                deviceResolution,
+                deviceInfo.getDeviceResolution(),
                 shareActionFactory,
                 uiHandlerFactory,
                 imageDownloader
