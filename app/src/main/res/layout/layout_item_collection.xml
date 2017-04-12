@@ -24,7 +24,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginLeft="8dp"
-        android:padding="8dp"/>
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/text_title"
@@ -40,14 +40,14 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-        android:padding="8dp"/>
+        android:padding="12dp"/>
 
     <ImageView
         android:id="@+id/handle"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginRight="8dp"
-        android:padding="8dp"
+        android:padding="12dp"
         app:srcCompat="@drawable/ic_swap_vert_black_24dp"/>
 
 </merge>
