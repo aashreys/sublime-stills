@@ -121,6 +121,7 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         imageView.setImageDrawable(image);
         imageView.animate()
                 .alpha(1f)
+                .setDuration(200)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .start();
     }
