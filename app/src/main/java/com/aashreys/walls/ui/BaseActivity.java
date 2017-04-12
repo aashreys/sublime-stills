@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.aashreys.maestro.ViewIdGenerator;
+import com.aashreys.maestro.ViewModel;
 import com.aashreys.maestro.ViewModelStore;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.di.ApplicationComponent;
@@ -30,7 +31,7 @@ import com.aashreys.walls.di.UiComponent;
  * Created by aashreys on 21/02/17.
  */
 
-public class BaseActivity<VM extends ActivityViewModel> extends AppCompatActivity {
+public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
 
     private String ARG_VIEW_ID = "arg_view_id";
 
@@ -50,9 +51,6 @@ public class BaseActivity<VM extends ActivityViewModel> extends AppCompatActivit
         } else {
             viewId = new ViewIdGenerator().generateId(this);
             setViewModel(createViewModel());
-            if (getViewModel() != null) {
-                getViewModel().didCreate();
-            }
         }
     }
 

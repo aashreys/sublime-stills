@@ -18,6 +18,7 @@ package com.aashreys.walls.ui;
 
 import android.support.annotation.Nullable;
 
+import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
@@ -39,14 +40,12 @@ import javax.inject.Inject;
  * Created by aashreys on 08/04/17.
  */
 
-public class StreamActivityViewModel extends ActivityViewModel implements StreamImageView
-        .InteractionCallback,
+public class StreamActivityViewModel implements ViewModel, StreamImageView.InteractionCallback,
         CollectionRepository.CollectionRepositoryListener, StreamActivity.CollectionProvider {
 
     public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
 
-    private final List<Collection> collectionsList =
-            Collections.synchronizedList(new ArrayList<Collection>());
+    private final List<Collection> collectionsList;
 
     @Inject FavoriteImageRepository favoriteImageRepository;
 
@@ -58,10 +57,9 @@ public class StreamActivityViewModel extends ActivityViewModel implements Stream
 
     @Nullable private StreamActivityModelEventListener eventListener;
 
-    @Override
-    protected void didCreate() {
-        super.didCreate();
-        collectionsList.addAll(collectionRepository.getAll());
+    StreamActivityViewModel() {
+        this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
+        this.collectionsList.addAll(collectionRepository.getAll());
     }
 
     void setEventListener(@Nullable StreamActivityModelEventListener eventListener) {
