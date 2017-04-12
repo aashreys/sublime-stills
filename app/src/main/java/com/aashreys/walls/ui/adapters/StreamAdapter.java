@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
+import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.views.StreamImageView;
@@ -42,8 +43,6 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private static final int VIEW_TYPE_IMAGE = 0, VIEW_TYPE_LOADING = 1;
 
-    private View loadingView;
-
     @NonNull
     private final StreamFragment fragment;
 
@@ -52,6 +51,8 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @NonNull
     private final List<Image> imageList;
+
+    private View loadingView;
 
     /**
      * How many items from the end of the list should the adapter request for more data to be
@@ -188,6 +189,14 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface LoadingCallback {
 
         void onLoadRequested();
+
+    }
+
+    public interface CollectionProvider {
+
+        Collection getCollection(int position);
+
+        int size();
 
     }
 

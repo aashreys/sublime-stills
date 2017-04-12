@@ -21,18 +21,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.aashreys.walls.ui.StreamFragment;
-import com.aashreys.walls.ui.StreamActivity;
 
 /**
  * Created by aashreys on 05/02/17.
  */
 public class StreamViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private StreamActivity.CollectionProvider collectionProvider;
+    private StreamAdapter.CollectionProvider collectionProvider;
 
     public StreamViewPagerAdapter(
             FragmentManager fm,
-            StreamActivity.CollectionProvider collectionProvider
+            StreamAdapter.CollectionProvider collectionProvider
     ) {
         super(fm);
         this.collectionProvider = collectionProvider;

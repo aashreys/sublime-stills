@@ -28,6 +28,7 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
+import com.aashreys.walls.ui.adapters.StreamAdapter;
 import com.aashreys.walls.ui.views.StreamImageView;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import javax.inject.Inject;
  */
 
 public class StreamActivityViewModel implements ViewModel, StreamImageView.InteractionCallback,
-        CollectionRepository.CollectionRepositoryListener, StreamActivity.CollectionProvider {
+        CollectionRepository.CollectionRepositoryListener, StreamAdapter.CollectionProvider {
 
     public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
 
@@ -55,14 +56,14 @@ public class StreamActivityViewModel implements ViewModel, StreamImageView.Inter
 
     @Inject KeyValueStore keyValueStore;
 
-    @Nullable private StreamActivityModelEventListener eventListener;
+    @Nullable private EventListener eventListener;
 
     StreamActivityViewModel() {
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
         this.collectionsList.addAll(collectionRepository.getAll());
     }
 
-    void setEventListener(@Nullable StreamActivityModelEventListener eventListener) {
+    void setEventListener(@Nullable EventListener eventListener) {
         this.eventListener = eventListener;
     }
 
@@ -198,5 +199,29 @@ public class StreamActivityViewModel implements ViewModel, StreamImageView.Inter
     void onActivityDestroyed() {
         collectionRepository.removeListener(this);
         eventListener = null;
+    }
+
+    /**
+     * Created by aashreys on 08/04/17.
+     */
+
+    interface EventListener {
+
+        void onSettingsNavigationItemSelected();
+
+        void onCollectionsNavigationItemSelected();
+
+        void onNewTabSelected(int tabPosition);
+
+        void onImageFavoriteButtonClicked(Image image, boolean isFavorite);
+
+        void onImageClicked(Image image);
+
+        void onMenuButtonClicked();
+
+        void onAddCollectionsButtonClicked();
+
+        void onCollectionsModified();
+
     }
 }

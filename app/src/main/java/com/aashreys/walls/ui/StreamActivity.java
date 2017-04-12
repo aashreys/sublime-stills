@@ -31,14 +31,14 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.ui.adapters.StreamAdapter;
 import com.aashreys.walls.ui.adapters.StreamViewPagerAdapter;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.StreamImageView;
 
 public class StreamActivity extends BaseActivity<StreamActivityViewModel> implements
-        NavigationView.OnNavigationItemSelectedListener, StreamActivityModelEventListener {
+        NavigationView.OnNavigationItemSelectedListener, StreamActivityViewModel.EventListener {
 
     private static final String TAG = StreamActivity.class.getSimpleName();
 
@@ -204,15 +204,8 @@ public class StreamActivity extends BaseActivity<StreamActivityViewModel> implem
         return getViewModel();
     }
 
-    public CollectionProvider getCollectionProvider() {
+    public StreamAdapter.CollectionProvider getCollectionProvider() {
         return getViewModel();
     }
 
-    public interface CollectionProvider {
-
-        Collection getCollection(int position);
-
-        int size();
-
-    }
 }

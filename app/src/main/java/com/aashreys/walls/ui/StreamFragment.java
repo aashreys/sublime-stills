@@ -80,7 +80,7 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
 
     @Nullable private RepositoryCallback<Image> favoriteRepoListener;
 
-    private StreamActivity.CollectionProvider collectionProvider;
+    private StreamAdapter.CollectionProvider collectionProvider;
 
     private Collection collection;
 
