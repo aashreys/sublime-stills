@@ -112,7 +112,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
         imageDownloader.asDrawable(
                 fragment,
                 image.getUrl(getIdealImageWidth()),
-                fragment.isDisplayed() ? Priority.HIGH : Priority.LOW,
+                fragment.isDisplayed() ? Priority.IMMEDIATE : Priority.LOW,
                 imageView,
                 new ImageDownloader.Listener<Drawable>() {
                     @Override
