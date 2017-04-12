@@ -60,6 +60,9 @@ public class StreamActivityViewModel implements ViewModel, StreamImageView.Inter
 
     StreamActivityViewModel() {
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
+    }
+
+    void onInjectionComplete() {
         this.collectionsList.addAll(collectionRepository.getAll());
     }
 

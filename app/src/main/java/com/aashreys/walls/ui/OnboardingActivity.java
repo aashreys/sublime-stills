@@ -102,7 +102,7 @@ public class OnboardingActivity extends BaseActivity implements CollectionSearch
     }
 
     @Override
-    public void onSearchComplete(List<Collection> collectionList, boolean isCurated) {
+    public void onSearchComplete(List<Collection> collectionList) {
         collectionsParent.removeAllViews();
         if (collectionList != null && collectionList.size() > 0) {
             progressBar.setVisibility(View.INVISIBLE);

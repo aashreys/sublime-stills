@@ -30,46 +30,39 @@ import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.CollectionView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by aashreys on 04/02/17.
  */
 
 public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
-        .CollectionViewHolder> {
+        .CollectionViewHolder> implements CollectionsAdapterModel.EventListener {
 
     private static final String TAG = CollectionsAdapter.class.getSimpleName();
-
-    private final List<Collection> collectionList;
 
     private DragListener dragListener;
 
     private OnCollectionClickListener onCollectionClickListener;
 
-    private boolean isCollectionListModified;
+    private CollectionsAdapterModel adapterModel;
 
-    public CollectionsAdapter() {
-        this.collectionList = new ArrayList<>();
+    public CollectionsAdapter(CollectionsAdapterModel adapterModel) {
+        this.adapterModel = adapterModel;
+        this.adapterModel.setEventListener(this);
     }
 
-    public void add(Collection collection) {
-        collectionList.add(collection);
-        notifyItemInserted(collectionList.size() - 1);
+    @Override
+    public void onCollectionAdded(int position) {
+        notifyItemInserted(position);
     }
 
-    public void remove(Collection collection) {
-        int position = collectionList.indexOf(collection);
-        if (position != -1) {
-            collectionList.remove(position);
-            notifyItemRemoved(position);
-        }
+    @Override
+    public void onCollectionRemoved(int position) {
+        notifyItemRemoved(position);
     }
 
-    public void add(List<Collection> collections) {
-        collectionList.addAll(collections);
-        notifyItemRangeInserted(collectionList.size() - collections.size(), collections.size());
+    @Override
+    public void onCollectionListChanged() {
+        notifyDataSetChanged();
     }
 
     @Override
@@ -83,7 +76,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
 
     @Override
     public void onBindViewHolder(final CollectionViewHolder holder, int position) {
-        holder.bind(collectionList.get(position), new View.OnTouchListener() {
+        holder.bind(adapterModel.getCollection(position), new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
@@ -96,14 +89,12 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
 
     @Override
     public int getItemCount() {
-        return collectionList.size();
+        return adapterModel.collectionListSize();
     }
 
     private void onItemMove(int fromPosition, int toPosition) {
-        Collection collection = collectionList.remove(fromPosition);
-        collectionList.add(toPosition, collection);
+        adapterModel.moveCollection(fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
-        isCollectionListModified = true;
     }
 
     private void onDragStarted(RecyclerView.ViewHolder holder) {
@@ -114,14 +105,6 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         dragListener.onDragFinished();
     }
 
-    public boolean isCollectionListModified() {
-        return isCollectionListModified;
-    }
-
-    public List<Collection> getCollectionList() {
-        return collectionList;
-    }
-
     public void setDragListener(DragListener dragListener) {
         this.dragListener = dragListener;
     }
@@ -130,8 +113,8 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter
         this.onCollectionClickListener = onCollectionClickListener;
     }
 
-    public void onCollectionsSaved() {
-        this.isCollectionListModified = false;
+    public void release() {
+        adapterModel.setEventListener(null);
     }
 
     public interface DragListener {

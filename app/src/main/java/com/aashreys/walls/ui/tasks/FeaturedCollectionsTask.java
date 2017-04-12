@@ -53,7 +53,7 @@ public class FeaturedCollectionsTask extends AsyncTask<Void, Void, List<Collecti
     @Override
     protected void onPostExecute(List<Collection> collections) {
         if (listener != null) {
-            listener.onSearchComplete(collections, true);
+            listener.onSearchComplete(collections);
         }
     }
 }

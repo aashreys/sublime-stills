@@ -32,39 +32,50 @@ import javax.inject.Inject;
  */
 
 @AutoFactory
-public class CollectionSearchTask extends AsyncTask<String, Void, List<Collection>> {
+public class CollectionSearchTask extends AsyncTask<Void, Void, List<Collection>> {
 
-    private CollectionSearchService collectionSearchService;
+    private final CollectionSearchService collectionSearchService;
+
+    private final String searchString;
+
+    private final int minCollectionSize;
 
     private CollectionSearchListener listener;
 
-    private int minPhotos;
-
     @Inject
-    public CollectionSearchTask(@Provided CollectionSearchService collectionSearchService, int minPhotos) {
+    public CollectionSearchTask(
+            @Provided CollectionSearchService collectionSearchService,
+            String searchString,
+            int minPhotos
+    ) {
         this.collectionSearchService = collectionSearchService;
-        this.minPhotos = minPhotos;
+        this.searchString = searchString;
+        this.minCollectionSize = minPhotos;
     }
 
     public void setListener(CollectionSearchListener listener) {
         this.listener = listener;
     }
 
+    public String getSearchString() {
+        return searchString;
+    }
+
     @Override
-    protected List<Collection> doInBackground(String... searchStrings) {
-        return collectionSearchService.search(searchStrings[0], minPhotos);
+    protected List<Collection> doInBackground(Void... args) {
+        return collectionSearchService.search(searchString, minCollectionSize);
     }
 
     @Override
     protected void onPostExecute(List<Collection> collections) {
         if (listener != null) {
-            listener.onSearchComplete(collections, false);
+            listener.onSearchComplete(collections);
         }
     }
 
     public interface CollectionSearchListener {
 
-        void onSearchComplete(List<Collection> collectionList, boolean isCurated);
+        void onSearchComplete(List<Collection> collectionList);
 
     }
 }

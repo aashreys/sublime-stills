@@ -85,7 +85,10 @@ class ChipViewModel implements ViewModel {
     }
 
     void setChecked(boolean checked) {
-        isChecked = checked;
+        if (isChecked != checked) {
+            isChecked = checked;
+            onCheckedChanged();
+        }
     }
 
     void setCollection(Collection collection) {

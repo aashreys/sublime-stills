@@ -107,6 +107,7 @@ public class StreamActivity extends BaseActivity<StreamActivityViewModel> implem
     protected StreamActivityViewModel createViewModel() {
         StreamActivityViewModel vm = new StreamActivityViewModel();
         getUiComponent().inject(vm);
+        vm.onInjectionComplete();
         return vm;
     }
 

@@ -33,36 +33,17 @@ import android.widget.TextView;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.ui.tasks.CollectionSearchTask;
-import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
-import com.aashreys.walls.ui.tasks.FeaturedCollectionsTask;
-import com.aashreys.walls.ui.tasks.FeaturedCollectionsTaskFactory;
 import com.aashreys.walls.ui.views.ChipView;
 import com.wefika.flowlayout.FlowLayout;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
-public class AddCollectionsActivity extends BaseActivity implements ChipView.OnCheckedListener,
-        CollectionSearchTask.CollectionSearchListener {
+public class AddCollectionsActivity extends BaseActivity<AddCollectionsActivityModel> implements
+        CollectionSearchTask.CollectionSearchListener, AddCollectionsActivityModel.EventListener {
 
     private static final String ARG_RETURN_TO_STREAM = "arg_return_to_stream";
-
-    @Inject FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory;
-
-    @Inject CollectionSearchTaskFactory collectionSearchTaskFactory;
-
-    @Inject CollectionRepository collectionRepository;
-
-    private FeaturedCollectionsTask featuredCollectionsTask;
-
-    private CollectionSearchTask collectionSearchTask;
-
-    private List<Collection> checkedCollectionList;
 
     private EditText collectionInput;
 
@@ -74,38 +55,39 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
 
     private ProgressBar progressBar;
 
-    private int chipViewHeight, chipViewMargin;
-
-    private String postSearchStatusText;
-
-    private boolean isLoadingOrDisplayingFeatured;
-
-    private boolean isReturnToStreamActivity;
-
-    private int minPhotos;
-
-    public static final Intent createLaunchIntent(Context context, boolean isReturnToStreamActivity) {
-        Intent intent =  new Intent(context, AddCollectionsActivity.class);
+    public static final Intent createLaunchIntent(
+            Context context,
+            boolean isReturnToStreamActivity
+    ) {
+        Intent intent = new Intent(context, AddCollectionsActivity.class);
         intent.putExtra(ARG_RETURN_TO_STREAM, isReturnToStreamActivity);
         return intent;
+    }
+
+    @Override
+    protected AddCollectionsActivityModel createViewModel() {
+        AddCollectionsActivityModel viewModel = new AddCollectionsActivityModel();
+        getUiComponent().inject(viewModel);
+        viewModel.onInjectionComplete();
+        return viewModel;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_collections);
-        getUiComponent().inject(this);
-        isReturnToStreamActivity = getIntent().getBooleanExtra(ARG_RETURN_TO_STREAM, false);
-        checkedCollectionList = new ArrayList<>();
+        getViewModel().setEventListener(this);
+        getViewModel().setShouldReturnToStreamActivity(getIntent().getBooleanExtra(
+                ARG_RETURN_TO_STREAM,
+                false
+        ));
+
         collectionsParent = (FlowLayout) findViewById(R.id.parent_collections);
         searchStatusText = (TextView) findViewById(R.id.text_search_status);
         collectionInput = (EditText) findViewById(R.id.input_collection);
         actionButton = (Button) findViewById(R.id.button_action);
         cancelButton = (Button) findViewById(R.id.button_cancel);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        chipViewHeight = getResources().getDimensionPixelSize(R.dimen.height_small);
-        chipViewMargin = getResources().getDimensionPixelOffset(R.dimen.spacing_xs);
-        minPhotos = getResources().getInteger(R.integer.min_photos_in_collection);
         collectionInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -119,169 +101,101 @@ public class AddCollectionsActivity extends BaseActivity implements ChipView.OnC
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0 && !isLoadingOrDisplayingFeatured) {
-                    searchFeaturedCollections();
-                }
+                getViewModel().onSearchTextChanged(s.toString());
             }
         });
         collectionInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                searchForCollections(collectionInput.getText().toString());
+                getViewModel().onKeyboardSearchClicked();
                 return true;
             }
         });
-        searchFeaturedCollections();
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchForCollections(collectionInput.getText().toString());
+                getViewModel().onActionButtonClicked();
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getViewModel().onCancelButtonClicked();
                 finish();
             }
         });
-    }
-
-    @Override
-    public void onSearchComplete(List<Collection> collectionList, boolean isCurated) {
-        isLoadingOrDisplayingFeatured = isCurated;
-        collectionsParent.removeAllViews();
-        searchStatusText.setText(postSearchStatusText);
-        progressBar.setVisibility(View.GONE);
-        collectionsParent.setVisibility(View.VISIBLE);
-        if (collectionList != null && collectionList.size() > 0) {
-            if (isCurated) {
-                Collections.shuffle(collectionList);
-            }
-            for (Collection collection : collectionList) {
-                if (collection.getName().value().length() > 3) {
-                    ChipView chipView = new ChipView(this);
-                    chipView.setCollection(collection);
-                    chipView.setOnCheckedListener(this);
-                    FlowLayout.LayoutParams params = new FlowLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            chipViewHeight
-                    );
-                    params.setMargins(
-                            chipViewMargin,
-                            chipViewMargin,
-                            chipViewMargin,
-                            chipViewMargin
-                    );
-                    collectionsParent.addView(chipView, params);
-                    chipView.setChecked(checkedCollectionList.contains(collection));
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onChipViewChecked(Collection checkedCollection) {
-        if (checkedCollection != null) {
-            checkedCollectionList.add(checkedCollection);
-            onCheckedCollectionsModified();
-        }
-    }
-
-    @Override
-    public void onChipViewUnchecked(Collection uncheckedCollection) {
-        if (uncheckedCollection != null) {
-            checkedCollectionList.remove(uncheckedCollection);
-            onCheckedCollectionsModified();
-        }
-    }
-
-    private void onCheckedCollectionsModified() {
-        int size = checkedCollectionList.size();
-        if (size > 0) {
-            actionButton.setText(R.string.action_add);
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    saveCollectionsAndFinish();
-                }
-            });
-        } else {
-            actionButton.setText(R.string.action_search);
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    searchForCollections(collectionInput.getText().toString());
-                }
-            });
-        }
-    }
-
-    private void saveCollectionsAndFinish() {
-        int oldSize = collectionRepository.size();
-        for (Collection collection : checkedCollectionList) {
-            collectionRepository.insert(collection);
-        }
-        if (isReturnToStreamActivity) {
-            startActivity(StreamActivity.createLaunchIntent(this, oldSize));
-        }
-        finish();
-    }
-
-    private void searchFeaturedCollections() {
-        beforeSearchStarted(true);
-        if (featuredCollectionsTask != null) {
-            featuredCollectionsTask.cancel(true);
-        }
-        if (collectionSearchTask != null) {
-            collectionSearchTask.cancel(true);
-        }
-        featuredCollectionsTask = featuredCollectionsTaskFactory.create();
-        featuredCollectionsTask.setListener(this);
-        featuredCollectionsTask.execute();
-        showSearchProgress(R.string.title_loading_suggested_collections);
-        postSearchStatusText = getString(R.string.title_featured_collections);
-        isLoadingOrDisplayingFeatured = true;
-    }
-
-    private void searchForCollections(String searchString) {
-        beforeSearchStarted(false);
-        if (featuredCollectionsTask != null) {
-            featuredCollectionsTask.cancel(true);
-        }
-        if (collectionSearchTask != null) {
-            collectionSearchTask.cancel(true);
-        }
-        collectionSearchTask = collectionSearchTaskFactory.create(minPhotos);
-        collectionSearchTask.setListener(this);
-        collectionSearchTask.execute(searchString);
-        showSearchProgress(R.string.title_searching);
-        postSearchStatusText = getString(R.string.title_results_for_collection, searchString);
+        getViewModel().onActivityReady();
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         View focusedView = getCurrentFocus();
         if (focusedView != null) {
             imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         }
     }
 
-    private void showSearchProgress(@StringRes int loadingMessage) {
+    @Override
+    public void onSearchAttempted() {
+        hideKeyboard();
+    }
+
+    @Override
+    public void onSearchStarted() {
         collectionsParent.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        searchStatusText.setText(loadingMessage);
+        searchStatusText.setText(getViewModel().getSearchProgressText());
     }
 
-    private void beforeSearchStarted(boolean isFeatured) {
-        if (!isFeatured) {
-            hideKeyboard();
+    @Override
+    public void onActionButtonTextChanged(@StringRes int text) {
+        actionButton.setText(text);
+    }
+
+    @Override
+    public void onCancelButtonClicked() {
+        finish();
+    }
+
+    @Override
+    public void onSearchComplete(List<Collection> collectionList) {
+        collectionsParent.removeAllViews();
+        progressBar.setVisibility(View.GONE);
+        searchStatusText.setText(getViewModel().getPostSearchStatus(this));
+        collectionsParent.setVisibility(View.VISIBLE);
+        if (collectionList != null && collectionList.size() > 0) {
+            if (getViewModel().isSearchingOrDisplayingFeaturedCollections()) {
+                Collections.shuffle(collectionList);
+            }
+            for (Collection collection : collectionList) {
+                if (collection.getName().value().length() >
+                        getViewModel().getMinCollectionNameLength()) {
+                    ChipView chipView = new ChipView(this);
+                    chipView.setCollection(collection);
+                    chipView.setChecked(getViewModel().isCollectionSelected(collection));
+                    chipView.setOnCheckedListener(getViewModel());
+                    FlowLayout.LayoutParams params = new FlowLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            getResources().getDimensionPixelSize(getViewModel().getChipViewHeight())
+                    );
+                    int margin = getResources()
+                            .getDimensionPixelSize(getViewModel().getChipViewMargin());
+                    params.setMargins(margin, margin, margin, margin);
+                    collectionsParent.addView(chipView, params);
+                }
+            }
         }
-        clearCheckedCollections();
     }
 
-    private void clearCheckedCollections() {
-        checkedCollectionList.clear();
-        actionButton.setText(R.string.action_search);
-        onCheckedCollectionsModified();
+    @Override
+    public void onCollectionsSaved() {
+        if (getViewModel().shouldReturnToStreamActivity()) {
+            startActivity(StreamActivity.createLaunchIntent(
+                    this,
+                    getViewModel().getNewCollectionsStartPosition()
+            ));
+        }
+        finish();
     }
 }

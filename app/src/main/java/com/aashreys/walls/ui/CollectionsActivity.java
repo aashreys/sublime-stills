@@ -16,7 +16,6 @@
 
 package com.aashreys.walls.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -28,28 +27,19 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.ui.adapters.CollectionsAdapter;
 import com.aashreys.walls.ui.views.CollectionView;
-
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by aashreys on 21/02/17.
  */
 
-public class CollectionsActivity extends BaseActivity implements CollectionsAdapter.DragListener {
+public class CollectionsActivity extends BaseActivity<CollectionsActivityModel> implements
+        CollectionsAdapter.DragListener, CollectionsActivityModel.EventListener {
 
     private static final String TAG = CollectionsActivity.class.getSimpleName();
 
-    @Inject CollectionRepository collectionRepository;
-
     private CollectionsAdapter adapter;
-
-    private CollectionRepository.CollectionRepositoryListener repositoryCallback;
 
     private ItemTouchHelper itemTouchHelper;
 
@@ -58,50 +48,29 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
     private RecyclerView collectionRecyclerView;
 
     @Override
+    protected CollectionsActivityModel createViewModel() {
+        CollectionsActivityModel viewModel = new CollectionsActivityModel();
+        getUiComponent().inject(viewModel);
+        viewModel.onInjectionComplete();
+        return viewModel;
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
-        getUiComponent().inject(this);
-        this.repositoryCallback = new CollectionRepository.CollectionRepositoryListener() {
-            @Override
-            public void onReplaceAll(List<Collection> collections) {
-
-            }
-
-            @Override
-            public void onInsert(Collection object) {
-                adapter.add(object);
-            }
-
-            @Override
-            public void onUpdate(Collection object) {
-
-            }
-
-            @Override
-            public void onDelete(Collection object) {
-                adapter.remove(object);
-            }
-        };
+        getViewModel().setEventListener(this);
         collectionRecyclerView = (RecyclerView) findViewById(R.id.list_image_sources);
         collectionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CollectionsAdapter();
+        adapter = new CollectionsAdapter(getViewModel().getCollectionsAdapterModel());
         adapter.setOnCollectionClickListener(new CollectionsAdapter.OnCollectionClickListener() {
             @Override
             public void onClick(CollectionView view, int position) {
-                saveCollections();
-                finish();
-                Context context = view.getContext();
-                context.startActivity(StreamActivity.createLaunchIntent(
-                        view.getContext(),
-                        position
-                ));
+                getViewModel().onCollectionClicked(position);
             }
         });
         adapter.setDragListener(this);
         collectionRecyclerView.setAdapter(adapter);
-        adapter.add(collectionRepository.getAll());
-        collectionRepository.addListener(repositoryCallback);
 
         ItemTouchHelper.Callback callback = new CollectionsAdapter.ItemMoveHelperCallback(adapter);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -119,26 +88,19 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
         addCollectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(AddCollectionsActivity.createLaunchIntent(CollectionsActivity.this, false));
+                startActivity(AddCollectionsActivity.createLaunchIntent(
+                        CollectionsActivity.this,
+                        false
+                ));
             }
         });
     }
 
-    private void saveCollections() {
-        if (adapter.isCollectionListModified()) {
-            collectionRepository.replaceAll(adapter.getCollectionList());
-        }
-        adapter.onCollectionsSaved();
-    }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        collectionRepository.removeListener(repositoryCallback);
-        if (adapter.isCollectionListModified()) {
-            collectionRepository.replaceAll(adapter.getCollectionList());
-        }
+        adapter.release();
+        getViewModel().onActivityDestroyed();
     }
 
     @Override
@@ -157,5 +119,11 @@ public class CollectionsActivity extends BaseActivity implements CollectionsAdap
         if (dragHintSnackbar != null) {
             dragHintSnackbar.dismiss();
         }
+    }
+
+    @Override
+    public void onCollectionClicked(int position) {
+        startActivity(StreamActivity.createLaunchIntent(this, position));
+        finish();
     }
 }
