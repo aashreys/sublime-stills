@@ -138,7 +138,7 @@ public class StreamActivity extends BaseActivity<StreamActivityViewModel> implem
     }
 
     @Override
-    public void onImageFavoriteButtonClicked(final Image image, boolean isFavorite) {
+    public void onImageUnfavorited(final Image image) {
         Snackbar snackbar = Snackbar.make(
                 viewPager,
                 R.string.title_snackbar_favorite_removed,

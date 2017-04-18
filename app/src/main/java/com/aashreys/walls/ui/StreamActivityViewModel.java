@@ -137,9 +137,9 @@ public class StreamActivityViewModel implements ViewModel, StreamImageView.Inter
             favoriteImageRepository.favorite(image);
         } else {
             favoriteImageRepository.unfavorite(image);
-        }
-        if (eventListener != null) {
-            eventListener.onImageFavoriteButtonClicked(image, isFavorited);
+            if (eventListener != null) {
+                eventListener.onImageUnfavorited(image);
+            }
         }
     }
 
@@ -216,7 +216,7 @@ public class StreamActivityViewModel implements ViewModel, StreamImageView.Inter
 
         void onNewTabSelected(int tabPosition);
 
-        void onImageFavoriteButtonClicked(Image image, boolean isFavorite);
+        void onImageUnfavorited(Image image);
 
         void onImageClicked(Image image);
 

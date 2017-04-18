@@ -106,6 +106,9 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
             }
         };
         favoriteSyncTask.execute();
+        if (eventCallback != null) {
+            eventCallback.onFavoriteSyncStarted();
+        }
     }
 
     private void downloadImage(StreamFragment fragment, ImageView imageView) {
@@ -139,7 +142,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
             isFavoriteSyncComplete = true;
             this.isFavorite = isFavorite;
             if (eventCallback != null) {
-                eventCallback.onFavoriteSyncStarted();
+                eventCallback.onFavoriteStateChanged();
             }
         } else {
             this.isFavorite = false;
@@ -155,13 +158,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
 
     void onFavoriteButtonClicked() {
         if (isFavoriteSyncComplete) {
-            if (isFavorite) {
-                favoriteImageRepository.unfavorite(image);
-                isFavorite = false;
-            } else {
-                favoriteImageRepository.favorite(image);
-                isFavorite = true;
-            }
+            isFavorite = !isFavorite;
             if (eventCallback != null) {
                 eventCallback.onFavoriteStateChanged();
             }
@@ -192,9 +189,9 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
 
         void onImageDownloadFailed();
 
-        void onFavoriteSyncStarted();
-
         void onFavoriteStateChanged();
+
+        void onFavoriteSyncStarted();
 
     }
 
