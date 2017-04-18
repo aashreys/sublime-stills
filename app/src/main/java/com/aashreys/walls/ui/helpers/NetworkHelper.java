@@ -22,20 +22,29 @@ import android.net.Network;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
+import javax.inject.Inject;
+
 /**
  * Created by aashreys on 10/03/17.
  */
 
 public class NetworkHelper {
 
-    public static boolean isConnected(Context context) {
+    private final Context context;
+
+    @Inject
+    public NetworkHelper(Context context) {
+        this.context = context;
+    }
+
+    public boolean isConnected() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
-    private static boolean isWifiConnected(Context context) {
+    private boolean isWifiConnected() {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] netInfo;
@@ -58,8 +67,8 @@ public class NetworkHelper {
         return false;
     }
 
-    public static boolean isFastNetworkConnected(Context context) {
-        if (isWifiConnected(context)) {
+    public boolean isFastNetworkConnected() {
+        if (isWifiConnected()) {
             return true;
         } else {
             TelephonyManager mTelephonyManager = (TelephonyManager)

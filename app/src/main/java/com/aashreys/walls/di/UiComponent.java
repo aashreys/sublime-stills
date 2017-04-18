@@ -23,12 +23,12 @@ import com.aashreys.walls.di.modules.ServiceModule;
 import com.aashreys.walls.di.scopes.UiScoped;
 import com.aashreys.walls.ui.AddCollectionsActivityModel;
 import com.aashreys.walls.ui.CollectionsActivityModel;
-import com.aashreys.walls.ui.ImageDetailActivity;
-import com.aashreys.walls.ui.OnboardingActivity;
-import com.aashreys.walls.ui.SettingsActivity;
+import com.aashreys.walls.ui.ImageDetailActivityModel;
+import com.aashreys.walls.ui.OnboardingActivityModel;
+import com.aashreys.walls.ui.SettingsActivityModel;
 import com.aashreys.walls.ui.StreamActivity;
 import com.aashreys.walls.ui.StreamActivityViewModel;
-import com.aashreys.walls.ui.StreamFragment;
+import com.aashreys.walls.ui.StreamFragmentModel;
 import com.aashreys.walls.ui.views.CollectionViewModel;
 import com.aashreys.walls.ui.views.HintViewModel;
 import com.aashreys.walls.ui.views.StreamImageViewModel;
@@ -50,9 +50,9 @@ public interface UiComponent {
 
     void inject(StreamActivity activity);
 
-    void inject(StreamFragment streamFragment);
+    void inject(StreamFragmentModel streamFragmentModel);
 
-    void inject(ImageDetailActivity imageDetailActivity);
+    void inject(ImageDetailActivityModel imageDetailActivityModel);
 
     void inject(CollectionsActivityModel collectionsActivityModel);
 
@@ -62,9 +62,9 @@ public interface UiComponent {
 
     void inject(HintViewModel hintViewModel);
 
-    void inject(SettingsActivity settingsActivity);
+    void inject(SettingsActivityModel settingsActivityModel);
 
-    void inject(OnboardingActivity onboardingActivity);
+    void inject(OnboardingActivityModel onboardingActivityModel);
 
     void inject(AddCollectionsActivityModel addCollectionsActivityModel);
 

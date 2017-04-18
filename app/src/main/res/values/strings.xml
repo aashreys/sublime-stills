@@ -29,7 +29,8 @@
 
     <string name="title_stats_for_shutterbugs">Stats for Shutterbugs</string>
 
-    <string name="title_photo_by">Photo by %s</string>
+    <string name="title_photo_by">Photo by %1$s / %2$s</string>
+    <string name="title_photo_by_only_service_name">Photo by %s</string>
 
     <string name="title_collections">Collections</string>
 
@@ -54,8 +55,6 @@
     <string name="action_try_again">Try Again</string>
     <string name="action_undo">Undo</string>
     <string name="action_continue">Continue</string>
-
-    <string name="title_location_elsweyr">Elsweyr, Tamriel</string>
 
     <string name="hint_collection_search">Try the suggestions below</string>
 

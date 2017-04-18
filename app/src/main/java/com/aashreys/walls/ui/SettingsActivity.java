@@ -23,13 +23,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.persistence.KeyValueStore;
 
-import javax.inject.Inject;
-
-public class SettingsActivity extends BaseActivity {
-
-    @Inject KeyValueStore keyValueStore;
+public class SettingsActivity extends BaseActivity<SettingsActivityModel> implements
+        SettingsActivityModel.EventListener {
 
     private TextView resetTipsText;
 
@@ -39,7 +35,7 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getUiComponent().inject(this);
+        getViewModel().setEventListener(this);
 
         ImageButton backButton = (ImageButton) findViewById(R.id.button_back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +49,7 @@ public class SettingsActivity extends BaseActivity {
         resetTipsText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearTipsSeen();
+                getViewModel().onResetTipsSettingClicked();
             }
         });
 
@@ -61,21 +57,34 @@ public class SettingsActivity extends BaseActivity {
         resetOnboardingText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetOnboardingCompleted();
+                getViewModel().onResetOnboardingSettingClicked();
             }
         });
     }
 
-    private void clearTipsSeen() {
-        keyValueStore.putBoolean(getString(R.string.tag_hint_collection), false);
-        keyValueStore.putBoolean(getString(R.string.tag_hint_image_actions), false);
-        Snackbar.make(resetTipsText, R.string.confirmation_show_tips_again, Snackbar.LENGTH_LONG)
-                .show();
+    @Override
+    protected SettingsActivityModel createViewModel() {
+        SettingsActivityModel viewModel = new SettingsActivityModel();
+        getUiComponent().inject(viewModel);
+        viewModel.onInjectionComplete();
+        return viewModel;
     }
 
-    private void resetOnboardingCompleted() {
-        keyValueStore.putBoolean(StreamActivityViewModel.KEY_IS_ONBOARDING_COMPLETED, false);
-        Snackbar.make(resetTipsText, R.string.confirmation_show_onboarding_again, Snackbar.LENGTH_LONG)
-                .show();
+    @Override
+    public void onTipsReset() {
+        Snackbar.make(
+                resetTipsText,
+                R.string.confirmation_show_tips_again,
+                Snackbar.LENGTH_LONG
+        ).show();
+    }
+
+    @Override
+    public void onOnboardingReset() {
+        Snackbar.make(
+                resetTipsText,
+                R.string.confirmation_show_onboarding_again,
+                Snackbar.LENGTH_LONG
+        ).show();
     }
 }

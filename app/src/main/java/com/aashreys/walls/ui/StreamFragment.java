@@ -16,11 +16,8 @@
 
 package com.aashreys.walls.ui;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.transition.AutoTransition;
 import android.support.transition.TransitionManager;
@@ -28,32 +25,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.domain.device.DeviceInfo;
-import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.FavoriteCollection;
-import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.sources.Source;
-import com.aashreys.walls.domain.display.sources.SourceFactory;
-import com.aashreys.walls.persistence.RepositoryCallback;
-import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.adapters.StreamAdapter;
-import com.aashreys.walls.ui.helpers.NetworkHelper;
-import com.aashreys.walls.ui.tasks.LoadImagesTask;
 import com.aashreys.walls.ui.views.LoadingView;
-import com.aashreys.walls.ui.views.StreamImageView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.Lazy;
 
 import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.END_OF_COLLECTION;
 import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.FAVORITE;
@@ -63,44 +42,23 @@ import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State
 import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.NO_INTERNET;
 import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.SLOW_INTERNET;
 
-public class StreamFragment extends Fragment implements StreamAdapter.LoadingCallback,
-        LoadImagesTask.LoadCallback {
+public class StreamFragment extends Fragment implements StreamFragmentModel.EventListener {
 
     private static final String TAG = StreamFragment.class.getSimpleName();
 
     private static final String ARG_POSITION = "arg_position";
 
-    @Inject Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy;
-
-    @Inject DeviceInfo deviceInfo;
-
-    @Inject SourceFactory sourceFactory;
-
-    @Nullable private FavoriteImageRepository favoriteImageRepository;
-
-    @Nullable private RepositoryCallback<Image> favoriteRepoListener;
-
-    private StreamAdapter.CollectionProvider collectionProvider;
-
-    private Collection collection;
-
-    private Source imageSource;
-
     private StreamAdapter adapter;
 
     private RecyclerView recyclerView;
 
-    private LoadImagesTask loadImagesTask;
+    private LoadingView loadingView;
 
     private LoadingViewStateManager loadingViewStateManager;
 
-    private LoadingView loadingView;
+    private StreamFragmentModel viewModel;
 
-    private StreamImageView.InteractionCallback imageSelectedListener;
-
-    private boolean isDisplayed;
-
-    private boolean isFavoritesStream;
+    private boolean tempIsDisplayed;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -116,73 +74,65 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
         return fragment;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        ((WallsApplication) context.getApplicationContext()).getApplicationComponent()
+    private void createViewModel() {
+        viewModel = new StreamFragmentModel();
+        ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
                 .getUiComponent()
-                .inject(this);
-        if (context instanceof StreamActivity) {
-            StreamActivity activity = (StreamActivity) context;
-            this.imageSelectedListener = activity.getImageInteractionCallback();
-            this.collectionProvider = activity.getCollectionProvider();
-            this.collection = collectionProvider.getCollection(getArguments().getInt(ARG_POSITION));
-            this.imageSource = sourceFactory.create(collection);
-            isFavoritesStream = collection instanceof FavoriteCollection;
-        } else {
-            throw new RuntimeException(
-                    context.toString() + " must be an instance of StreamActivity");
-        }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (!getArguments().containsKey(ARG_POSITION)) {
-            throw new RuntimeException("Must pass position as an argument.");
-        }
-        loadingViewStateManager = new LoadingViewStateManager();
+                .inject(viewModel);
+        viewModel.setIsDisplayed(tempIsDisplayed);
+        viewModel.onInjectionComplete();
     }
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            LayoutInflater inflater,
+            ViewGroup container,
             Bundle savedInstanceState
     ) {
-        View view = inflater.inflate(R.layout.fragment_stream, container, false);
-        setupRecyclerView(view);
-        setupLoadingView();
-        adapter = new StreamAdapter(this, imageSelectedListener);
-        recyclerView.setAdapter(adapter);
-        adapter.setLoadingView(loadingView);
-        adapter.setLoadingCallback(this);
-        if (isFavoritesStream) {
-            startListeningToFavoritesRepo();
+        return inflater.inflate(R.layout.fragment_stream, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() instanceof StreamActivity && getArguments().containsKey(ARG_POSITION)) {
+            createViewModel();
+            StreamActivity activity = (StreamActivity) getActivity();
+            viewModel.setCollection(activity.getCollectionProvider()
+                    .getCollection(getArguments().getInt(ARG_POSITION)));
+            viewModel.setImageInteractionListener(activity.getImageInteractionCallback());
+            viewModel.setEventListener(this);
+            loadingViewStateManager = new LoadingViewStateManager();
+            setupRecyclerView(getView());
+            setupLoadingView();
+            setupAdapter();
+            recyclerView.setAdapter(adapter);
+            viewModel.onFragmentReady();
         } else {
-            stopListeningToFavoritesRepo();
+            throw new RuntimeException("Parent must be an instance of StreamActivity");
         }
-        loadImages();
-        return view;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releaseResources();
+    public void onDestroyView() {
+        super.onDestroyView();
+        viewModel.onFragmentViewDestroyed();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        imageSelectedListener = null;
+    private void setupAdapter() {
+        adapter = new StreamAdapter(this, viewModel.getImageInteractionListener(), viewModel);
+        adapter.setLoadingView(loadingView);
+        adapter.setLoadingCallback(viewModel);
     }
 
     @Override
     public void setUserVisibleHint(boolean visible) {
         super.setUserVisibleHint(visible);
-        isDisplayed = visible;
+        tempIsDisplayed = visible;
+        if (viewModel != null) {
+            viewModel.setIsDisplayed(visible);
+        }
     }
-
 
     private void setupLoadingView() {
         this.loadingView = (LoadingView) LayoutInflater.from(getContext()).inflate(
@@ -195,8 +145,8 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
 
     private void setupRecyclerView(View parentView) {
         this.recyclerView = (RecyclerView) parentView.findViewById(R.id.recyclerview);
-        int columnCount = deviceInfo.getNumberOfStreamColumns();
-        RecyclerView.LayoutManager manager = null;
+        int columnCount = viewModel.getNumberOfStreamColumns();
+        RecyclerView.LayoutManager manager;
         if (columnCount == 1) {
             manager = new LinearLayoutManager(getContext());
             ((LinearLayoutManager) manager).setInitialPrefetchItemCount(5);
@@ -213,106 +163,40 @@ public class StreamFragment extends Fragment implements StreamAdapter.LoadingCal
         recyclerView.setLayoutManager(manager);
     }
 
-    private void loadImages() {
-        Log.i(TAG, collection.getName().value() + " - loading images");
-        if (loadImagesTask != null) {
-            loadImagesTask.release();
-            loadImagesTask = null;
-        }
-        loadImagesTask = new LoadImagesTask(imageSource, this);
-        loadImagesTask.executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR,
-                adapter.getImageCount()
-        );
-        if (!isFavoritesStream) {
-            Context context = getContext();
-            if (context != null) {
-                if (!NetworkHelper.isConnected(context)) {
-                    loadingViewStateManager.setState(NO_INTERNET);
-                } else if (!NetworkHelper.isFastNetworkConnected(context)) {
-                    loadingViewStateManager.setState(SLOW_INTERNET);
-                } else {
-                    loadingViewStateManager.setState(LOADING);
-                }
-            } else {
-                loadingViewStateManager.setState(LOADING);
-            }
-        } else {
-            loadingViewStateManager.setState(FAVORITE);
-        }
-    }
-
-    private void startListeningToFavoritesRepo() {
-        favoriteImageRepository = favoriteImageRepositoryLazy.get();
-        favoriteRepoListener = new RepositoryCallback<Image>() {
-            @Override
-            public void onInsert(Image image) {
-                if (adapter != null) {
-                    adapter.addFavorite(image);
-                }
-                if (recyclerView != null) {
-                    recyclerView.smoothScrollToPosition(0);
-                }
-            }
-
-            @Override
-            public void onUpdate(Image object) {
-
-            }
-
-            @Override
-            public void onDelete(Image image) {
-                if (adapter != null) {
-                    adapter.remove(image);
-                }
-            }
-        };
-        //noinspection ConstantConditions
-        favoriteImageRepository.addListener(favoriteRepoListener);
-    }
-
-    private void stopListeningToFavoritesRepo() {
-        if (favoriteImageRepository != null && favoriteRepoListener != null) {
-            favoriteImageRepository.removeListener(favoriteRepoListener);
-        }
-    }
-
-    private void releaseResources() {
-        stopListeningToFavoritesRepo();
-        if (loadImagesTask != null) {
-            loadImagesTask.release();
-            loadImagesTask = null;
-        }
-    }
-
     public boolean isDisplayed() {
-        return isDisplayed;
+        return viewModel != null ? viewModel.isDisplayed() : tempIsDisplayed;
     }
 
     @Override
-    public void onLoadRequested() {
-        if (loadImagesTask == null || !loadImagesTask.isLoading()) {
-            loadImages();
-        }
-    }
-
-    @Override
-    public void onLoadComplete(@NonNull List<Image> images) {
-        adapter.add(images);
-        if (isFavoritesStream) {
-            loadingViewStateManager.setState(FAVORITE);
-        } else {
-            if (images.size() > 0) {
-                loadingViewStateManager.setState(NOT_LOADING);
+    public void onImagesAdded(int positionStart, int itemCount) {
+        if (adapter != null) {
+            if (positionStart > 0) {
+                adapter.notifyItemRangeInserted(positionStart, itemCount);
             } else {
-                loadingViewStateManager.setState(END_OF_COLLECTION);
+                adapter.notifyDataSetChanged();
             }
         }
     }
 
     @Override
-    public void onLoadError() {
-        loadingViewStateManager.setState(GENERIC_ERROR);
+    public void onImageAdded(int position) {
+        if (adapter != null) {
+            adapter.notifyItemInserted(position);
+        }
+    }
+
+    @Override
+    public void onImageRemoved(int position) {
+        if (adapter != null) {
+            adapter.notifyItemRemoved(position);
+        }
+    }
+
+    @Override
+    public void onLoadingUiStateChanged(@LoadingViewStateManager.State int loadingState) {
+        if (loadingViewStateManager != null) {
+            loadingViewStateManager.setState(loadingState);
+        }
     }
 
     static class LoadingViewStateManager {

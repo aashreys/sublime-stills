@@ -14,20 +14,21 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.domain.device;
+package com.aashreys.walls.ui.views;
+
+import com.aashreys.maestro.ViewModel;
+import com.aashreys.walls.persistence.KeyValueStore;
+
+import javax.inject.Inject;
 
 /**
- * Created by aashreys on 09/04/17.
+ * Created by aashreys on 17/04/17.
  */
 
-public interface DeviceInfo {
+public class StreamActivityModel implements ViewModel {
 
-    DeviceResolution getDeviceResolution();
+    @Inject KeyValueStore keyValueStore;
 
-    Orientation getOrientation();
 
-    int getNumberOfStreamColumns();
-
-    int getNumberOfImageInfoColumns();
 
 }

@@ -55,6 +55,10 @@ public class Resolution implements Parcelable {
         return height;
     }
 
+    public boolean isValid() {
+        return width != null && width.value() > 0 && height != null && height.value() > 0;
+    }
+
     @Override
     public int describeContents() { return 0; }
 

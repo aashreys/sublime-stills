@@ -23,6 +23,8 @@ import com.aashreys.maestro.ViewModelStore;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.device.DeviceInfoImpl;
+import com.aashreys.walls.domain.device.ResourceProvider;
+import com.aashreys.walls.ui.helpers.NetworkHelper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,10 +42,13 @@ public class ApplicationModule {
 
     private DeviceInfo deviceInfo;
 
+    private ResourceProvider resourceProvider;
+
     public ApplicationModule(WallsApplication application) {
         this.application = application;
         this.viewModelStore = new ViewModelStore();
         this.deviceInfo = new DeviceInfoImpl(application);
+        this.resourceProvider = new ResourceProvider(application);
     }
 
     @Provides
@@ -59,6 +64,16 @@ public class ApplicationModule {
     @Provides
     public ViewModelStore providesViewModelStore() {
         return viewModelStore;
+    }
+
+    @Provides
+    public ResourceProvider providesResourceProvider() {
+        return resourceProvider;
+    }
+
+    @Provides
+    public NetworkHelper providesNetworkHelper() {
+        return new NetworkHelper(application);
     }
 
 }

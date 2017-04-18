@@ -24,8 +24,7 @@
     </declare-styleable>
 
     <declare-styleable name="InfoView">
-        <attr name="iv_key_icon" format="reference"></attr>
-        <attr name="iv_key_string" format="string"></attr>
+        <attr name="iv_icon" format="reference"></attr>
         <attr name="iv_value" format="string"></attr>
     </declare-styleable>
 

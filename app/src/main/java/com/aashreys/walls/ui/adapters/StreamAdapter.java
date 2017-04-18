@@ -28,9 +28,6 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.views.StreamImageView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.aashreys.walls.ui.views.StreamImageView.InteractionCallback;
 
 /**
@@ -49,10 +46,9 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     private final InteractionCallback streamImageViewInteractionCallback;
 
-    @NonNull
-    private final List<Image> imageList;
-
     private View loadingView;
+
+    private ImageProvider imageProvider;
 
     /**
      * How many items from the end of the list should the adapter request for more data to be
@@ -65,54 +61,17 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public StreamAdapter(
             @NonNull StreamFragment fragment,
-            @NonNull InteractionCallback listener
+            @NonNull InteractionCallback listener,
+            @NonNull ImageProvider imageProvider
     ) {
         this.fragment = fragment;
         this.streamImageViewInteractionCallback = listener;
-        this.imageList = new ArrayList<>();
+        this.imageProvider = imageProvider;
     }
 
     public void setLoadingView(View loadingView) {
         this.loadingView = loadingView;
-        notifyItemInserted(imageList.size());
-    }
-
-    public void add(List<Image> images) {
-        if (images != null && images.size() > 0) {
-            int oldSize = imageList.size();
-            imageList.addAll(images);
-            if (oldSize != 0) {
-                notifyItemRangeInserted(oldSize, images.size());
-            } else {
-                notifyDataSetChanged();
-            }
-        }
-    }
-
-    // Special method for adding favorites since they are added to
-    // the top of the list as opposed to the bottom like the other images.
-    public void addFavorite(Image favoriteImage) {
-        imageList.add(0, favoriteImage);
-        notifyItemInserted(0);
-    }
-
-    public void add(Image image) {
-        int oldSize = imageList.size();
-        imageList.add(image);
-        notifyItemInserted(oldSize);
-    }
-
-    public void remove(Image image) {
-        int position = imageList.indexOf(image);
-        if (position != -1) {
-            imageList.remove(image);
-            notifyItemRemoved(position);
-        }
-    }
-
-    public void clear() {
-        imageList.clear();
-        notifyDataSetChanged();
+        notifyItemInserted(imageProvider.size());
     }
 
     @Override
@@ -136,7 +95,7 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ImageViewHolder) {
             ((ImageViewHolder) holder).bind(
-                    imageList.get(position),
+                    imageProvider.getImage(position),
                     fragment,
                     streamImageViewInteractionCallback
             );
@@ -148,16 +107,12 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public int getImageCount() {
-        return imageList.size();
-    }
-
     @Override
     public int getItemCount() {
         if (loadingView != null) {
-            return imageList.size() + 1;
+            return imageProvider.size() + 1;
         } else {
-            return imageList.size();
+            return imageProvider.size();
         }
     }
 
@@ -195,6 +150,14 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface CollectionProvider {
 
         Collection getCollection(int position);
+
+        int size();
+
+    }
+
+    public interface ImageProvider {
+
+        Image getImage(int position);
 
         int size();
 

@@ -21,29 +21,31 @@ import android.view.Gravity;
 
 import com.aashreys.maestro.ViewModel;
 
+import static com.aashreys.walls.ui.views.InfoView.*;
+
 /**
  * Created by aashreys on 11/04/17.
  */
 
-public class InfoViewModel implements ViewModel {
+class InfoViewModel implements ViewModel {
 
     private EventListener eventListener;
 
-    void setTitle(String title) {
-        if (eventListener != null) {
-            eventListener.onTitleSet(title);
-        }
+    private Info info;
+
+    @DrawableRes
+    int getIcon() {
+        return info.iconRes;
     }
 
-    void setTitleIcon(int titleIcon) {
-        if (eventListener != null) {
-            eventListener.onTitleIconSet(titleIcon);
-        }
+    String getInfo() {
+        return info.infoString;
     }
 
-    void setInfo(String info) {
+    void setInfo(Info info) {
+        this.info = info;
         if (eventListener != null) {
-            eventListener.onInfoSet(info);
+            eventListener.onInfoSet();
         }
     }
 
@@ -57,11 +59,7 @@ public class InfoViewModel implements ViewModel {
 
     interface EventListener {
 
-        void onTitleSet(String title);
-
-        void onTitleIconSet(@DrawableRes int icon);
-
-        void onInfoSet(String info);
+        void onInfoSet();
 
     }
 

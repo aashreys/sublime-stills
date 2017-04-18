@@ -26,12 +26,8 @@ import android.support.transition.TransitionManager;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
-import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.util.Pair;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
@@ -44,77 +40,42 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.ImageInfoService;
-import com.aashreys.walls.domain.display.images.metadata.Exif;
-import com.aashreys.walls.domain.display.images.metadata.Location;
-import com.aashreys.walls.domain.display.images.metadata.Resolution;
-import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.share.ShareDelegate;
-import com.aashreys.walls.domain.share.ShareDelegateFactory;
-import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.domain.values.Value;
-import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.helpers.ChromeTabHelper;
-import com.aashreys.walls.ui.helpers.ImageDownloader;
 import com.aashreys.walls.ui.views.InfoView;
 import com.aashreys.walls.utils.LogWrapper;
-import com.bumptech.glide.Priority;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by aashreys on 21/02/17.
  */
 
-public class ImageDetailActivity extends BaseActivity {
+public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> implements
+        ImageDetailActivityModel.EventListener {
 
     private static final String TAG = ImageDetailActivity.class.getSimpleName();
 
     private static final String ARG_IMAGE = "arg_image";
 
-    @Inject ShareDelegateFactory shareDelegateFactory;
-
-    @Inject FavoriteImageRepository favoriteImageRepository;
-
-    @Inject ImageInfoService imageInfoService;
-
-    @Inject DeviceInfo deviceInfo;
-
-    @Inject ImageDownloader imageDownloader;
-
-    private ShareDelegate shareImageDelegate, shareLinkDelegate, copyLinkDelegate;
-
-    private ShareDelegate setAsShareDelegate;
-
-    private Image image;
-
     private ImageView imageView;
 
     private ImageButton favoriteButton, setAsButton, shareButton;
-
-    private boolean isImageLoaded, isInfoLoaded;
 
     private ProgressBar progressBar, shareProgress;
 
     private ViewGroup contentParent;
 
-    private TextView titleText, metaText;
+    private TextView titleText, subtitleText;
 
     private TableLayout infoTable;
 
-    private int infoViewHeight;
-
     private MenuPopupHelper shareMenuHelper;
 
-    private boolean isDataMembersConfigured;
+    private ProgressBar setAsProgressBar;
 
     public static Intent createLaunchIntent(Context context, Image image) {
         Intent intent = new Intent(context, ImageDetailActivity.class);
@@ -125,201 +86,87 @@ public class ImageDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUiComponent().inject(this);
+        getViewModel().setEventListener(this);
         final Image image = getIntent().getParcelableExtra(ARG_IMAGE);
         if (image != null) {
+            getViewModel().setImage(image);
             setContentView(R.layout.activity_image_detail);
-            this.image = image;
             contentParent = (ViewGroup) findViewById(R.id.parent_content);
             imageView = (ImageView) findViewById(R.id.image);
             progressBar = (ProgressBar) findViewById(R.id.progress_bar);
             infoTable = (TableLayout) findViewById(R.id.table_info);
 
             titleText = (TextView) findViewById(R.id.text_title);
-            metaText = (TextView) findViewById(R.id.text_meta);
+            subtitleText = (TextView) findViewById(R.id.text_subtitle);
 
             favoriteButton = (ImageButton) findViewById(R.id.button_favorite);
             shareButton = (ImageButton) findViewById(R.id.button_share);
             setAsButton = (ImageButton) findViewById(R.id.button_set_as);
 
             shareProgress = (ProgressBar) findViewById(R.id.progress_share);
-            final ProgressBar setAsProgress = (ProgressBar) findViewById(R.id.progress_set_as);
+            setAsProgressBar = (ProgressBar) findViewById(R.id.progress_set_as);
 
-            infoViewHeight = getResources().getDimensionPixelSize(R.dimen.height_small);
-
-            buildShareDelegates();
             buildShareMenu(shareButton);
 
-            final boolean isFavorite = favoriteImageRepository.isFavorite(image);
-            favoriteButton.setImageResource(isFavorite ?
-                    R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp);
-            favoriteButton.setOnClickListener(new View.OnClickListener() {
-                boolean isFavorite2 = isFavorite;
-
+            favoriteButton.setImageResource(getViewModel().getFavoriteButtonIcon());
+            favoriteButton.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    if (isFavorite2) {
-                        favoriteImageRepository.unfavorite(image);
-                        favoriteButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    } else {
-                        favoriteImageRepository.favorite(image);
-                        favoriteButton.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    }
-                    isFavorite2 = !isFavorite2;
+                public void onClick(android.view.View view) {
+                    getViewModel().onFavoriteButtonClicked();
                 }
             });
 
-            shareButton.setOnClickListener(new View.OnClickListener() {
+            shareButton.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(android.view.View view) {
                     //noinspection RestrictedApi
                     shareMenuHelper.show();
                 }
             });
 
-            setAsButton.setOnClickListener(new View.OnClickListener() {
+            setAsButton.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    setAsButton.setVisibility(View.INVISIBLE);
-                    setAsProgress.setVisibility(View.VISIBLE);
-                    setAsShareDelegate.share(
-                            ImageDetailActivity.this,
-                            image,
-                            new ShareDelegate.Listener() {
-                                @Override
-                                public void onShareComplete() {
-                                    setAsProgress.setVisibility(View.INVISIBLE);
-                                    setAsButton.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onShareFailed() {
-                                    setAsProgress.setVisibility(View.INVISIBLE);
-                                    setAsButton.setVisibility(View.VISIBLE);
-                                }
-                            }
-                    );
+                public void onClick(android.view.View view) {
+                    getViewModel().onSetAsButtonClicked(ImageDetailActivity.this);
                 }
             });
 
-            imageDownloader.asDrawable(
-                    this,
-                    image.getUrl(deviceInfo.getDeviceResolution().getWidth()),
-                    Priority.IMMEDIATE,
-                    imageView,
-                    new ImageDownloader.Listener<Drawable>() {
-                        @Override
-                        public void onComplete(Drawable result) {
-                            imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                                @Override
-                                public void onLayoutChange(
-                                        View v,
-                                        int left,
-                                        int top,
-                                        int right,
-                                        int bottom,
-                                        int oldLeft,
-                                        int oldTop,
-                                        int oldRight,
-                                        int oldBottom
-                                ) {
-                                    isImageLoaded = true;
-                                    imageView.removeOnLayoutChangeListener(this);
-                                    showView();
-                                }
-                            });
-                            imageView.setImageDrawable(result);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            LogWrapper.i(TAG, "Error loading image, finishing", e);
-                            finish();
-                        }
-                    }
-            );
-
-            imageInfoService.addInfo(image, new ImageInfoService.Listener() {
-                @Override
-                public void onComplete(Image imageWithProperties) {
-                    displayHeader();
-                    displayInfo();
-                    isInfoLoaded = true;
-                    showView();
-                }
-            });
-            isDataMembersConfigured = true;
+            getViewModel().setImageView(imageView);
+            getViewModel().onActivityReady(this);
         } else {
             LogWrapper.i(TAG, "No image passed, finishing.");
             finish();
         }
     }
 
+    @Override
+    protected ImageDetailActivityModel createViewModel() {
+        ImageDetailActivityModel viewModel = new ImageDetailActivityModel();
+        getUiComponent().inject(viewModel);
+        viewModel.onInjectionComplete();
+        return viewModel;
+    }
+
     private void displayInfo() {
-        int infoColumns = getResources().getInteger(R.integer.image_info_column_count);
-        List<Pair<Value, Integer>> infoList = new ArrayList<>();
-
-        Date createdAt = image.getUploadDate();
-        if (createdAt != null) {
-            putValueIconPair(
-                    infoList,
-                    new Name(getFormattedDate(createdAt)),
-                    R.drawable.ic_date_black_24dp
-            );
-        }
-
-        Location location = image.getLocation();
-        if (location != null) {
-            Name locationName;
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            if (location.getName() != null) {
-                locationName = location.getName();
-            } else if (latitude != 0 || longitude != 0) {
-                locationName = new Name(latitude + ", " + longitude);
-            } else {
-                locationName = new Name(getString(R.string.title_location_elsweyr));
-            }
-            putValueIconPair(infoList, locationName, R.drawable.ic_location_pin_black_24dp);
-        }
-
-        Resolution resolution = image.getResolution();
-        if (resolution != null && resolution.getWidth() != null && resolution.getHeight() != null) {
-            putValueIconPair(
-                    infoList,
-                    new Name(formatResolution(
-                            resolution.getWidth().value(),
-                            resolution.getHeight().value()
-                    )),
-                    R.drawable.ic_dimensions_black_24dp
-            );
-        }
-
-        Exif exif = image.getExif();
-        if (exif != null) {
-            putValueIconPair(infoList, exif.camera, R.drawable.ic_camera_black_24dp);
-            putValueIconPair(infoList, exif.aperture, R.drawable.ic_aperture_black_24dp);
-            putValueIconPair(infoList, exif.exposureTime, R.drawable.ic_exposure_time_black_24dp);
-            putValueIconPair(infoList, exif.focalLength, R.drawable.ic_focus_black_24dp);
-            putValueIconPair(infoList, exif.iso, R.drawable.ic_iso_black_24dp);
-        }
+        int infoColumns = getViewModel().getImageInfoColumnCount();
+        List<InfoView.Info> infoList = getViewModel().getImageInfoList();
 
         TableRow tableRow = null;
+        int height = getResources().getDimensionPixelSize(getViewModel().getInfoViewHeightRes());
         for (int i = 0; i < infoList.size(); i++) {
             int columnPosition = i % infoColumns;
             if (columnPosition == 0) {
                 tableRow = new TableRow(this);
                 infoTable.addView(tableRow);
             }
-            InfoView infoView = addInfoView(tableRow, columnPosition, infoColumns);
-            Pair<Value, Integer> infoPair = infoList.get(i);
-            infoView.setInfoWithIcon(infoPair.second, String.valueOf(infoPair.first.value()));
+            InfoView infoView = addInfoView(tableRow, height, columnPosition, infoColumns);
+            infoView.setInfo(infoList.get(i));
         }
     }
 
-    private InfoView addInfoView(TableRow row, int columnPosition, int numColumns) {
+    private InfoView addInfoView(TableRow row, int height, int columnPosition, int numColumns) {
         InfoView infoView = new InfoView(this);
-        TableRow.LayoutParams params = new TableRow.LayoutParams(0, infoViewHeight, 1);
+        TableRow.LayoutParams params = new TableRow.LayoutParams(0, height, 1);
         int margin = getResources().getDimensionPixelSize(R.dimen.spacing_small);
         if (columnPosition == 0) {
             params.setMargins(0, 0, margin, 0);
@@ -333,115 +180,23 @@ public class ImageDetailActivity extends BaseActivity {
 
     }
 
-    private void putValueIconPair(List<Pair<Value, Integer>> target, Value value, int icon) {
-        if (value != null && value.isValid()) {
-            target.add(new Pair<>(value, icon));
-        }
-    }
-
-    private void showView() {
-        if (isImageLoaded && isInfoLoaded) {
-            TransitionManager.beginDelayedTransition(
-                    contentParent,
-                    new Fade().setInterpolator(new AccelerateDecelerateInterpolator())
-            );
-            progressBar.setVisibility(View.INVISIBLE);
-            contentParent.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void displayHeader() {
-        Name title = image.getTitle();
-        Name serviceName = image.getService().getName();
-        final Url serviceUrl = image.getService().getUrl();
-
-        Name userName = null;
-        final User user = image.getUser();
-        if (user != null) {
-            if (user.getName() != null) {
-                userName = user.getName();
-            }
-        }
-
-        if (title != null && title.isValid()) {
-            titleText.setText(title.value());
+        if (getViewModel().getImageTitle() != null) {
+            titleText.setText(getViewModel().getImageTitle());
         } else {
-            titleText.setVisibility(View.GONE);
-        }
-
-        if (titleText.getVisibility() == View.GONE) {
+            titleText.setVisibility(android.view.View.GONE);
             LinearLayout.LayoutParams params =
-                    (LinearLayout.LayoutParams) metaText.getLayoutParams();
+                    (LinearLayout.LayoutParams) subtitleText.getLayoutParams();
             params.setMargins(
                     params.leftMargin,
-                    getResources().getDimensionPixelSize(R.dimen.spacing_xl),
+                    getResources().getDimensionPixelSize(getViewModel().getSubtitleTextLeftMargin()),
                     params.rightMargin,
                     params.bottomMargin
             );
-            metaText.setLayoutParams(params);
+            subtitleText.setLayoutParams(params);
         }
-
-        String metaString;
-        SpannableString spannableString;
-        if (userName != null && userName.isValid()) {
-            metaString = getString(
-                    R.string.title_photo_by,
-                    userName.value() + " / " + serviceName.value()
-            );
-            spannableString = new SpannableString(metaString);
-
-            if ((user.getProfileUrl() != null && user.getProfileUrl().isValid()) ||
-                    (user.getPortfolioUrl() != null && user.getPortfolioUrl().isValid())) {
-                int indexUserNameStart = metaString.indexOf(userName.value());
-                int indexUserNameEnd = indexUserNameStart + userName.value().length();
-                spannableString.setSpan(
-                        new ClickableSpan() {
-                            @Override
-                            public void onClick(View widget) {
-                                if (user.getPortfolioUrl() != null &&
-                                        user.getPortfolioUrl().isValid()) {
-                                    ChromeTabHelper.openUrl(
-                                            ImageDetailActivity.this,
-                                            user.getPortfolioUrl().value()
-                                    );
-                                } else {
-                                    ChromeTabHelper.openUrl(
-                                            ImageDetailActivity.this,
-                                            user.getProfileUrl().value()
-                                    );
-                                }
-                            }
-                        },
-                        indexUserNameStart,
-                        indexUserNameEnd,
-                        0
-                );
-            }
-        } else {
-            metaString = getString(R.string.title_photo_by, serviceName.value());
-            spannableString = new SpannableString(metaString);
-        }
-
-        if (serviceUrl != null && serviceUrl.isValid()) {
-            int indexServiceNameStart = metaString.indexOf(serviceName.value());
-            int indexServiceNameEnd = indexServiceNameStart + serviceName.value().length();
-            spannableString.setSpan(
-                    new ClickableSpan() {
-                        @Override
-                        public void onClick(View widget) {
-                            ChromeTabHelper.openUrl(
-                                    ImageDetailActivity.this,
-                                    serviceUrl.value()
-                            );
-                        }
-                    },
-                    indexServiceNameStart,
-                    indexServiceNameEnd,
-                    0
-            );
-        }
-        metaText.setText(spannableString);
-        metaText.setMovementMethod(LinkMovementMethod.getInstance());
+        subtitleText.setText(getViewModel().getImageSubtitle());
+        subtitleText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private String getFormattedDate(Date date) {
@@ -452,15 +207,8 @@ public class ImageDetailActivity extends BaseActivity {
         return getString(R.string.resolution_formatted_string, resX, resY);
     }
 
-    private void buildShareDelegates() {
-        shareImageDelegate = shareDelegateFactory.create(ShareDelegate.Mode.PHOTO);
-        shareLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.LINK);
-        copyLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.COPY_LINK);
-        setAsShareDelegate = shareDelegateFactory.create(ShareDelegate.Mode.SET_AS);
-    }
-
     @SuppressWarnings("RestrictedApi")
-    private void buildShareMenu(View anchor) {
+    private void buildShareMenu(android.view.View anchor) {
         PopupMenu shareMenu = new PopupMenu(this, anchor);
         shareMenu.getMenuInflater().inflate(R.menu.menu_image_share, shareMenu.getMenu());
         shareMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -493,32 +241,17 @@ public class ImageDetailActivity extends BaseActivity {
     }
 
     private void handleImageShare(ShareDelegate.Mode mode) {
-        shareButton.setVisibility(View.INVISIBLE);
-        shareProgress.setVisibility(View.VISIBLE);
-        ShareDelegate.Listener listener = new ShareDelegate.Listener() {
-            @Override
-            public void onShareComplete() {
-                shareProgress.setVisibility(View.INVISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onShareFailed() {
-                shareProgress.setVisibility(View.INVISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
-            }
-        };
         switch (mode) {
             case PHOTO:
-                shareImageDelegate.share(this, image, listener);
+                getViewModel().onShareImageClicked(this);
                 break;
 
             case LINK:
-                shareLinkDelegate.share(this, image, listener);
+                getViewModel().onShareImageLinkClicked(this);
                 break;
 
             case COPY_LINK:
-                copyLinkDelegate.share(this, image, listener);
+                getViewModel().onCopyImageLinkClicked(this);
                 Toast.makeText(this, R.string.confirmation_link_copied, Toast.LENGTH_SHORT).show();
         }
     }
@@ -526,11 +259,71 @@ public class ImageDetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isDataMembersConfigured) {
-            shareImageDelegate.cancel();
-            shareLinkDelegate.cancel();
-            copyLinkDelegate.cancel();
-            setAsShareDelegate.cancel();
-        }
+        getViewModel().onActivityDestroyed();
+    }
+
+    @Override
+    public void onFavoriteStateChanged() {
+        favoriteButton.setImageResource(getViewModel().getFavoriteButtonIcon());
+    }
+
+    @Override
+    public void onSetAsShareStarted() {
+        setAsButton.setVisibility(android.view.View.INVISIBLE);
+        setAsProgressBar.setVisibility(android.view.View.VISIBLE);
+    }
+
+    @Override
+    public void onSetAsShareFinished() {
+        setAsProgressBar.setVisibility(android.view.View.INVISIBLE);
+        setAsButton.setVisibility(android.view.View.VISIBLE);
+    }
+
+    @Override
+    public void onViewReady() {
+        TransitionManager.beginDelayedTransition(
+                contentParent,
+                new Fade().setInterpolator(new AccelerateDecelerateInterpolator())
+        );
+        progressBar.setVisibility(android.view.View.INVISIBLE);
+        contentParent.setVisibility(android.view.View.VISIBLE);
+    }
+
+    @Override
+    public void onImageDownloaded(Drawable image) {
+        imageView.setImageDrawable(image);
+    }
+
+    @Override
+    public void onImageInfoDownloaded() {
+        displayHeader();
+        displayInfo();
+    }
+
+    @Override
+    public void onImageDownloadFailed() {
+        finish();
+    }
+
+    @Override
+    public void onUserNameClicked(String userUrl) {
+        ChromeTabHelper.openUrl(this, userUrl);
+    }
+
+    @Override
+    public void onServiceNameClicked(String serviceUrl) {
+        ChromeTabHelper.openUrl(this, serviceUrl);
+    }
+
+    @Override
+    public void onImageShareStarted() {
+        shareButton.setVisibility(android.view.View.INVISIBLE);
+        shareProgress.setVisibility(android.view.View.VISIBLE);
+    }
+
+    @Override
+    public void onImageShareFinished() {
+        shareProgress.setVisibility(android.view.View.INVISIBLE);
+        shareButton.setVisibility(android.view.View.VISIBLE);
     }
 }

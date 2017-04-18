@@ -58,4 +58,9 @@ public class DeviceInfoImpl implements DeviceInfo {
     public int getNumberOfStreamColumns() {
         return context.getResources().getInteger(R.integer.stream_column_count);
     }
+
+    @Override
+    public int getNumberOfImageInfoColumns() {
+        return context.getResources().getInteger(R.integer.image_info_column_count);
+    }
 }

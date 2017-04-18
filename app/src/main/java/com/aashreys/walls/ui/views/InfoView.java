@@ -36,11 +36,9 @@ import com.aashreys.walls.R;
 
 public class InfoView extends LinearLayout implements InfoViewModel.EventListener {
 
-    private TextView titleText;
-
     private TextView infoText;
 
-    private ImageView titleIcon;
+    private ImageView infoIcon;
 
     private InfoViewModel viewModel;
 
@@ -75,8 +73,7 @@ public class InfoView extends LinearLayout implements InfoViewModel.EventListene
         setGravity(viewModel.getGravity());
         LayoutInflater.from(context).inflate(R.layout.layout_info_view, this, true);
 
-        titleText = (TextView) findViewById(R.id.text_key);
-        titleIcon = (ImageView) findViewById(R.id.icon_key);
+        infoIcon = (ImageView) findViewById(R.id.icon_key);
         infoText = (TextView) findViewById(R.id.text_value);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -85,50 +82,40 @@ public class InfoView extends LinearLayout implements InfoViewModel.EventListene
                 0, 0
         );
 
-        int iconKeyRes;
-        String keyString, infoString;
+        final int iconKeyRes;
+        final String infoString;
         try {
-            iconKeyRes = a.getResourceId(R.styleable.InfoView_iv_key_icon, 0);
-            keyString = a.getString(R.styleable.InfoView_iv_key_string);
+            iconKeyRes = a.getResourceId(R.styleable.InfoView_iv_icon, 0);
             infoString = a.getString(R.styleable.InfoView_iv_value);
         } finally {
             a.recycle();
         }
 
-        if (iconKeyRes != 0) {
-            viewModel.setTitleIcon(iconKeyRes);
-        } else if (keyString != null) {
-            viewModel.setTitle(keyString);
+        viewModel.setInfo(new Info(iconKeyRes, infoString));
+    }
+
+    public void setInfo(Info info) {
+        viewModel.setInfo(info);
+    }
+
+    @Override
+    public void onInfoSet() {
+        infoIcon.setImageResource(viewModel.getIcon());
+        infoText.setText(viewModel.getInfo());
+    }
+
+    public static class Info {
+
+        @DrawableRes
+        public final int iconRes;
+
+        public final String infoString;
+
+        public Info(@DrawableRes int iconRes, String infoString) {
+            this.iconRes = iconRes;
+            this.infoString = infoString;
         }
-        viewModel.setInfo(infoString);
+
     }
 
-    public void setInfoWithIcon(@DrawableRes int titleIcon, String info) {
-        viewModel.setTitleIcon(titleIcon);
-        viewModel.setInfo(info);
-    }
-
-    public void setInfo(String title, String info) {
-        viewModel.setTitle(title);
-        viewModel.setInfo(info);
-    }
-
-    @Override
-    public void onTitleSet(String title) {
-        titleIcon.setVisibility(GONE);
-        titleText.setVisibility(VISIBLE);
-        titleText.setText(title);
-    }
-
-    @Override
-    public void onTitleIconSet(@DrawableRes int icon) {
-        titleText.setVisibility(GONE);
-        titleIcon.setVisibility(VISIBLE);
-        titleIcon.setImageResource(icon);
-    }
-
-    @Override
-    public void onInfoSet(String info) {
-        infoText.setText(info);
-    }
 }

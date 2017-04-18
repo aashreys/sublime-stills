@@ -16,18 +16,27 @@
 
 package com.aashreys.walls.domain.device;
 
+import android.content.Context;
+import android.support.annotation.StringRes;
+
 /**
- * Created by aashreys on 09/04/17.
+ * Created by aashreys on 17/04/17.
  */
 
-public interface DeviceInfo {
+public class ResourceProvider {
 
-    DeviceResolution getDeviceResolution();
+    private Context context;
 
-    Orientation getOrientation();
+    public ResourceProvider(Context context) {
+        this.context = context.getApplicationContext();
+    }
 
-    int getNumberOfStreamColumns();
+    public String getString(@StringRes int string) {
+        return context.getResources().getString(string);
+    }
 
-    int getNumberOfImageInfoColumns();
+    public String getString(@StringRes int string, Object... args) {
+        return context.getResources().getString(string, args);
+    }
 
 }
