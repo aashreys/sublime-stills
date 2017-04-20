@@ -100,8 +100,7 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     streamImageViewInteractionCallback
             );
         }
-        int currentPosition = holder.getAdapterPosition();
-        int thresholdDiff = getItemCount() - currentPosition;
+        int thresholdDiff = getItemCount() - position;
         if (loadingThreshold >= thresholdDiff && loadingCallback != null) {
             loadingCallback.onLoadRequested();
         }
@@ -139,6 +138,12 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setLoadingCallback(LoadingCallback loadingCallback) {
         this.loadingCallback = loadingCallback;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
     }
 
     public interface LoadingCallback {
@@ -180,5 +185,4 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             view.bind(fragment, image, listener);
         }
     }
-
 }

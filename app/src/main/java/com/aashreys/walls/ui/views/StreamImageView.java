@@ -31,7 +31,6 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
-import com.aashreys.walls.ui.utils.ForegroundImageView;
 
 /**
  * Created by aashreys on 09/02/17.
@@ -41,7 +40,7 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
 
     private StreamImageViewModel viewModel;
 
-    private ForegroundImageView imageView;
+    private AspectRatioImageView imageView;
 
     private ImageButton favoriteButton;
 
@@ -78,7 +77,8 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
                 .inject(viewModel);
         viewModel.setEventCallback(this);
         LayoutInflater.from(context).inflate(R.layout.layout_item_stream_image, this, true);
-        imageView = (ForegroundImageView) findViewById(R.id.image);
+        imageView = (AspectRatioImageView) findViewById(R.id.image);
+        imageView.setWidthToHeightRatio(viewModel.getWidthToHeightRatio());
         favoriteButton = (ImageButton) findViewById(R.id.button_action);
         imageView.setOnClickListener(new OnClickListener() {
             @Override
@@ -121,7 +121,7 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         imageView.setImageDrawable(image);
         imageView.animate()
                 .alpha(1f)
-                .setDuration(200)
+                .setDuration(300)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .start();
     }
@@ -137,6 +137,12 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
     }
 
     @Override
+    public void onImageBackgroundChanged(int color) {
+        setVisibility(VISIBLE);
+        setBackgroundColor(color);
+    }
+
+    @Override
     public void onFavoriteStateChanged() {
         favoriteButton.setVisibility(VISIBLE);
         favoriteButton.setImageResource(viewModel.getFavoriteButtonIconRes());
@@ -149,5 +155,4 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         void onFavoriteButtonClicked(Image image, boolean isFavorited);
 
     }
-
 }

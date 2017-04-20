@@ -20,6 +20,7 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
@@ -70,13 +71,16 @@ public class UnsplashImage implements Image {
 
     private Name title;
 
+    private BackgroundColor backgroundColor;
+
     public UnsplashImage(
             @NonNull Id id,
             @Nullable Resolution resolution,
             @NonNull Date createdAt,
             @Nullable User user,
             @NonNull Url rawImageUrl,
-            @NonNull Url imageShareUrl
+            @NonNull Url imageShareUrl,
+            @Nullable BackgroundColor backgroundColor
     ) {
         this.id = id;
         this.rawImageUrl = rawImageUrl;
@@ -84,6 +88,7 @@ public class UnsplashImage implements Image {
         this.resolution = resolution;
         this.user = user;
         this.createdAt = createdAt;
+        this.backgroundColor = backgroundColor;
     }
 
     protected UnsplashImage(Parcel in) {
@@ -169,6 +174,12 @@ public class UnsplashImage implements Image {
     @Override
     public Location getLocation() {
         return location;
+    }
+
+    @Nullable
+    @Override
+    public BackgroundColor getBackgroundColor() {
+        return backgroundColor;
     }
 
     public void setLocation(Location location) {

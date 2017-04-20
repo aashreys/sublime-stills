@@ -19,6 +19,7 @@ package com.aashreys.walls.ui.views;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.DrawableRes;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.aashreys.maestro.ViewModel;
@@ -57,7 +58,10 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
 
     private boolean isFavoriteSyncComplete;
 
-    private int getIdealImageWidth() {
+    private int widthRatio;
+
+    private int getImageWidth() {
+        Log.d("SIVM", "Screen width is " + deviceInfo.getDeviceResolution().getWidth());
         return deviceInfo.getDeviceResolution().getWidth() / deviceInfo.getNumberOfStreamColumns();
     }
 
@@ -75,6 +79,9 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
 
     void setData(StreamFragment fragment, ImageView imageView, Image image) {
         this.image = image;
+        if (eventCallback != null) {
+            eventCallback.onImageBackgroundChanged(image.getBackgroundColor() != null ? image.getBackgroundColor().getColor() : 0);
+        }
         downloadImage(fragment, imageView);
         syncFavoriteState();
     }
@@ -114,7 +121,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
     private void downloadImage(StreamFragment fragment, ImageView imageView) {
         imageDownloader.asDrawable(
                 fragment,
-                image.getUrl(getIdealImageWidth()),
+                image.getUrl(getImageWidth()),
                 fragment.isDisplayed() ? Priority.IMMEDIATE : Priority.LOW,
                 imageView,
                 new ImageDownloader.Listener<Drawable>() {
@@ -183,6 +190,10 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
         evaluateFavoriteState(image, false);
     }
 
+    float getWidthToHeightRatio() {
+        return 16f/10;
+    }
+
     interface EventCallback {
 
         void onImageDownloaded(Drawable image);
@@ -192,6 +203,8 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
         void onFavoriteStateChanged();
 
         void onFavoriteSyncStarted();
+
+        void onImageBackgroundChanged(int color);
 
     }
 

@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.UnsplashImage;
+import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.values.Id;
@@ -72,18 +73,29 @@ public class UnsplashPhotoResponseParser {
         try {
             User user = createUser(response.getJSONObject("user"));
             Resolution resolution = createResolution(response);
+            BackgroundColor backgroundColor = createBackgroundColor(response);
             return new UnsplashImage(
                     new Id(JSONUtils.getString(response, "id")),
                     resolution,
                     DATE_PARSER.parse(JSONUtils.getString(response, "created_at")),
                     user,
                     new Url(JSONUtils.getString(response.getJSONObject("urls"), "raw")),
-                    new Url(JSONUtils.getString(response.getJSONObject("links"), "html"))
+                    new Url(JSONUtils.getString(response.getJSONObject("links"), "html")),
+                    backgroundColor
             );
         } catch (ParseException | JSONException e) {
             LogWrapper.e(TAG, "Unable to parse image response", e);
             return null;
         }
+    }
+
+    private BackgroundColor createBackgroundColor(JSONObject response) {
+        String colorHex = JSONUtils.optString(response, "color", null);
+        BackgroundColor backgroundColor = null;
+        if (colorHex != null) {
+            backgroundColor = new BackgroundColor(colorHex);
+        }
+        return backgroundColor;
     }
 
     private Resolution createResolution(JSONObject unsplashResponse) {

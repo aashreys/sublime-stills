@@ -20,6 +20,7 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
@@ -229,6 +230,12 @@ public class FlickrImage implements Image {
     @Override
     public Location getLocation() {
         return location;
+    }
+
+    @Nullable
+    @Override
+    public BackgroundColor getBackgroundColor() {
+        return null;
     }
 
     @NonNull
