@@ -37,8 +37,8 @@ import com.aashreys.walls.ui.adapters.StreamViewPagerAdapter;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.StreamImageView;
 
-public class StreamActivity extends BaseActivity<StreamActivityViewModel> implements
-        NavigationView.OnNavigationItemSelectedListener, StreamActivityViewModel.EventListener {
+public class StreamActivity extends BaseActivity<StreamActivityModel> implements
+        NavigationView.OnNavigationItemSelectedListener, StreamActivityModel.EventListener {
 
     private static final String TAG = StreamActivity.class.getSimpleName();
 
@@ -104,8 +104,8 @@ public class StreamActivity extends BaseActivity<StreamActivityViewModel> implem
     }
 
     @Override
-    protected StreamActivityViewModel createViewModel() {
-        StreamActivityViewModel vm = new StreamActivityViewModel();
+    protected StreamActivityModel createViewModel() {
+        StreamActivityModel vm = new StreamActivityModel();
         getUiComponent().inject(vm);
         vm.onInjectionComplete();
         return vm;

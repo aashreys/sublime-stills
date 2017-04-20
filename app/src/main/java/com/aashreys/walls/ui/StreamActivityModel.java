@@ -41,7 +41,7 @@ import javax.inject.Inject;
  * Created by aashreys on 08/04/17.
  */
 
-public class StreamActivityViewModel implements ViewModel, StreamImageView.InteractionCallback,
+public class StreamActivityModel implements ViewModel, StreamImageView.InteractionCallback,
         CollectionRepository.CollectionRepositoryListener, StreamAdapter.CollectionProvider {
 
     public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
@@ -58,7 +58,7 @@ public class StreamActivityViewModel implements ViewModel, StreamImageView.Inter
 
     @Nullable private EventListener eventListener;
 
-    StreamActivityViewModel() {
+    StreamActivityModel() {
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
     }
 

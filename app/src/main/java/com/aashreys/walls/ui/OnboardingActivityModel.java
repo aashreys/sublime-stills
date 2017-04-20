@@ -127,7 +127,7 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
     }
 
     private void markOnboardingAsComplete() {
-        keyValueStore.putBoolean(StreamActivityViewModel.KEY_IS_ONBOARDING_COMPLETED, true);
+        keyValueStore.putBoolean(StreamActivityModel.KEY_IS_ONBOARDING_COMPLETED, true);
         if (eventListener != null) {
             eventListener.onOnboardingComplete();
         }

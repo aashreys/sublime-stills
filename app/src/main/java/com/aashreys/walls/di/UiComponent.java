@@ -27,7 +27,7 @@ import com.aashreys.walls.ui.ImageDetailActivityModel;
 import com.aashreys.walls.ui.OnboardingActivityModel;
 import com.aashreys.walls.ui.SettingsActivityModel;
 import com.aashreys.walls.ui.StreamActivity;
-import com.aashreys.walls.ui.StreamActivityViewModel;
+import com.aashreys.walls.ui.StreamActivityModel;
 import com.aashreys.walls.ui.StreamFragmentModel;
 import com.aashreys.walls.ui.views.ChipView;
 import com.aashreys.walls.ui.views.CollectionView;
@@ -70,7 +70,7 @@ public interface UiComponent {
 
     void inject(AddCollectionsActivityModel addCollectionsActivityModel);
 
-    void inject(StreamActivityViewModel vm);
+    void inject(StreamActivityModel vm);
 
     void inject(ChipView chipView);
 

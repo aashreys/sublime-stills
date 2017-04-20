@@ -47,7 +47,7 @@ public class SettingsActivityModel implements ViewModel {
     }
 
     void onResetOnboardingSettingClicked() {
-        keyValueStore.putBoolean(StreamActivityViewModel.KEY_IS_ONBOARDING_COMPLETED, false);
+        keyValueStore.putBoolean(StreamActivityModel.KEY_IS_ONBOARDING_COMPLETED, false);
         if (eventListener != null) {
             eventListener.onOnboardingReset();
         }
