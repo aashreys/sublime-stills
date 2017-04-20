@@ -24,12 +24,14 @@ import android.view.View;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.ui.helpers.UiHelper;
 
+import javax.inject.Inject;
+
 /**
  * Created by aashreys on 04/02/17.
  */
 public class ChipView extends AppCompatTextView implements ChipViewModel.EventCallback {
 
-    private ChipViewModel viewModel;
+    @Inject ChipViewModel viewModel;
 
     public ChipView(Context context) {
         super(context);
@@ -47,7 +49,8 @@ public class ChipView extends AppCompatTextView implements ChipViewModel.EventCa
     }
 
     private void _init(Context context) {
-        viewModel = new ChipViewModel();
+        UiHelper.getUiComponent(context).inject(this);
+        viewModel.setEventCallback(this);
         int paddingVertical =
                 getResources().getDimensionPixelSize(viewModel.getVerticalPaddingRes());
         int paddingHorizontal =
@@ -57,7 +60,6 @@ public class ChipView extends AppCompatTextView implements ChipViewModel.EventCa
         setGravity(viewModel.getGravity());
         setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
         setBackgroundResource(viewModel.getUncheckedBackgroundDrawableRes());
-        viewModel.setEventCallback(this);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

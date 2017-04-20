@@ -26,6 +26,8 @@ import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 
+import javax.inject.Inject;
+
 /**
  * Created by aashreys on 09/04/17.
  */
@@ -40,6 +42,9 @@ class ChipViewModel implements ViewModel {
 
     @Nullable
     private ChipView.OnCheckedListener listener;
+
+    @Inject
+    public ChipViewModel() {}
 
     @DimenRes
     int getHorizontalPaddingRes() {

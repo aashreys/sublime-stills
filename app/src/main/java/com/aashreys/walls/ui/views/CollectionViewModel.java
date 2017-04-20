@@ -39,6 +39,9 @@ public class CollectionViewModel implements ViewModel {
 
     private Collection collection;
 
+    @Inject
+    public CollectionViewModel() {}
+
     @Nullable
     private EventCallback eventCallback;
 

@@ -21,7 +21,9 @@ import android.view.Gravity;
 
 import com.aashreys.maestro.ViewModel;
 
-import static com.aashreys.walls.ui.views.InfoView.*;
+import javax.inject.Inject;
+
+import static com.aashreys.walls.ui.views.InfoView.Info;
 
 /**
  * Created by aashreys on 11/04/17.
@@ -32,6 +34,9 @@ class InfoViewModel implements ViewModel {
     private EventListener eventListener;
 
     private Info info;
+
+    @Inject
+    public InfoViewModel() {}
 
     @DrawableRes
     int getIcon() {

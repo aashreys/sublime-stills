@@ -58,7 +58,8 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
 
     private boolean isFavoriteSyncComplete;
 
-    private int widthRatio;
+    @Inject
+    public StreamImageViewModel() {}
 
     private int getImageWidth() {
         Log.d("SIVM", "Screen width is " + deviceInfo.getDeviceResolution().getWidth());

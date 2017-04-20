@@ -28,10 +28,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.libs.AspectRatioImageView;
+
+import javax.inject.Inject;
 
 /**
  * Created by aashreys on 09/02/17.
@@ -39,7 +41,7 @@ import com.aashreys.walls.ui.views.libs.AspectRatioImageView;
 
 public class StreamImageView extends FrameLayout implements StreamImageViewModel.EventCallback {
 
-    private StreamImageViewModel viewModel;
+    @Inject StreamImageViewModel viewModel;
 
     private AspectRatioImageView imageView;
 
@@ -72,10 +74,7 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
     }
 
     private void _init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        viewModel = new StreamImageViewModel();
-        ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
-                .getUiComponent()
-                .inject(viewModel);
+        UiHelper.getUiComponent(context).inject(this);
         viewModel.setEventCallback(this);
         LayoutInflater.from(context).inflate(R.layout.layout_item_stream_image, this, true);
         imageView = (AspectRatioImageView) findViewById(R.id.image);

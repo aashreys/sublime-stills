@@ -29,8 +29,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.WallsApplication;
-import com.aashreys.walls.persistence.KeyValueStore;
+import com.aashreys.walls.ui.helpers.UiHelper;
 
 import javax.inject.Inject;
 
@@ -40,13 +39,11 @@ import javax.inject.Inject;
 
 public class HintView extends FrameLayout implements HintViewModel.EventListener {
 
-    @Inject KeyValueStore keyValueStore;
+    @Inject HintViewModel viewModel;
 
     private TextView hintText;
 
     private ImageButton closeButton;
-
-    private HintViewModel viewModel;
 
     public HintView(Context context) {
         super(context);
@@ -77,10 +74,7 @@ public class HintView extends FrameLayout implements HintViewModel.EventListener
     }
 
     private void _init(Context context, @Nullable AttributeSet attrs) {
-        viewModel = new HintViewModel();
-        ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
-                .getUiComponent()
-                .inject(viewModel);
+        UiHelper.getUiComponent(context).inject(this);
         viewModel.setEventListener(this);
         LayoutInflater.from(context).inflate(R.layout.layout_view_hint, this, true);
 

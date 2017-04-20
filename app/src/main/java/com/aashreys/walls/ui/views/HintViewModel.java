@@ -35,6 +35,9 @@ public class HintViewModel implements ViewModel {
 
     private EventListener eventListener;
 
+    @Inject
+    public HintViewModel() {}
+
     void setSeenKey(String key) {
         this.seenKey = key;
         notifySeenStatus();

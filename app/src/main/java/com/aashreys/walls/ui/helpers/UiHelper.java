@@ -20,6 +20,9 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 
+import com.aashreys.walls.WallsApplication;
+import com.aashreys.walls.di.UiComponent;
+
 /**
  * Created by aashreys on 03/03/17.
  */
@@ -36,5 +39,9 @@ public class UiHelper {
         } else {
             return context.getResources().getColor(color);
         }
+    }
+
+    public static UiComponent getUiComponent(Context context) {
+       return ((WallsApplication) context.getApplicationContext()).getApplicationComponent().getUiComponent();
     }
 }

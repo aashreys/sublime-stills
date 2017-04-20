@@ -28,15 +28,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.ui.helpers.UiHelper;
+
+import javax.inject.Inject;
 
 /**
  * Created by aashreys on 04/02/17.
  */
 public class CollectionView extends LinearLayout implements CollectionViewModel.EventCallback {
 
-    private CollectionViewModel viewModel;
+    @Inject CollectionViewModel viewModel;
 
     private ImageView iconImage;
 
@@ -73,7 +75,7 @@ public class CollectionView extends LinearLayout implements CollectionViewModel.
     }
 
     private void _init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        createViewModel();
+        UiHelper.getUiComponent(context).inject(this);
         viewModel.setEventCallback(this);
         LayoutInflater.from(context).inflate(R.layout.layout_item_collection, this, true);
         iconImage = (ImageView) findViewById(R.id.image_icon);
@@ -86,13 +88,6 @@ public class CollectionView extends LinearLayout implements CollectionViewModel.
                 viewModel.onRemoveButtonClicked();
             }
         });
-    }
-
-    private void createViewModel() {
-        viewModel = new CollectionViewModel();
-        ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
-                .getUiComponent()
-                .inject(viewModel);
     }
 
     public void setCollection(Collection collection) {

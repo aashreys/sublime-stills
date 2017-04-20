@@ -29,6 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
+import com.aashreys.walls.ui.helpers.UiHelper;
+
+import javax.inject.Inject;
 
 /**
  * Created by aashreys on 17/03/17.
@@ -36,11 +39,11 @@ import com.aashreys.walls.R;
 
 public class InfoView extends LinearLayout implements InfoViewModel.EventListener {
 
+    @Inject InfoViewModel viewModel;
+
     private TextView infoText;
 
     private ImageView infoIcon;
-
-    private InfoViewModel viewModel;
 
     public InfoView(Context context) {
         super(context);
@@ -68,7 +71,7 @@ public class InfoView extends LinearLayout implements InfoViewModel.EventListene
     }
 
     private void _init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        viewModel = new InfoViewModel();
+        UiHelper.getUiComponent(context).inject(this);
         viewModel.setEventListener(this);
         setGravity(viewModel.getGravity());
         LayoutInflater.from(context).inflate(R.layout.layout_info_view, this, true);
