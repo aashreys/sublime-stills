@@ -59,7 +59,6 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUiComponent().inject(this);
         getViewModel().setEventListener(this);
         getViewModel().onActivityCreated();
         if (getViewModel().shouldOnboardingBeDisplayed()) {
@@ -105,8 +104,7 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
 
     @Override
     protected StreamActivityModel createViewModel() {
-        StreamActivityModel vm = new StreamActivityModel();
-        getUiComponent().inject(vm);
+        StreamActivityModel vm = getUiComponent().createStreamActivityModel();
         vm.onInjectionComplete();
         return vm;
     }

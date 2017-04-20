@@ -63,8 +63,7 @@ public class OnboardingActivity extends BaseActivity<OnboardingActivityModel> im
 
     @Override
     protected OnboardingActivityModel createViewModel() {
-        OnboardingActivityModel viewModel = new OnboardingActivityModel();
-        getUiComponent().inject(viewModel);
+        OnboardingActivityModel viewModel = getUiComponent().createOnboardingActivityModel();
         viewModel.onInjectionComplete();
         return viewModel;
     }

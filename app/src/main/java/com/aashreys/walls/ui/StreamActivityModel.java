@@ -58,7 +58,8 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
 
     @Nullable private EventListener eventListener;
 
-    StreamActivityModel() {
+    @Inject
+    public StreamActivityModel() {
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
     }
 

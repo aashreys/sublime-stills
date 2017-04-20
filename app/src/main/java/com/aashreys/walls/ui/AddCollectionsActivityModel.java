@@ -81,7 +81,8 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
 
     private int newCollectionsStartPosition;
 
-    AddCollectionsActivityModel() {
+    @Inject
+    public AddCollectionsActivityModel() {
         this.selectedCollectionHolder = new SelectedCollectionHolder() {
             @Override
             void onCollectionListModified() {

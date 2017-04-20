@@ -38,7 +38,8 @@ public class CollectionsActivityModel implements ViewModel, CollectionRepository
 
     private EventListener eventListener;
 
-    CollectionsActivityModel() {
+    @Inject
+    public CollectionsActivityModel() {
         this.collectionsAdapterModel = new CollectionsAdapterModel();
     }
 

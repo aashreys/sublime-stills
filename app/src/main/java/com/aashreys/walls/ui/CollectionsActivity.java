@@ -49,8 +49,7 @@ public class CollectionsActivity extends BaseActivity<CollectionsActivityModel> 
 
     @Override
     protected CollectionsActivityModel createViewModel() {
-        CollectionsActivityModel viewModel = new CollectionsActivityModel();
-        getUiComponent().inject(viewModel);
+        CollectionsActivityModel viewModel = getUiComponent().createCollectionsActivityModel();
         viewModel.onInjectionComplete();
         return viewModel;
     }

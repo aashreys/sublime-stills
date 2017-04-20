@@ -30,8 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.ui.adapters.StreamAdapter;
+import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.LoadingView;
 
 import static com.aashreys.walls.ui.StreamFragment.LoadingViewStateManager.State.END_OF_COLLECTION;
@@ -75,11 +75,7 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
     }
 
     private void createViewModel() {
-        viewModel = new StreamFragmentModel();
-        ((WallsApplication) getContext().getApplicationContext()).getApplicationComponent()
-                .getUiComponent()
-                .inject(viewModel);
-        viewModel.setIsDisplayed(tempIsDisplayed);
+        viewModel = UiHelper.getUiComponent(getContext()).createStreamFragmentModel();
         viewModel.onInjectionComplete();
     }
 
@@ -97,6 +93,7 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
         super.onActivityCreated(savedInstanceState);
         if (getActivity() instanceof StreamActivity && getArguments().containsKey(ARG_POSITION)) {
             createViewModel();
+            viewModel.setIsDisplayed(tempIsDisplayed);
             StreamActivity activity = (StreamActivity) getActivity();
             viewModel.setCollection(activity.getCollectionProvider()
                     .getCollection(getArguments().getInt(ARG_POSITION)));

@@ -82,7 +82,8 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
     private List<Image> imageList;
 
-    StreamFragmentModel() {
+    @Inject
+    public StreamFragmentModel() {
         imageList = new ArrayList<>();
     }
 

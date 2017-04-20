@@ -35,6 +35,9 @@ public class SettingsActivityModel implements ViewModel {
 
     private EventListener eventListener;
 
+    @Inject
+    public SettingsActivityModel() {}
+
     void onResetTipsSettingClicked() {
         keyValueStore.putBoolean(resourceProvider.getString(R.string.tag_hint_collection), false);
         keyValueStore.putBoolean(

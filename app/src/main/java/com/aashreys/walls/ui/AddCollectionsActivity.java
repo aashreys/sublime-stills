@@ -66,8 +66,7 @@ public class AddCollectionsActivity extends BaseActivity<AddCollectionsActivityM
 
     @Override
     protected AddCollectionsActivityModel createViewModel() {
-        AddCollectionsActivityModel viewModel = new AddCollectionsActivityModel();
-        getUiComponent().inject(viewModel);
+        AddCollectionsActivityModel viewModel = getUiComponent().createAddCollectionsActivityModel();
         viewModel.onInjectionComplete();
         return viewModel;
     }

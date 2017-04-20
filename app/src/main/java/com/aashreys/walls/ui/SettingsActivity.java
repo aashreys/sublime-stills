@@ -64,8 +64,7 @@ public class SettingsActivity extends BaseActivity<SettingsActivityModel> implem
 
     @Override
     protected SettingsActivityModel createViewModel() {
-        SettingsActivityModel viewModel = new SettingsActivityModel();
-        getUiComponent().inject(viewModel);
+        SettingsActivityModel viewModel = getUiComponent().createSettingsActivityModel();
         viewModel.onInjectionComplete();
         return viewModel;
     }

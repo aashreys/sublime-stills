@@ -79,6 +79,9 @@ public class ImageDetailActivityModel implements ViewModel {
 
     private boolean isImageLoaded, isImageInfoLoaded, isFavorite;
 
+    @Inject
+    public ImageDetailActivityModel() {}
+
     void setImage(Image image) {
         this.image = image;
         isFavorite = favoriteImageRepository.isFavorite(image);
