@@ -14,13 +14,11 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.ui.views;
+package com.aashreys.walls.ui.views.libs;
 
 
 import android.content.Context;
 import android.util.AttributeSet;
-
-import com.aashreys.walls.ui.utils.ForegroundImageView;
 
 /**
  * Created by aashreys on 19/04/17.

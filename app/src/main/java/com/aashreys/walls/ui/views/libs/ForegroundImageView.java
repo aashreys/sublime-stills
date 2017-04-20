@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.ui.utils;
+package com.aashreys.walls.ui.views.libs;
 
 import android.content.Context;
 import android.content.res.TypedArray;

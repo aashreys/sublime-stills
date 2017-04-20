@@ -31,6 +31,7 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
+import com.aashreys.walls.ui.views.libs.AspectRatioImageView;
 
 /**
  * Created by aashreys on 09/02/17.
