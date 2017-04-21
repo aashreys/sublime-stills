@@ -79,8 +79,6 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
     private ActionButtonClickDelegate
             currentActionButtonClickDelegate;
 
-    private int newCollectionsStartPosition;
-
     @Inject
     public AddCollectionsActivityModel() {
         this.selectedCollectionHolder = new SelectedCollectionHolder() {
@@ -119,9 +117,7 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
         setCurrentActionButtonClickDelegate(searchCollectionsDelegate);
     }
 
-    void onInjectionComplete() {
-        newCollectionsStartPosition = collectionRepository.size();
-    }
+    void onInjectionComplete() {}
 
     void setEventListener(EventListener eventListener) {
         this.eventListener = eventListener;
@@ -180,6 +176,9 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
 
     private void saveSelectedCollections() {
         for (Collection collection : selectedCollectionHolder.getCollectionList()) {
+            if (collectionRepository.contains(collection)) {
+                collectionRepository.remove(collection);
+            }
             collectionRepository.insert(collection);
         }
         if (eventListener != null) {
@@ -264,7 +263,7 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
     }
 
     int getNewCollectionsStartPosition() {
-        return newCollectionsStartPosition;
+        return collectionRepository.size() - selectedCollectionHolder.size();
     }
 
     void onActivityReady() {

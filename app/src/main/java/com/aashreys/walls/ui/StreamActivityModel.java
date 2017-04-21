@@ -91,10 +91,10 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
                 null,
                 null
         );
-        if (!collectionRepository.exists(discoverCollection)) {
+        if (!collectionRepository.contains(discoverCollection)) {
             collectionRepository.insert(discoverCollection);
         }
-        if (!collectionRepository.exists(favoriteCollection)) {
+        if (!collectionRepository.contains(favoriteCollection)) {
             collectionRepository.insert(favoriteCollection);
         }
     }
@@ -162,9 +162,11 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
 
     @Override
     public void onInsert(Collection object) {
-        collectionsList.add(object);
-        if (eventListener != null) {
-            eventListener.onCollectionsModified();
+        if (!collectionsList.contains(object)) {
+            collectionsList.add(object);
+            if (eventListener != null) {
+                eventListener.onCollectionsModified();
+            }
         }
     }
 

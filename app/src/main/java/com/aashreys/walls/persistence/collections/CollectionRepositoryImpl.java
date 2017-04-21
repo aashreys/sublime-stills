@@ -47,7 +47,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     }
 
     @Override
-    public boolean exists(Collection collection) {
+    public boolean contains(Collection collection) {
         return getBook().exist(getCollectionKey(collection));
     }
 

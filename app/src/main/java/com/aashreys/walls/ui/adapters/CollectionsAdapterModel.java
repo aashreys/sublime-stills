@@ -46,9 +46,11 @@ public class CollectionsAdapterModel {
     }
 
     public void addCollection(Collection collection) {
-        collectionList.add(collection);
-        if (eventListener != null) {
-            eventListener.onCollectionAdded(collectionList.size() - 1);
+        if (!collectionList.contains(collection)) {
+            collectionList.add(collection);
+            if (eventListener != null) {
+                eventListener.onCollectionAdded(collectionList.size() - 1);
+            }
         }
     }
 

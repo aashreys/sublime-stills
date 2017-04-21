@@ -31,7 +31,7 @@ public interface CollectionRepository {
 
     void insert(Collection collection);
 
-    boolean exists(Collection collection);
+    boolean contains(Collection collection);
 
     void remove(Collection collection);
 

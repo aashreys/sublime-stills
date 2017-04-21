@@ -88,7 +88,7 @@ public class CollectionsActivityModel implements ViewModel, CollectionRepository
 
     }
 
-    CollectionsAdapterModel getCollectionsAdapterModel() {
+    CollectionsAdapterModel getCollectionsAdapterModel()  {
         return collectionsAdapterModel;
     }
 
