@@ -18,13 +18,13 @@ package com.aashreys.walls.domain.share;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.ShareImageLinkAction;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.network.UrlShortener;
 import com.aashreys.walls.ui.utils.UiHandler;
+import com.aashreys.walls.utils.LogWrapper;
 
 /**
  * Created by aashreys on 08/02/17.
@@ -92,7 +92,7 @@ public class ShareImageLinkDelegate implements ShareDelegate {
             @Override
             public void onError(@NonNull UrlShortener.UrlShortenerException e) {
                 if (!isCancelled) {
-                    Log.e(TAG, "Unable to shorten image url", e);
+                    LogWrapper.e(TAG, "Unable to shorten image url", e);
                     uiHandler.post(new Runnable() {
                         @Override
                         public void run() {

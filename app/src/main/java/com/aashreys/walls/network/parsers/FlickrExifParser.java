@@ -16,11 +16,9 @@
 
 package com.aashreys.walls.network.parsers;
 
-import android.util.Log;
-
-import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.values.Name;
+import com.aashreys.walls.utils.LogWrapper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +93,7 @@ public class FlickrExifParser {
                         break;
                 }
             } catch (JSONException e) {
-                Log.d(TAG, "Unable to read exif property", e);
+                LogWrapper.d(TAG, "Unable to read exif property", e);
             }
         }
         return exif;

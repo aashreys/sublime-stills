@@ -21,7 +21,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -33,6 +32,7 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.ui.StreamFragment;
 import com.aashreys.walls.ui.helpers.UiHelper;
 import com.aashreys.walls.ui.views.libs.AspectRatioImageView;
+import com.aashreys.walls.utils.LogWrapper;
 
 import javax.inject.Inject;
 
@@ -98,13 +98,13 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                Log.d(TAG, "View attached to Window");
+                LogWrapper.d(TAG, "View attached to Window");
                 viewModel.onViewOnScreen();
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                Log.d(TAG, "View detached to Window");
+                LogWrapper.d(TAG, "View detached to Window");
                 viewModel.onViewOffScreen();
             }
         });

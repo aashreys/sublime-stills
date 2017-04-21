@@ -19,7 +19,6 @@ package com.aashreys.walls.ui;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.collections.Collection;
@@ -33,6 +32,7 @@ import com.aashreys.walls.ui.adapters.StreamAdapter;
 import com.aashreys.walls.ui.helpers.NetworkHelper;
 import com.aashreys.walls.ui.tasks.LoadImagesTask;
 import com.aashreys.walls.ui.views.StreamImageView;
+import com.aashreys.walls.utils.LogWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +154,7 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
     }
 
     void loadMoreImages() {
-        Log.i(TAG, collection.getName().value() + " - loading images");
+        LogWrapper.i(TAG, collection.getName().value() + " - loading images");
         if (loadImagesTask != null) {
             loadImagesTask.release();
             loadImagesTask = null;
