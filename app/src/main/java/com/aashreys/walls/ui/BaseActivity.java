@@ -26,6 +26,7 @@ import com.aashreys.maestro.ViewModelStore;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.di.ApplicationComponent;
 import com.aashreys.walls.di.UiComponent;
+import com.aashreys.walls.ui.helpers.UiHelper;
 
 /**
  * Created by aashreys on 21/02/17.
@@ -55,7 +56,7 @@ public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
     }
 
     protected final UiComponent getUiComponent() {
-        return ((WallsApplication) getApplication()).getApplicationComponent().getUiComponent();
+        return UiHelper.getUiComponent(this);
     }
 
     protected final ApplicationComponent getApplicationComponent() {
@@ -76,6 +77,7 @@ public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
         return this.viewModel;
     }
 
+    /* Subclasses to override this to create their ViewModels */
     protected VM createViewModel() {
         return null;
     }
