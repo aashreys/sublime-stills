@@ -38,11 +38,6 @@ import java.util.Date;
 
 public class UnsplashImage implements Image {
 
-    static final Service SERVICE = new Service(
-            new Name("Unsplash"),
-            new Url("https://unsplash.com")
-    );
-
     public static final Creator<UnsplashImage> CREATOR = new Creator<UnsplashImage>() {
         @Override
         public UnsplashImage createFromParcel(Parcel source) {return new UnsplashImage(source);}
@@ -52,6 +47,11 @@ public class UnsplashImage implements Image {
     };
 
     public static final String IMAGE_URL_CONFIG = "?q=75&cs=tinysrgb&fm=jpg&w=%s&fit=max";
+
+    static final Service SERVICE = new Service(
+            new Name("Unsplash"),
+            new Url("https://unsplash.com")
+    );
 
     private final Id id;
 
@@ -176,14 +176,14 @@ public class UnsplashImage implements Image {
         return location;
     }
 
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     @Nullable
     @Override
     public BackgroundColor getBackgroundColor() {
         return backgroundColor;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     @NonNull
@@ -206,5 +206,21 @@ public class UnsplashImage implements Image {
         dest.writeParcelable(this.location, flags);
         dest.writeParcelable(this.exif, flags);
         dest.writeParcelable(this.title, flags);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UnsplashImage)) return false;
+
+        UnsplashImage that = (UnsplashImage) o;
+
+        return id.equals(that.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

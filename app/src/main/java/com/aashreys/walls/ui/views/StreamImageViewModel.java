@@ -19,7 +19,6 @@ package com.aashreys.walls.ui.views;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.aashreys.maestro.ViewModel;
@@ -62,7 +61,6 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
     public StreamImageViewModel() {}
 
     private int getImageWidth() {
-        Log.d("SIVM", "Screen width is " + deviceInfo.getDeviceResolution().getWidth());
         return deviceInfo.getDeviceResolution().getWidth() / deviceInfo.getNumberOfStreamColumns();
     }
 

@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -40,6 +41,8 @@ import javax.inject.Inject;
  */
 
 public class StreamImageView extends FrameLayout implements StreamImageViewModel.EventCallback {
+
+    private static final String TAG = StreamImageView.class.getSimpleName();
 
     @Inject StreamImageViewModel viewModel;
 
@@ -95,11 +98,13 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
+                Log.d(TAG, "View attached to Window");
                 viewModel.onViewOnScreen();
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
+                Log.d(TAG, "View detached to Window");
                 viewModel.onViewOffScreen();
             }
         });
