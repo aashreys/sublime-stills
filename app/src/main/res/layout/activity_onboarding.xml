@@ -36,8 +36,6 @@
             style="@style/Sublime.Text.Display1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/spacing_large"
             android:text="@string/title_sublime_stills"/>
 
@@ -46,8 +44,6 @@
             style="@style/Sublime.Text.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:text="@string/title_onboarding_subtitle"/>
 
@@ -55,8 +51,6 @@
             style="@style/Sublime.Text.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/spacing_large"
             android:gravity="center_horizontal"
             android:text="@string/title_onboarding_pick_collections"/>
@@ -66,8 +60,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:layout_weight="1"
-            android:animateLayoutChanges="true">
+            android:layout_weight="1">
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -80,7 +73,8 @@
                 android:layout_height="match_parent"
                 android:fadingEdgeLength="@dimen/spacing_xs"
                 android:requiresFadingEdge="vertical"
-                android:scrollbars="none">
+                android:scrollbars="none"
+                android:animateLayoutChanges="true">
 
                 <com.wefika.flowlayout.FlowLayout
                     android:id="@+id/parent_collections"
@@ -98,8 +92,6 @@
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/spacing_medium"
             android:text="@string/action_continue"/>
 
