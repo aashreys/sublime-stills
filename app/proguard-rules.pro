@@ -46,7 +46,9 @@
 -keepattributes Exceptions
 
 # Paper
--keep class my.package.data.model.** { *; }
 -keep class org.objenesis.** { *; }
 -keep interface org.objenesis.** { *; }
 -dontwarn org.objenesis.**
+
+# Persisted models
+-keep class * implements com.aashreys.walls.persistence.Persistable { *; }

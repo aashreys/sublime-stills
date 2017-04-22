@@ -22,6 +22,7 @@ import android.support.annotation.StringDef;
 
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
+import com.aashreys.walls.persistence.Persistable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -37,7 +38,7 @@ import static com.aashreys.walls.domain.display.collections.Collection.Type.UNSP
  * Created by aashreys on 04/02/17.
  */
 
-public interface Collection extends Parcelable {
+public interface Collection extends Parcelable, Persistable {
 
     @NonNull
     Id getId();

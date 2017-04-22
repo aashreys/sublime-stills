@@ -29,6 +29,7 @@ import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
+import com.aashreys.walls.persistence.Persistable;
 
 import java.util.Date;
 
@@ -36,9 +37,9 @@ import java.util.Date;
  * Created by aashreys on 19/03/17.
  */
 
-public interface Image extends Parcelable {
+public interface Image extends Parcelable, Persistable {
 
-    public static final int RES_ORIGINAL = Integer.MAX_VALUE;
+    int RES_ORIGINAL = Integer.MAX_VALUE;
 
     @NonNull
     Id getId();
@@ -77,7 +78,7 @@ public interface Image extends Parcelable {
     @NonNull
     String getType();
 
-    public @interface Type {
+    @interface Type {
 
         String FLICKR = "image_type_flickr";
 
