@@ -40,7 +40,7 @@ public class Migrator {
 
     private static final String KEY_LAST_VERSION = "migrator_key_last_version";
 
-    private static final int CURRENT_VERSION = Version.V10;
+    private static final int CURRENT_VERSION = Version.V12;
 
     private final KeyValueStore keyValueStore;
 
@@ -53,14 +53,14 @@ public class Migrator {
     }
 
     private int getLastVersion() {
-        return keyValueStore.getInt(KEY_LAST_VERSION, Version.V0);
+        return keyValueStore.getInt(KEY_LAST_VERSION, CURRENT_VERSION);
     }
 
     public void migrate() {
         int lastVersion = getLastVersion();
         LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + CURRENT_VERSION);
         switch (lastVersion) {
-            case Version.V0:
+            case Version.V11:
                 migrateFromV0ToV10();
             case CURRENT_VERSION:
                 break;
@@ -83,9 +83,9 @@ public class Migrator {
 
     private interface Version {
 
-        int V0 = 0;
+        int V11 = 11;
 
-        int V10 = 10;
+        int V12 = 12;
 
     }
 
