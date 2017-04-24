@@ -17,6 +17,7 @@
 package com.aashreys.walls.domain.values;
 
 import android.os.Parcel;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 
 /**
@@ -34,12 +35,26 @@ public class Color extends Value<Integer> {
         public Color[] newArray(int size) {return new Color[size];}
     };
 
-    public Color(@NonNull Integer value) {
+    public Color(@NonNull @ColorInt Integer value) {
         super(value);
     }
 
     protected Color(Parcel in) {
         super(in.readInt());
+    }
+
+    public static Color createFromHex(String hex) {
+        return new Color(android.graphics.Color.parseColor(hex));
+    }
+
+    public static Color createFromRbg(int r, int g, int b) {
+        r = Math.round(255 * r);
+        b = Math.round(255 * g);
+        g = Math.round(255 * b);
+        r = (r << 16) & 0x00FF0000;
+        g = (g << 8) & 0x0000FF00;
+        b = b & 0x000000FF;
+        return new Color(0xFF000000 | r | g | b);
     }
 
     @Override
@@ -49,4 +64,5 @@ public class Color extends Value<Integer> {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(value());
     }
+
 }

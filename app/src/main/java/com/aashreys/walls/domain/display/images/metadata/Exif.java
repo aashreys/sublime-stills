@@ -20,6 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.values.Name;
 
 /**
@@ -36,23 +37,19 @@ public class Exif implements Parcelable {
     };
 
     @Nullable
-    public Name camera;
+    public final Name camera;
 
     @Nullable
-    public Name exposureTime;
+    public final Name exposureTime;
 
     @Nullable
-    public Name aperture;
+    public final Name aperture;
 
     @Nullable
-    public Name focalLength;
+    public final Name focalLength;
 
     @Nullable
-    public Name iso;
-
-    public Exif() {
-
-    }
+    public final Name iso;
 
     public Exif(
             @Nullable Name camera,
@@ -60,12 +57,13 @@ public class Exif implements Parcelable {
             @Nullable Name aperture,
             @Nullable Name focalLength,
             @Nullable Name iso
-    ) {
+    ) throws InstantiationException {
         this.camera = camera;
         this.exposureTime = exposureTime;
         this.aperture = aperture;
         this.focalLength = focalLength;
         this.iso = iso;
+        validate();
     }
 
     protected Exif(Parcel in) {
@@ -74,6 +72,20 @@ public class Exif implements Parcelable {
         this.aperture = in.readParcelable(Name.class.getClassLoader());
         this.focalLength = in.readParcelable(Name.class.getClassLoader());
         this.iso = in.readParcelable(Name.class.getClassLoader());
+    }
+
+    private void validate() throws InstantiationException {
+        if (!isValid()) {
+            throw new InstantiationException("Unable to create exif");
+        }
+    }
+
+    private boolean isValid() {
+        return (camera != null && camera.isValid()) ||
+                (exposureTime != null && exposureTime.isValid()) ||
+                (aperture != null && aperture.isValid()) ||
+                (iso != null && iso.isValid()) ||
+                (focalLength != null && focalLength.isValid());
     }
 
     @Override

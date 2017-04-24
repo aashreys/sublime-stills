@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.RepositoryCallback;
+import com.aashreys.walls.persistence.models.ImageModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,25 +36,34 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
 
     private static final String TAG = FavoriteImageRepositoryImpl.class.getSimpleName();
 
-    private static final String BOOK_NAME = "favorite_image_book";
+    public static final String BOOK_NAME = "favorite_image_book";
 
     private static List<RepositoryCallback<Image>> listeners = new ArrayList<>();
 
+    private final ImageModelFactory imageModelFactory;
+
+    public FavoriteImageRepositoryImpl(ImageModelFactory imageModelFactory) {
+        this.imageModelFactory = imageModelFactory;
+    }
+
     @Override
     public void favorite(Image image) {
-        getBook().write(getImageKey(image), image);
+        ImageModel model = createModel(image);
+        getBook().write(getModelKey(model), model);
         _notifyFavorited(image);
     }
 
     @Override
     public void unfavorite(Image image) {
-        getBook().delete(getImageKey(image));
+        ImageModel model = createModel(image);
+        getBook().delete(getModelKey(model));
         _notifyUnfavorited(image);
     }
 
     @Override
     public boolean isFavorite(Image image) {
-        return getBook().exist(getImageKey(image));
+        ImageModel model = createModel(image);
+        return getBook().exist(getModelKey(model));
     }
 
     @Override
@@ -75,7 +85,8 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
             int size = (fromIndex + count) > keys.size() ? keys.size() : (fromIndex + count);
             Book book = getBook();
             for (int i = fromIndex; i < size; i++) {
-                Image image = book.read(keys.get(i), null);
+                ImageModel model = book.read(keys.get(i), null);
+                Image image = model.createImage();
                 if (image != null) {
                     imageList.add(image);
                 }
@@ -92,7 +103,6 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
         }
     }
 
-
     private void _notifyFavorited(Image image) {
         if (listeners.size() > 0) {
             for (RepositoryCallback<Image> listener : listeners) {
@@ -105,7 +115,11 @@ public class FavoriteImageRepositoryImpl implements FavoriteImageRepository {
         return Paper.book(BOOK_NAME);
     }
 
-    private String getImageKey(Image image) {
-        return image.getType() + image.getId().value();
+    private ImageModel createModel(Image image) {
+        return imageModelFactory.create(image);
+    }
+
+    private String getModelKey(ImageModel model) {
+        return model.getClass().getSimpleName() + model.getId();
     }
 }

@@ -14,24 +14,18 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.persistence;
+package com.aashreys.walls.persistence.models;
+
+import com.aashreys.walls.domain.display.images.Image;
 
 /**
- * Created by aashreys on 11/03/17.
+ * Created by aashreys on 23/04/17.
  */
 
-public interface KeyValueStore {
+public interface ImageModel {
 
-    void putString(String key, String value);
+    Image createImage();
 
-    String getString(String key, String defaultValue);
-
-    void putBoolean(String key, boolean bool);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void putInt(String key, int value);
-
-    int getInt(String key, int defaultValue);
+    String getId();
 
 }

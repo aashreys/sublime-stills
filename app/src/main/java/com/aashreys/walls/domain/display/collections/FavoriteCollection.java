@@ -40,7 +40,7 @@ public class FavoriteCollection implements Collection, Parcelable {
         public FavoriteCollection[] newArray(int size) {return new FavoriteCollection[size];}
     };
 
-    private static final Id ID = new Id("1");
+    public static final Id ID = new Id("1");
 
     private static final Name NAME = new Name("Favorites");
 

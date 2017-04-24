@@ -16,6 +16,8 @@
 
 package com.aashreys.walls.network.parsers;
 
+import com.aashreys.walls.domain.InstantiationException;
+import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 import com.aashreys.walls.utils.LogWrapper;
 import com.aashreys.walls.domain.display.images.FlickrImage;
 import com.aashreys.walls.domain.display.images.Image;
@@ -72,8 +74,8 @@ public class FlickrPhotoArrayParser {
             createdAt = DATE_PARSER.parse(photoJson.getString("datetaken"));
             double longitude = photoJson.getDouble("longitude");
             double latitude = photoJson.getDouble("latitude");
-            location = new Location(null, longitude, latitude);
-        } catch (JSONException | ParseException ignored) {}
+            location = new Location(null, new Coordinates(latitude, longitude));
+        } catch (InstantiationException |JSONException | ParseException ignored) {}
 
         FlickrImage image = new FlickrImage(
                 new Id(photoJson.getString("id")),

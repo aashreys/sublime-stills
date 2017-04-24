@@ -22,10 +22,11 @@ import com.aashreys.walls.di.ApplicationComponent;
 import com.aashreys.walls.di.DaggerApplicationComponent;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
-import com.aashreys.walls.persistence.WallsDatabase;
 import com.aashreys.walls.utils.LogWrapper;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+
+import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
 import io.paperdb.Paper;
@@ -38,19 +39,13 @@ public class WallsApplication extends Application {
 
     private ApplicationComponent applicationComponent;
 
+    @Inject Migrator migrator;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        // Enable crash reporting for production only.
-        Crashlytics crashlyticsKit = new Crashlytics.Builder()
-                .core(new CrashlyticsCore.Builder().disabled(!BuildConfig.PRODUCTION).build())
-                .build();
-        Fabric.with(this, crashlyticsKit);
-        LogWrapper.setProductionLogging(BuildConfig.PRODUCTION);
-
-        // Delete old SQL database since we've switched to NoSql
-        deleteDatabase(WallsDatabase.NAME);
-
+        setCrashReportingEnabled(BuildConfig.IS_PRODUCTION);
+        LogWrapper.setProductionLogging(BuildConfig.IS_PRODUCTION);
         Paper.init(this);
         this.applicationComponent = DaggerApplicationComponent
                 .builder()
@@ -58,6 +53,14 @@ public class WallsApplication extends Application {
                 .apiModule(new ApiModule(this))
                 .build();
         this.applicationComponent.inject(this);
+        migrator.migrate();
+    }
+
+    private void setCrashReportingEnabled(boolean isProduction) {
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(!isProduction).build())
+                .build();
+        Fabric.with(this, crashlyticsKit);
     }
 
     public ApplicationComponent getApplicationComponent() {

@@ -17,12 +17,14 @@
 package com.aashreys.walls.network.parsers;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.UnsplashImage;
-import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.User;
+import com.aashreys.walls.domain.values.Color;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
@@ -73,27 +75,30 @@ public class UnsplashPhotoResponseParser {
         try {
             User user = createUser(response.getJSONObject("user"));
             Resolution resolution = createResolution(response);
-            BackgroundColor backgroundColor = createBackgroundColor(response);
+            Color backgroundColor = createBackgroundColor(response);
             return new UnsplashImage(
                     new Id(JSONUtils.getString(response, "id")),
-                    resolution,
-                    DATE_PARSER.parse(JSONUtils.getString(response, "created_at")),
-                    user,
                     new Url(JSONUtils.getString(response.getJSONObject("urls"), "raw")),
                     new Url(JSONUtils.getString(response.getJSONObject("links"), "html")),
+                    null,
+                    DATE_PARSER.parse(JSONUtils.getString(response, "created_at")),
+                    user,
+                    null,
+                    null,
+                    resolution,
                     backgroundColor
             );
-        } catch (ParseException | JSONException e) {
+        } catch (InstantiationException |ParseException | JSONException e) {
             LogWrapper.e(TAG, "Unable to parse image response", e);
             return null;
         }
     }
 
-    private BackgroundColor createBackgroundColor(JSONObject response) {
+    private Color createBackgroundColor(JSONObject response) {
         String colorHex = JSONUtils.optString(response, "color", null);
-        BackgroundColor backgroundColor = null;
+        Color backgroundColor = null;
         if (colorHex != null) {
-            backgroundColor = new BackgroundColor(colorHex);
+            backgroundColor = Color.createFromHex(colorHex);
         }
         return backgroundColor;
     }
@@ -103,7 +108,11 @@ public class UnsplashPhotoResponseParser {
         int width = unsplashResponse.optInt("width", 0);
         int height = unsplashResponse.optInt("height", 0);
         if (width > 0 && height > 0) {
-            resolution = new Resolution(new Pixel(width), new Pixel(height));
+            try {
+                resolution = new Resolution(new Pixel(width), new Pixel(height));
+            } catch (InstantiationException e) {
+                Log.w(TAG, "Unable to create resolution", e);
+            }
         }
         return resolution;
     }
@@ -112,10 +121,14 @@ public class UnsplashPhotoResponseParser {
         User user = null;
         String id = JSONUtils.optString(userJson, "id", null);
         if (id != null) {
-            String name = JSONUtils.optString(userJson, "name", null);
-            String profile = JSONUtils.optString(userJson.optJSONObject("links"), "html", null);
-            String portfolio = JSONUtils.optString(userJson, "portfolio_url", null);
-            user = new User(new Id(id), new Name(name), new Url(profile), new Url(portfolio));
+            try {
+                String name = JSONUtils.optString(userJson, "name", null);
+                String profile = JSONUtils.optString(userJson.optJSONObject("links"), "html", null);
+                String portfolio = JSONUtils.optString(userJson, "portfolio_url", null);
+                user = new User(new Id(id), new Name(name), new Url(profile), new Url(portfolio));
+            } catch (InstantiationException e) {
+                Log.w(TAG, "Unable to create user", e);
+            }
         }
         return user;
     }

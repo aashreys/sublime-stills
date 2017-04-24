@@ -21,6 +21,7 @@ import android.support.annotation.DrawableRes;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.device.ResourceProvider;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
@@ -80,23 +81,23 @@ public class ImageInfoBuilder {
     }
 
     private void addIso(Exif exif) {
-        addInfo(R.drawable.ic_iso_black_24dp, Value.getNullableValue(exif.iso));
+        addInfo(R.drawable.ic_iso_black_24dp, Value.getValidValue(exif.iso));
     }
 
     private void addFocalLength(Exif exif) {
-        addInfo(R.drawable.ic_focus_black_24dp, Value.getNullableValue(exif.focalLength));
+        addInfo(R.drawable.ic_focus_black_24dp, Value.getValidValue(exif.focalLength));
     }
 
     private void addExposureTime(Exif exif) {
-        addInfo(R.drawable.ic_exposure_time_black_24dp, Value.getNullableValue(exif.exposureTime));
+        addInfo(R.drawable.ic_exposure_time_black_24dp, Value.getValidValue(exif.exposureTime));
     }
 
     private void addAperture(Exif exif) {
-        addInfo(R.drawable.ic_aperture_black_24dp, Value.getNullableValue(exif.aperture));
+        addInfo(R.drawable.ic_aperture_black_24dp, Value.getValidValue(exif.aperture));
     }
 
     private void addCamera(Exif exif) {
-        addInfo(R.drawable.ic_camera_black_24dp, Value.getNullableValue(exif.camera));
+        addInfo(R.drawable.ic_camera_black_24dp, Value.getValidValue(exif.camera));
     }
 
 
@@ -109,7 +110,7 @@ public class ImageInfoBuilder {
 
     private String getFormattedResolutionString(Resolution resolution) {
         String resolutionString = null;
-        if (resolution != null && resolution.isValid()) {
+        if (resolution != null) {
             resolutionString = resourceProvider.getString(
                     R.string.resolution_formatted_string,
                     resolution.getWidth().value(),
@@ -130,15 +131,21 @@ public class ImageInfoBuilder {
     private String getLocationName(Location location) {
         String locationName = null;
         if (location != null) {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
             if (location.getName() != null) {
                 locationName = location.getName().value();
-            } else if (latitude != 0 || longitude != 0) {
-                locationName = latitude + ", " + longitude;
+            } else if (location.getCoordinates() != null) {
+                locationName = formatLocationCoordinates(location.getCoordinates());
             }
         }
         return locationName;
+    }
+
+    private String formatLocationCoordinates(Coordinates coordinates) {
+        if (coordinates != null) {
+            return coordinates.getLatitude() + " " + coordinates.getLongitude();
+        } else {
+            return null;
+        }
     }
 
     private String getFormattedDateString(Date date) {

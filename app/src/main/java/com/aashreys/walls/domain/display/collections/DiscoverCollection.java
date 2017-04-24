@@ -43,7 +43,7 @@ public class DiscoverCollection implements Collection, Parcelable {
         }
     };
 
-    private static final Id ID = new Id("1");
+    public static final Id ID = new Id("1");
 
     private static final Name NAME = new Name("Discover");
 

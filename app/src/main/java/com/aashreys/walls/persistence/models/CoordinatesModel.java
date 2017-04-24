@@ -14,11 +14,28 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.persistence;
+package com.aashreys.walls.persistence.models;
+
+import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 
 /**
- * Created by aashreys on 22/04/17.
+ * Created by aashreys on 23/04/17.
  */
 
-public interface Persistable {
+public class CoordinatesModel {
+
+    private final double latitude, longitude;
+
+    public CoordinatesModel(Coordinates coordinates) {
+        this.latitude = coordinates.getLatitude();
+        this.longitude = coordinates.getLongitude();
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
 }

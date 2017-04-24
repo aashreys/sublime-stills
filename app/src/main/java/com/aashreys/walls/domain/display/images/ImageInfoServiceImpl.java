@@ -66,7 +66,7 @@ public class ImageInfoServiceImpl implements ImageInfoService {
                 break;
 
             case Image.Type.UNSPLASH:
-                addUnsplashInfo(image, listener);
+                addUnsplashInfo((UnsplashImage) image, listener);
                 break;
 
             default:
@@ -75,18 +75,16 @@ public class ImageInfoServiceImpl implements ImageInfoService {
         }
     }
 
-    private void addUnsplashInfo(final Image image, final Listener listener) {
+    private void addUnsplashInfo(final UnsplashImage image, final Listener listener) {
         Call<ResponseBody> call = unsplashApi.getPhoto(image.getId().value());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        unsplashPhotoInfoParser.setExifAndLocation(
-                                response.body().string(),
-                                (UnsplashImage) image
-                        );
-
+                        String responseBody = response.body().string();
+                        image.setExif(unsplashPhotoInfoParser.getExif(responseBody));
+                        image.setLocation(unsplashPhotoInfoParser.getLocation(responseBody));
                     } catch (IOException e) {
                         LogWrapper.e(
                                 TAG,

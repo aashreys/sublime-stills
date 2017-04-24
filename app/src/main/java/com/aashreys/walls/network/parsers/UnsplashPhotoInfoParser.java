@@ -16,7 +16,10 @@
 
 package com.aashreys.walls.network.parsers;
 
-import com.aashreys.walls.domain.display.images.UnsplashImage;
+import android.util.Log;
+
+import com.aashreys.walls.domain.InstantiationException;
+import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.values.Name;
@@ -39,14 +42,28 @@ public class UnsplashPhotoInfoParser {
     @Inject
     public UnsplashPhotoInfoParser() {}
 
-    public void setExifAndLocation(String response, UnsplashImage image) {
+    public Location getLocation(String responseBody) {
+        Location location = null;
         try {
-            JSONObject responseJson = new JSONObject(response);
-            setExif(responseJson, image);
-            setLocation(responseJson, image);
+            JSONObject response = new JSONObject(responseBody);
+            JSONObject locationJson = response.getJSONObject("location");
+            location = createLocation(locationJson);
         } catch (JSONException e) {
-            LogWrapper.e(TAG, "Unable to parse unsplash photo info", e);
+            Log.e(TAG, "No location information in response", e);
         }
+        return location;
+    }
+
+    public Exif getExif(String responseBody) {
+        Exif exif = null;
+        try {
+            JSONObject response = new JSONObject(responseBody);
+            JSONObject exifJson = response.getJSONObject("exif");
+            exif = createExif(exifJson);
+        } catch (JSONException e) {
+            Log.e(TAG, "No exif information in response", e);
+        }
+        return exif;
     }
 
     private Location createLocation(JSONObject locationJson) {
@@ -58,57 +75,56 @@ public class UnsplashPhotoInfoParser {
             longitude = positionJson.optDouble("longitude", 0);
             latitude = positionJson.optDouble("latitude", 0);
         }
-        String locationName = getFormattedLocationName(city, country, latitude, longitude);
-        return locationName != null ?
-                new Location(new Name(locationName), longitude, latitude) :
-                null;
+        String locationName = getFormattedLocationName(city, country);
 
+        Coordinates coordinates = null;
+        try {
+            coordinates = new Coordinates(latitude, longitude);
+        } catch (InstantiationException ignored) {}
+
+        Location location = null;
+        try {
+            location = new Location(new Name(locationName), coordinates);
+        } catch (InstantiationException e) {
+            LogWrapper.e(TAG, "", e);
+        }
+        return location;
     }
 
     private String getFormattedLocationName(
             String city,
-            String country,
-            double latitude,
-            double longitude
+            String country
     ) {
-        String locationString = null;
+        String locationName = null;
         if (city != null || country != null) {
-            locationString = city;
-            if (country != null) {
-                if (locationString != null) {
-                    locationString = locationString.concat(", ").concat(country);
-                } else {
-                    locationString = country;
+            if (city != null) {
+                locationName = city;
+                if (country != null) {
+                    locationName.concat(", ").concat(country);
                 }
+            } else {
+                locationName = country;
             }
-        } else if (latitude != 0 || longitude != 0) {
-            locationString = String.valueOf(latitude) + ", " + String.valueOf(longitude);
         }
-        return locationString;
+        return locationName;
     }
 
-    private void setLocation(JSONObject response, UnsplashImage image) {
-        JSONObject locationJson = response.optJSONObject("location");
-        Location location = null;
-        if (locationJson != null) {
-            location = createLocation(locationJson);
-        }
-        image.setLocation(location);
-    }
-
-    private void setExif(JSONObject response, UnsplashImage image) {
-        JSONObject exifJson = response.optJSONObject("exif");
+    private Exif createExif(JSONObject exifJson) {
         Exif exif = null;
         if (exifJson != null) {
-            exif = new Exif(
-                    createCamera(exifJson),
-                    createExposureTime(exifJson),
-                    createAperture(exifJson),
-                    createFocalLength(exifJson),
-                    createIso(exifJson)
-            );
+            try {
+                exif = new Exif(
+                        createCamera(exifJson),
+                        createExposureTime(exifJson),
+                        createAperture(exifJson),
+                        createFocalLength(exifJson),
+                        createIso(exifJson)
+                );
+            } catch (InstantiationException e) {
+                LogWrapper.e(TAG, "", e);
+            }
         }
-        image.setExif(exif);
+        return exif;
     }
 
     private Name createCamera(JSONObject exifJson) {

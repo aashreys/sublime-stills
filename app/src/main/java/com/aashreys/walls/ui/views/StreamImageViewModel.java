@@ -25,6 +25,7 @@ import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.ui.StreamFragment;
@@ -79,10 +80,12 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
     void setData(StreamFragment fragment, ImageView imageView, Image image) {
         this.image = image;
         if (eventCallback != null) {
-            eventCallback.onImageBackgroundChanged(image.getBackgroundColor() != null ? image.getBackgroundColor().getColor() : 0);
+            eventCallback.onImageBackgroundChanged(
+                    Value.getValidValue(image.getBackgroundColor(), 0)
+            );
+            downloadImage(fragment, imageView);
+            syncFavoriteState();
         }
-        downloadImage(fragment, imageView);
-        syncFavoriteState();
     }
 
     void setEventCallback(EventCallback eventCallback) {
@@ -190,7 +193,7 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
     }
 
     float getWidthToHeightRatio() {
-        return 16f/10;
+        return 16f / 10;
     }
 
     interface EventCallback {

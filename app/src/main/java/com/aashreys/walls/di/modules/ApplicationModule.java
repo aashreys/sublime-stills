@@ -20,10 +20,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.aashreys.maestro.ViewModelStore;
+import com.aashreys.walls.Migrator;
 import com.aashreys.walls.WallsApplication;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.device.DeviceInfoImpl;
 import com.aashreys.walls.domain.device.ResourceProvider;
+import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.ui.helpers.NetworkHelper;
 
 import dagger.Module;
@@ -38,17 +40,22 @@ public class ApplicationModule {
 
     private final WallsApplication application;
 
-    private ViewModelStore viewModelStore;
+    private final ViewModelStore viewModelStore;
 
-    private DeviceInfo deviceInfo;
+    private final DeviceInfo deviceInfo;
 
-    private ResourceProvider resourceProvider;
+    private final ResourceProvider resourceProvider;
 
     public ApplicationModule(WallsApplication application) {
         this.application = application;
         this.viewModelStore = new ViewModelStore();
         this.deviceInfo = new DeviceInfoImpl(application);
         this.resourceProvider = new ResourceProvider(application);
+    }
+
+    @Provides
+    public Migrator providesMigrator(KeyValueStore keyValueStore) {
+        return new Migrator(application, keyValueStore);
     }
 
     @Provides

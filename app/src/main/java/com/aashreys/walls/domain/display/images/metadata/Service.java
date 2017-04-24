@@ -21,6 +21,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
 
@@ -44,14 +45,25 @@ public class Service implements Parcelable {
     @Nullable
     private final Url url;
 
-    public Service(@NonNull Name name, Url url) {
+    public Service(@NonNull Name name, @Nullable Url url) throws InstantiationException {
         this.name = name;
         this.url = url;
+        validate();
     }
 
     protected Service(Parcel in) {
         this.name = in.readParcelable(Name.class.getClassLoader());
         this.url = in.readParcelable(Url.class.getClassLoader());
+    }
+
+    private boolean isValid() {
+        return name != null && name.isValid();
+    }
+
+    private void validate() throws InstantiationException {
+        if (!isValid()) {
+            throw new InstantiationException("Unable to create Service");
+        }
     }
 
     @NonNull
@@ -71,5 +83,13 @@ public class Service implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.name, flags);
         dest.writeParcelable(this.url, flags);
+    }
+
+    public static Service createConstant(String name, String url) {
+        try {
+            return new Service(new Name(name), new Url(url));
+        } catch (InstantiationException e) {
+            return null;
+        }
     }
 }

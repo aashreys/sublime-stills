@@ -20,16 +20,15 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
+import com.aashreys.walls.domain.values.Color;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.persistence.Persistable;
 
 import java.util.Date;
 
@@ -37,7 +36,7 @@ import java.util.Date;
  * Created by aashreys on 19/03/17.
  */
 
-public interface Image extends Parcelable, Persistable {
+public interface Image extends Parcelable {
 
     int RES_ORIGINAL = Integer.MAX_VALUE;
 
@@ -72,7 +71,7 @@ public interface Image extends Parcelable, Persistable {
     Location getLocation();
 
     @Nullable
-    BackgroundColor getBackgroundColor();
+    Color getBackgroundColor();
 
     @Type
     @NonNull

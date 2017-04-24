@@ -35,7 +35,7 @@ public abstract class Value<T> implements Parcelable {
     }
 
     public boolean isValid() {
-        return true;
+        return value() != null;
     }
 
     @Override
@@ -55,7 +55,12 @@ public abstract class Value<T> implements Parcelable {
     }
 
     @Nullable
-    public static <T> T getNullableValue(@Nullable Value<T> value) {
-        return value != null ? value.value() : null;
+    public static <T> T getValidValue(@Nullable Value<T> value) {
+        return getValidValue(value, null);
+    }
+
+    @Nullable
+    public static <T> T getValidValue(@Nullable Value<T> value, T defValue) {
+        return value != null && value.isValid() ? value.value() : defValue;
     }
 }

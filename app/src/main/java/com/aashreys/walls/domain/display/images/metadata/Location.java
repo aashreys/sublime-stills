@@ -20,6 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.values.Name;
 
 /**
@@ -39,20 +40,31 @@ public class Location implements Parcelable {
     @Nullable
     private final Name name;
 
-    private final double longitude;
+    @Nullable
+    private final Coordinates coordinates;
 
-    private final double latitude;
 
-    public Location(Name name, double longitude, double latitude) {
+    public Location(@Nullable Name name, @Nullable Coordinates coordinates) throws
+            InstantiationException {
         this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
+        this.coordinates = coordinates;
+        validate();
+
     }
 
     protected Location(Parcel in) {
         this.name = in.readParcelable(Name.class.getClassLoader());
-        this.longitude = in.readDouble();
-        this.latitude = in.readDouble();
+        this.coordinates = in.readParcelable(Coordinates.class.getClassLoader());
+    }
+
+    private void validate() throws InstantiationException {
+        if (!isValid()) {
+            throw new InstantiationException("Unable to create location");
+        }
+    }
+
+    private boolean isValid() {
+        return name != null && name.isValid() || coordinates != null;
     }
 
     @Nullable
@@ -60,22 +72,9 @@ public class Location implements Parcelable {
         return name;
     }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    @Override
-    public int describeContents() { return 0; }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.name, flags);
-        dest.writeDouble(this.longitude);
-        dest.writeDouble(this.latitude);
+    @Nullable
+    public Coordinates getCoordinates() {
+        return coordinates;
     }
 
     @Override
@@ -85,27 +84,26 @@ public class Location implements Parcelable {
 
         Location location = (Location) o;
 
-        if (Double.compare(location.longitude, longitude) != 0) return false;
-        if (Double.compare(location.latitude, latitude) != 0) return false;
-        if (name == null && location.name == null) {
-            return true;
-        } else {
-            return name.equals(location.name);
-        }
+        if (name != null ? !name.equals(location.name) : location.name != null) return false;
+        return coordinates != null ?
+                coordinates.equals(location.coordinates) :
+                location.coordinates == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = 1;
-        long temp;
-        if (name != null) {
-            result = name.hashCode();
-        }
-        temp = Double.doubleToLongBits(longitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(latitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (coordinates != null ? coordinates.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.name, flags);
+        dest.writeParcelable(this.coordinates, flags);
     }
 }

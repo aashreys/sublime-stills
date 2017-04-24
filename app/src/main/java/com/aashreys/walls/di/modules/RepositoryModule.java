@@ -20,10 +20,12 @@ import android.content.SharedPreferences;
 
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.KeyValueStoreImpl;
+import com.aashreys.walls.persistence.collections.CollectionModelFactory;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.persistence.collections.CollectionRepositoryImpl;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepositoryImpl;
+import com.aashreys.walls.persistence.favoriteimage.ImageModelFactory;
 import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
 import com.aashreys.walls.persistence.shorturl.ShortUrlRepositoryImpl;
 
@@ -40,13 +42,13 @@ public class RepositoryModule {
     public RepositoryModule() {}
 
     @Provides
-    public CollectionRepository providesCollectionRepository() {
-        return new CollectionRepositoryImpl();
+    public CollectionRepository providesCollectionRepository(CollectionModelFactory collectionModelFactory) {
+        return new CollectionRepositoryImpl(collectionModelFactory);
     }
 
     @Provides
-    public FavoriteImageRepository providesFavoriteImageRepository() {
-        return new FavoriteImageRepositoryImpl();
+    public FavoriteImageRepository providesFavoriteImageRepository(ImageModelFactory imageModelFactory) {
+        return new FavoriteImageRepositoryImpl(imageModelFactory);
     }
 
     @Provides

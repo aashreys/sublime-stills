@@ -19,6 +19,7 @@ package com.aashreys.walls.persistence.collections;
 import android.support.annotation.NonNull;
 
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.persistence.models.CollectionModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,24 +37,31 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
     private final static List<CollectionRepositoryListener> listeners = new ArrayList<>();
 
-    private static final String BOOK_NAME = "collections_book";
+    public static final String BOOK_NAME = "collections_book";
 
-    public CollectionRepositoryImpl() {}
+    private final CollectionModelFactory collectionModelFactory;
+
+    public CollectionRepositoryImpl(CollectionModelFactory collectionModelFactory) {
+        this.collectionModelFactory = collectionModelFactory;
+    }
 
     @Override
     public void insert(Collection collection) {
-        getBook().write(getCollectionKey(collection), collection);
+        CollectionModel model = createModel(collection);
+        getBook().write(getModelKey(model), model);
         _notifyInsert(collection);
     }
 
     @Override
     public boolean contains(Collection collection) {
-        return getBook().exist(getCollectionKey(collection));
+        CollectionModel model = createModel(collection);
+        return getBook().exist(getModelKey(model));
     }
 
     @Override
     public void remove(Collection collection) {
-        getBook().delete(getCollectionKey(collection));
+        CollectionModel model = createModel(collection);
+        getBook().delete(getModelKey(model));
         _notifyDelete(collection);
     }
 
@@ -62,7 +70,8 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         getBook().destroy();
         Book book = getBook();
         for (Collection collection : collectionList) {
-            book.write(getCollectionKey(collection), collection);
+            CollectionModel model = createModel(collection);
+            book.write(getModelKey(model), model);
         }
         _notifyReplaceAll(collectionList);
     }
@@ -79,7 +88,8 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         List<String> keyList = getBook().getAllKeys();
         Book book = getBook();
         for (String key : keyList) {
-            Collection collection = book.read(key, null);
+            CollectionModel model = book.read(key, null);
+            Collection collection = model.createCollection();
             if (collection != null) {
                 collectionList.add(collection);
             }
@@ -119,8 +129,12 @@ public class CollectionRepositoryImpl implements CollectionRepository {
         return Paper.book(BOOK_NAME);
     }
 
-    private String getCollectionKey(Collection collection) {
-        return collection.getType() + collection.getId().value();
+    private CollectionModel createModel(Collection collection) {
+        return collectionModelFactory.create(collection);
+    }
+
+    private String getModelKey(CollectionModel model) {
+        return model.getClass().getSimpleName() + model.getId();
     }
 
 }

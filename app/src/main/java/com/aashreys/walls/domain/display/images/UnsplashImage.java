@@ -20,12 +20,13 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
+import com.aashreys.walls.domain.values.Color;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
@@ -48,47 +49,64 @@ public class UnsplashImage implements Image {
 
     public static final String IMAGE_URL_CONFIG = "?q=75&cs=tinysrgb&fm=jpg&w=%s&fit=max";
 
-    static final Service SERVICE = new Service(
-            new Name("Unsplash"),
-            new Url("https://unsplash.com")
+    private static final Service SERVICE = Service.createConstant(
+            "Unsplash",
+            "https://unsplash.com"
     );
 
+    @NonNull
+    public final Url rawImageUrl;
+
+    @NonNull
     private final Id id;
 
-    private final Url rawImageUrl;
-
+    @NonNull
     private final Url imageShareUrl;
 
-    private final User user;
-
-    private final Resolution resolution;
-
+    @Nullable
     private final Date createdAt;
 
+    @Nullable
+    private final User user;
+
+    @Nullable
+    private final Resolution resolution;
+
+    @Nullable
+    private final Color backgroundColor;
+
+    @Nullable
     private Location location;
 
+    @Nullable
     private Exif exif;
 
+    @Nullable
     private Name title;
-
-    private BackgroundColor backgroundColor;
 
     public UnsplashImage(
             @NonNull Id id,
-            @Nullable Resolution resolution,
-            @NonNull Date createdAt,
-            @Nullable User user,
             @NonNull Url rawImageUrl,
             @NonNull Url imageShareUrl,
-            @Nullable BackgroundColor backgroundColor
-    ) {
+            @Nullable Name title,
+            @Nullable Date createdAt,
+            @Nullable User user,
+            @Nullable Location location,
+            @Nullable Exif exif,
+            @Nullable Resolution resolution,
+            @Nullable Color backgroundColor
+    ) throws InstantiationException {
         this.id = id;
         this.rawImageUrl = rawImageUrl;
         this.imageShareUrl = imageShareUrl;
-        this.resolution = resolution;
-        this.user = user;
+        this.title = title;
         this.createdAt = createdAt;
+        this.user = user;
+        this.location = location;
+        this.exif = exif;
+        this.resolution = resolution;
         this.backgroundColor = backgroundColor;
+        validate();
     }
 
     protected UnsplashImage(Parcel in) {
@@ -102,6 +120,18 @@ public class UnsplashImage implements Image {
         this.location = in.readParcelable(Location.class.getClassLoader());
         this.exif = in.readParcelable(Exif.class.getClassLoader());
         this.title = in.readParcelable(Name.class.getClassLoader());
+        this.backgroundColor = in.readParcelable(Color.class.getClassLoader());
+    }
+
+    private void validate() throws InstantiationException {
+        if (!isValid()) {
+            throw new InstantiationException();
+        }
+    }
+
+    private boolean isValid() {
+        return id != null && id.isValid() && rawImageUrl != null && rawImageUrl.isValid() &&
+                imageShareUrl != null && imageShareUrl.isValid();
     }
 
     @NonNull
@@ -132,7 +162,7 @@ public class UnsplashImage implements Image {
         return title;
     }
 
-    public void setTitle(Name title) {
+    public void setTitle(@Nullable Name title) {
         this.title = title;
     }
 
@@ -182,7 +212,7 @@ public class UnsplashImage implements Image {
 
     @Nullable
     @Override
-    public BackgroundColor getBackgroundColor() {
+    public Color getBackgroundColor() {
         return backgroundColor;
     }
 
@@ -206,6 +236,7 @@ public class UnsplashImage implements Image {
         dest.writeParcelable(this.location, flags);
         dest.writeParcelable(this.exif, flags);
         dest.writeParcelable(this.title, flags);
+        dest.writeParcelable(this.backgroundColor, flags);
     }
 
     @Override

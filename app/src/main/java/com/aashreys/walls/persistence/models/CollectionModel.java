@@ -14,14 +14,18 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.persistence;
+package com.aashreys.walls.persistence.models;
+
+import com.aashreys.walls.domain.display.collections.Collection;
 
 /**
- * Created by aashreys on 30/11/16.
+ * Created by aashreys on 23/04/17.
  */
 
-public class WallsDatabase {
+public interface CollectionModel {
 
-    public static final String NAME = "walls_database";
+    Collection createCollection();
+
+    String getId();
 
 }

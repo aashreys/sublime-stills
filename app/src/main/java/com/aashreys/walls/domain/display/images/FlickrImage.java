@@ -20,16 +20,17 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.aashreys.walls.domain.display.images.metadata.BackgroundColor;
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 import com.aashreys.walls.domain.display.images.metadata.Service;
 import com.aashreys.walls.domain.display.images.metadata.User;
-import com.aashreys.walls.utils.FlickrBaseEncoder;
+import com.aashreys.walls.domain.values.Color;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
+import com.aashreys.walls.utils.FlickrBaseEncoder;
 
 import java.util.Date;
 import java.util.TreeMap;
@@ -48,6 +49,8 @@ public class FlickrImage implements Image {
         public FlickrImage[] newArray(int size) {return new FlickrImage[size];}
     };
 
+    protected static final Service SERVICE = Service.createConstant("Flickr", "https://flickr.com");
+
     private static final String TAG = FlickrImage.class.getSimpleName();
 
     // Order of args: farm_id, server_id, id, secret, size
@@ -64,11 +67,6 @@ public class FlickrImage implements Image {
     // Arg: User id
     private static final String USER_PHOTOSTREAM_URL_TEMPLATE =
             "https://www.flickr.com/photos/%s/";
-
-    protected static final Service SERVICE = new Service(
-            new Name("Flickr"),
-            new Url("https://flickr.com")
-    );
 
     private static final TreeMap<Integer, Character> SIZE_MAP = new TreeMap<>();
 
@@ -99,7 +97,7 @@ public class FlickrImage implements Image {
     @Nullable
     private final Name title;
 
-    @NonNull
+    @Nullable
     private final User user;
 
     @Nullable
@@ -120,10 +118,10 @@ public class FlickrImage implements Image {
             @NonNull Id serverId,
             @NonNull Id farmId,
             @NonNull Id secret,
-            Name title,
-            Name userName,
-            Date uploadDate,
-            Location location
+            @Nullable Name title,
+            @Nullable Name userName,
+            @Nullable Date uploadDate,
+            @Nullable Location location
     ) {
         this.id = id;
         this.serverId = serverId;
@@ -131,12 +129,7 @@ public class FlickrImage implements Image {
         this.secret = secret;
         this.title = title;
         this.uploadDate = uploadDate;
-        this.user = new User(
-                ownerId,
-                userName,
-                new Url(String.format(USER_PROIFLE_URL_TEMPLATE, ownerId.value())),
-                new Url(String.format(USER_PHOTOSTREAM_URL_TEMPLATE, ownerId.value()))
-        );
+        this.user = createUser(ownerId, userName);
         this.location = location;
     }
 
@@ -152,6 +145,19 @@ public class FlickrImage implements Image {
         this.location = in.readParcelable(Location.class.getClassLoader());
         this.exif = in.readParcelable(Exif.class.getClassLoader());
         this.resolution = in.readParcelable(Resolution.class.getClassLoader());
+    }
+
+    private User createUser(Id ownerId, Name userName) {
+        try {
+            return new User(
+                    ownerId,
+                    userName,
+                    new Url(String.format(USER_PROIFLE_URL_TEMPLATE, ownerId.value())),
+                    new Url(String.format(USER_PHOTOSTREAM_URL_TEMPLATE, ownerId.value()))
+            );
+        } catch (InstantiationException e) {
+            return null;
+        }
     }
 
     @NonNull
@@ -234,7 +240,7 @@ public class FlickrImage implements Image {
 
     @Nullable
     @Override
-    public BackgroundColor getBackgroundColor() {
+    public Color getBackgroundColor() {
         return null;
     }
 

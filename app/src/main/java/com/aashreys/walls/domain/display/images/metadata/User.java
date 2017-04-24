@@ -21,6 +21,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
@@ -55,14 +56,25 @@ public class User implements Parcelable {
 
     public User(
             @NonNull Id id,
-            Name name,
-            Url profileUrl,
-            Url portfolioUrl
-    ) {
+            @Nullable Name name,
+            @Nullable Url profileUrl,
+            @Nullable Url portfolioUrl
+    ) throws InstantiationException {
         this.id = id;
         this.name = name;
         this.profileUrl = profileUrl;
         this.portfolioUrl = portfolioUrl;
+        validate();
+    }
+
+    private void validate() throws InstantiationException {
+        if (!isValid()) {
+            throw new InstantiationException("Unable to create User");
+        }
+    }
+
+    private boolean isValid() {
+        return id != null && id.isValid();
     }
 
     protected User(Parcel in) {

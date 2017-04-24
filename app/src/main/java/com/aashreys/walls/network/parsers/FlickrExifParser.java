@@ -16,6 +16,7 @@
 
 package com.aashreys.walls.network.parsers;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.utils.LogWrapper;
@@ -50,7 +51,8 @@ public class FlickrExifParser {
     }
 
     private Exif createExif(JSONArray exifArray) {
-        Exif exif = new Exif();
+        String camera, exposureTime, aperture, focalLength, iso;
+        camera = exposureTime = aperture = focalLength = iso = null;
         for (int i = 0; i < exifArray.length(); i++) {
             try {
                 JSONObject exifJson = exifArray.getJSONObject(i);
@@ -58,43 +60,40 @@ public class FlickrExifParser {
                 switch (tag) {
 
                     case "Model":
-                        String camera = getExifValue(exifJson);
-                        if (camera != null) {
-                            exif.camera = new Name(camera);
-                        }
+                        camera = getExifValue(exifJson);
                         break;
 
                     case "ExposureTime":
-                        String exposureTime = getExifValue(exifJson);
-                        if (exposureTime != null) {
-                            exif.exposureTime = new Name(exposureTime);
-                        }
+                        exposureTime = getExifValue(exifJson);
                         break;
 
                     case "FNumber":
-                        String aperture = getExifValue(exifJson);
-                        if (aperture != null) {
-                            exif.aperture = new Name(aperture);
-                        }
+                        aperture = getExifValue(exifJson);
                         break;
 
                     case "FocalLength":
-                        String focalLength = getExifValue(exifJson);
-                        if (focalLength != null) {
-                            exif.focalLength = new Name(focalLength);
-                        }
+                        focalLength = getExifValue(exifJson);
                         break;
 
                     case "ISO":
-                        String iso = getExifValue(exifJson);
-                        if (iso != null) {
-                            exif.iso = new Name(iso);
-                        }
+                        iso = getExifValue(exifJson);
                         break;
                 }
             } catch (JSONException e) {
                 LogWrapper.d(TAG, "Unable to read exif property", e);
             }
+        }
+        Exif exif = null;
+        try {
+            exif = new Exif(
+                    camera != null ? new Name(camera) : null,
+                    exposureTime != null ? new Name(exposureTime) : null,
+                    aperture != null ? new Name(aperture) : null,
+                    focalLength != null ? new Name(focalLength) : null,
+                    iso != null ? new Name(iso) : null
+            );
+        } catch (InstantiationException e) {
+            LogWrapper.e(TAG, "Unable to create exif while parsing flick response", e);
         }
         return exif;
     }

@@ -16,7 +16,9 @@
 
 package com.aashreys.walls;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.display.images.UnsplashImage;
+import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
@@ -39,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ImageTests extends BaseTestCase {
 
-    public static UnsplashImage _createUnsplashImage(
+    private UnsplashImage _createUnsplashImage(
             String id,
             int x,
             int y,
@@ -51,19 +53,55 @@ public class ImageTests extends BaseTestCase {
             String rawImageUrl,
             String imageShareUrl
     ) {
-        return new UnsplashImage(
-                new Id(id),
-                new Resolution(new Pixel(x), new Pixel(y)),
-                new Date(createdAtTime),
-                new User(
-                        new Id(userId),
-                        new Name(userRealName),
-                        new Url(userProfileUrl),
-                        new Url(userPortfolioUrl)
-                ),
-                new Url(rawImageUrl),
-                new Url(imageShareUrl)
-        );
+        try {
+            return new UnsplashImage(
+                    new Id(id),
+                    new Url(rawImageUrl),
+                    new Url(imageShareUrl),
+                    null,
+                    new Date(createdAtTime),
+                    new User(
+                            new Id(userId),
+                            new Name(userRealName),
+                            new Url(userProfileUrl),
+                            new Url(userPortfolioUrl)
+                    ),
+                    null,
+                    null,
+                    new Resolution(new Pixel(x), new Pixel(y)),
+                    null
+            );
+        } catch (InstantiationException e) {
+            return null;
+        }
+    }
+
+    private Exif createExif(
+            String camera,
+            String exposureTime,
+            String aperture,
+            String focalLength,
+            String iso
+    ) {
+        try {
+            return new Exif(
+                    new Name(camera),
+                    new Name(exposureTime),
+                    new Name(aperture),
+                    new Name(focalLength),
+                    new Name(iso)
+            );
+        } catch (InstantiationException e) {
+            return null;
+        }
+    }
+
+    private Location createLocation(String locationName, double latitude, double longitude) {
+        try {
+            return new Location(new Name(locationName), new Coordinates(latitude, longitude));
+        } catch (InstantiationException e) {
+            return null;
+        }
     }
 
     @Test
@@ -85,20 +123,14 @@ public class ImageTests extends BaseTestCase {
         String locationNameString = "The Hilltop";
         double latitude = 24.12;
         double longitude = 23.42;
-        Location location = new Location(new Name(locationNameString), longitude, latitude);
+        Location location = createLocation(locationNameString, longitude, latitude);
 
         String camera = "Nikon D500";
         String exposureTime = "400 ms";
         String aperture = "f/4.0";
         String focalLength = "24 mm";
         String iso = "1000";
-        Exif exif = new Exif(
-                new Name(camera),
-                new Name(exposureTime),
-                new Name(aperture),
-                new Name(focalLength),
-                new Name(iso)
-        );
+        Exif exif = createExif(camera, exposureTime, aperture, focalLength, iso);
 
         UnsplashImage unsplashImage = _createUnsplashImage(
                 id,
@@ -143,8 +175,8 @@ public class ImageTests extends BaseTestCase {
 
         location = unsplashImage.getLocation();
         assertEquals(location.getName().value(), locationNameString);
-        assertEquals(location.getLongitude(), longitude, 0);
-        assertEquals(location.getLatitude(), latitude, 0);
+        assertEquals(location.getCoordinates().getLongitude(), longitude, 0);
+        assertEquals(location.getCoordinates().getLatitude(), latitude, 0);
 
         exif = unsplashImage.getExif();
         assertEquals(exif.camera.value(), camera);

@@ -19,6 +19,7 @@ package com.aashreys.walls.domain.display.images.metadata;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.values.Pixel;
 
 /**
@@ -37,9 +38,10 @@ public class Resolution implements Parcelable {
 
     private final Pixel width, height;
 
-    public Resolution(Pixel width, Pixel height) {
+    public Resolution(Pixel width, Pixel height) throws InstantiationException {
         this.width = width;
         this.height = height;
+        validate();
     }
 
     protected Resolution(Parcel in) {
@@ -55,8 +57,15 @@ public class Resolution implements Parcelable {
         return height;
     }
 
-    public boolean isValid() {
-        return width != null && width.value() > 0 && height != null && height.value() > 0;
+    private boolean isValid() {
+        return width != null && width.isValid() && width.value() > 0 && height != null &&
+                height.isValid() && height.value() > 0;
+    }
+
+    private void validate() throws InstantiationException {
+        if (!isValid()) {
+            throw new InstantiationException("Unable to create resolution");
+        }
     }
 
     @Override

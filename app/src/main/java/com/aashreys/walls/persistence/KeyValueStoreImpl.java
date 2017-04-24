@@ -52,4 +52,14 @@ public class KeyValueStoreImpl implements KeyValueStore {
     public boolean getBoolean(String key, boolean defaultValue) {
         return sharedPreferences.getBoolean(key, defaultValue);
     }
+
+    @Override
+    public void putInt(String key, int value) {
+        sharedPreferences.edit().putInt(key, value).apply();
+    }
+
+    @Override
+    public int getInt(String key, int defaultValue) {
+        return sharedPreferences.getInt(key, defaultValue);
+    }
 }

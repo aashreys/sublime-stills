@@ -14,24 +14,28 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.persistence;
+package com.aashreys.walls.persistence.models;
+
+import com.aashreys.walls.domain.display.images.metadata.Resolution;
 
 /**
- * Created by aashreys on 11/03/17.
+ * Created by aashreys on 23/04/17.
  */
 
-public interface KeyValueStore {
+public class ResolutionModel {
 
-    void putString(String key, String value);
+    private final int width, height;
 
-    String getString(String key, String defaultValue);
+    public ResolutionModel(Resolution resolution) {
+        this.width = resolution.getWidth().value();
+        this.height = resolution.getHeight().value();
+    }
 
-    void putBoolean(String key, boolean bool);
+    public int getWidth() {
+        return width;
+    }
 
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void putInt(String key, int value);
-
-    int getInt(String key, int defaultValue);
-
+    public int getHeight() {
+        return height;
+    }
 }

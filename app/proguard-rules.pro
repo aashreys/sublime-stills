@@ -51,4 +51,4 @@
 -dontwarn org.objenesis.**
 
 # Persisted models
--keep class * implements com.aashreys.walls.persistence.Persistable { *; }
+-keep class com.aashreys.walls.persistence.models.** { *; }

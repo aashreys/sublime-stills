@@ -59,8 +59,8 @@ android {
     String GOOGL_API_KEY = "GOOGL_API_KEY";
     String FLICKR_API_KEY = "FLICKR_API_KEY";
     String BOOLEAN = "boolean";
-    String PRODUCTION = "PRODUCTION";
-    String VERSION_NAME = ""
+    String IS_PRODUCTION = "IS_PRODUCTION";
+    String VERSION_NAME = "version_name"
 
     buildTypes {
         buildTypes.each {
@@ -68,7 +68,7 @@ android {
             it.buildConfigField(STRING, UNSPLASH_API_KEY, wallsProperties['unsplashApiKey'])
             it.buildConfigField(STRING, GOOGL_API_KEY, wallsProperties['googlApiKey'])
             it.buildConfigField(STRING, FLICKR_API_KEY, wallsProperties['flickrApiKey'])
-            it.resValue("string", "version_name", versionNameString)
+            it.resValue("string", VERSION_NAME, versionNameString)
         }
         release {
             debuggable false
@@ -78,14 +78,14 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.release'
-            buildConfigField BOOLEAN, PRODUCTION, "true"
+            buildConfigField BOOLEAN, IS_PRODUCTION, "true"
         }
         debug {
             debuggable true
             minifyEnabled false
             applicationIdSuffix '.debug'
             ext.enableCrashlytics = false
-            buildConfigField BOOLEAN, PRODUCTION, "false"
+            buildConfigField BOOLEAN, IS_PRODUCTION, "false"
         }
     }
 }

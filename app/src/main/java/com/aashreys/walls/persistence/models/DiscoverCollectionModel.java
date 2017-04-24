@@ -14,24 +14,24 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.persistence;
+package com.aashreys.walls.persistence.models;
+
+import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 
 /**
- * Created by aashreys on 11/03/17.
+ * Created by aashreys on 23/04/17.
  */
 
-public interface KeyValueStore {
+public class DiscoverCollectionModel implements CollectionModel {
 
-    void putString(String key, String value);
+    @Override
+    public Collection createCollection() {
+        return new DiscoverCollection();
+    }
 
-    String getString(String key, String defaultValue);
-
-    void putBoolean(String key, boolean bool);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void putInt(String key, int value);
-
-    int getInt(String key, int defaultValue);
-
+    @Override
+    public String getId() {
+        return DiscoverCollection.ID.value();
+    }
 }
