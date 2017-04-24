@@ -29,19 +29,15 @@ import java.util.List;
 
 public class DiscoverSource implements Source {
 
-    private final FlickrRecentSource flickRecentSource;
-
     private final UnsplashRecentSource unsplashRecentSource;
 
-    public DiscoverSource(FlickrRecentSource source, UnsplashRecentSource unsplashRecentSource) {
-        this.flickRecentSource = source;
+    public DiscoverSource(UnsplashRecentSource unsplashRecentSource) {
         this.unsplashRecentSource = unsplashRecentSource;
     }
 
     @NonNull
     @Override
     public List<Image> getImages(int fromIndex) throws IOException {
-        // TODO: Integrate both image sources
         return unsplashRecentSource.getImages(fromIndex);
     }
 }

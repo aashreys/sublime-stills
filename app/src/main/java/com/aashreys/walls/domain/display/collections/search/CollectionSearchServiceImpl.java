@@ -32,15 +32,11 @@ public class CollectionSearchServiceImpl implements CollectionSearchService {
 
     private final UnsplashCollectionSearchService unsplashCollectionSearchService;
 
-    private final FlickrTagSearchService flickrTagSearchService;
-
     @Inject
     public CollectionSearchServiceImpl(
-            UnsplashCollectionSearchService unsplashCollectionSearchService,
-            FlickrTagSearchService flickrTagSearchService
+            UnsplashCollectionSearchService unsplashCollectionSearchService
     ) {
         this.unsplashCollectionSearchService = unsplashCollectionSearchService;
-        this.flickrTagSearchService = flickrTagSearchService;
     }
 
     @NonNull

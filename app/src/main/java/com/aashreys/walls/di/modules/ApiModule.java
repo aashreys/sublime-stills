@@ -20,7 +20,6 @@ import android.content.Context;
 
 import com.aashreys.walls.di.scopes.ApplicationScoped;
 import com.aashreys.walls.network.apis.ApiInstanceCreator;
-import com.aashreys.walls.network.apis.FlickrApi;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.apis.UrlShortenerApi;
 
@@ -44,8 +43,6 @@ public class ApiModule {
 
     private final UrlShortenerApi urlShortenerApi;
 
-    private final FlickrApi flickrApi;
-
     private static final String CACHE_DIR = "http_response_cache";
 
     public ApiModule(Context context) {
@@ -60,7 +57,6 @@ public class ApiModule {
                 okHttpClient,
                 UrlShortenerApi.ENDPOINT
         );
-        flickrApi = apiInstanceCreator.createFlickrApi(okHttpClient, FlickrApi.ENDPOINT);
     }
 
     @Provides
@@ -73,11 +69,5 @@ public class ApiModule {
     @ApplicationScoped
     public UrlShortenerApi providesUrlShortenerApi() {
         return urlShortenerApi;
-    }
-
-    @Provides
-    @ApplicationScoped
-    public FlickrApi providesFlickrApi() {
-        return flickrApi;
     }
 }

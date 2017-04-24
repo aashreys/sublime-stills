@@ -103,45 +103,4 @@ public class ApiInstanceCreator {
                 .create(UrlShortenerApi.class);
     }
 
-    public FlickrApi createFlickrApi(OkHttpClient client, String baseUrl) {
-        return new Retrofit.Builder()
-                .client(client.newBuilder()
-                        .addInterceptor(new Interceptor() {
-                            @Override
-                            public Response intercept(Chain chain) throws IOException {
-                                // Add format and api key params
-                                Request request = chain.request();
-                                request = request.newBuilder()
-                                        .url(
-                                                request.url().toString() + "&format=json&api_key=" +
-                                                        SafeApi.decrypt(BuildConfig.FLICKR_API_KEY)
-                                        ).build();
-                                return chain.proceed(request);
-
-                            }
-                        })
-                        .addNetworkInterceptor(new Interceptor() {
-                            @Override
-                            public Response intercept(Chain chain) throws IOException {
-                                Request request = chain.request();
-                                Response response = chain.proceed(request);
-                                return response.newBuilder().header(
-                                        "Cache-Control",
-                                        "public, " +
-                                                (request.url()
-                                                        .toString()
-                                                        .contains("flickr.photos.getInfo") ?
-                                                        FlickrApi.PHOTO_INFO_CACHE_CONTROL :
-                                                        FlickrApi.GENERAL_CACHE_CONTROL
-                                                )
-                                ).build();
-                            }
-                        })
-                        .build())
-                .validateEagerly(true)
-                .baseUrl(baseUrl)
-                .build()
-                .create(FlickrApi.class);
-    }
-
 }

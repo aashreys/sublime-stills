@@ -18,16 +18,13 @@ package com.aashreys.walls.di.modules;
 
 import com.aashreys.walls.domain.display.collections.search.CollectionSearchService;
 import com.aashreys.walls.domain.display.collections.search.CollectionSearchServiceImpl;
-import com.aashreys.walls.domain.display.collections.search.FlickrTagSearchService;
 import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
 import com.aashreys.walls.domain.display.images.ImageInfoService;
 import com.aashreys.walls.domain.display.images.ImageInfoServiceImpl;
 import com.aashreys.walls.network.UrlShortener;
 import com.aashreys.walls.network.UrlShortenerImpl;
-import com.aashreys.walls.network.apis.FlickrApi;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.apis.UrlShortenerApi;
-import com.aashreys.walls.network.parsers.FlickrExifParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
 import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
@@ -76,27 +73,19 @@ public class ServiceModule {
     @Provides
     public ImageInfoService providesImagePropertiesService(
             UnsplashApi unsplashApi,
-            FlickrApi flickrApi,
-            UnsplashPhotoInfoParser unsplashPhotoInfoParser,
-            FlickrExifParser flickrExifParser
+            UnsplashPhotoInfoParser unsplashPhotoInfoParser
     ) {
         return new ImageInfoServiceImpl(
                 unsplashApi,
-                flickrApi,
-                unsplashPhotoInfoParser,
-                flickrExifParser
+                unsplashPhotoInfoParser
         );
     }
 
     @Provides
     public CollectionSearchService providesCollectionSearchService(
-            UnsplashCollectionSearchService unsplashCollectionSearchService,
-            FlickrTagSearchService flickrTagSearchService
+            UnsplashCollectionSearchService unsplashCollectionSearchService
     ) {
-        return new CollectionSearchServiceImpl(
-                unsplashCollectionSearchService,
-                flickrTagSearchService
-        );
+        return new CollectionSearchServiceImpl(unsplashCollectionSearchService);
     }
 
 }

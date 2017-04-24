@@ -22,10 +22,7 @@ import com.aashreys.walls.domain.display.collections.Collection.Type;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
-import com.aashreys.walls.domain.display.collections.FlickrRecentCollection;
-import com.aashreys.walls.domain.display.collections.FlickrTag;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
-import com.aashreys.walls.domain.display.collections.UnsplashRecentCollection;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 
@@ -71,29 +68,14 @@ public class CollectionTests extends BaseTestCase {
         Name name = new Name(nameString);
 
         CollectionFactory factory = new CollectionFactory();
-        Collection unsplashRecentCollection = factory.create(Type.UNSPLASH_RECENT, null, null);
         Collection unsplashCollection = factory.create(Type.UNSPLASH_COLLECTION, id, name);
         Collection discoverCollection = factory.create(Type.DISCOVER, null, null);
         Collection favoriteCollection = factory.create(Type.FAVORITE, null, null);
-        Collection flickrRecentCollection = factory.create(Type.FLICKR_RECENT, null, null);
-        Collection flickrTagCollection = factory.create(Type.FLICKR_TAG, id, name);
 
 
-        assertTrue(unsplashRecentCollection instanceof UnsplashRecentCollection);
         assertTrue(unsplashCollection instanceof UnsplashCollection);
         assertTrue(discoverCollection instanceof DiscoverCollection);
         assertTrue(favoriteCollection instanceof FavoriteCollection);
-        assertTrue(flickrRecentCollection instanceof FlickrRecentCollection);
-        assertTrue(flickrTagCollection instanceof FlickrTag);
-
-        testCollection(
-                unsplashRecentCollection,
-                "1",
-                "Unsplash",
-                Type.UNSPLASH_RECENT,
-                true,
-                UnsplashRecentCollection.class
-        );
 
         testCollection(
                 unsplashCollection,
@@ -120,24 +102,6 @@ public class CollectionTests extends BaseTestCase {
                 Type.FAVORITE,
                 false,
                 FavoriteCollection.class
-        );
-
-        testCollection(
-                flickrRecentCollection,
-                "1",
-                "Flickr",
-                Type.FLICKR_RECENT,
-                true,
-                FlickrRecentCollection.class
-        );
-
-        testCollection(
-                flickrTagCollection,
-                nameString,
-                nameString,
-                Type.FLICKR_TAG,
-                true,
-                FlickrTag.class
         );
 
         exception.expect(IllegalArgumentException.class);
