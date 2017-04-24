@@ -22,7 +22,7 @@ import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.ui.helpers.ImageDownloader;
+import com.aashreys.walls.application.helpers.ImageDownloader;
 import com.bumptech.glide.Priority;
 
 import java.io.File;

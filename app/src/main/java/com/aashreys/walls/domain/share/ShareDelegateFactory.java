@@ -19,8 +19,8 @@ package com.aashreys.walls.domain.share;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.share.actions.ShareActionFactory;
 import com.aashreys.walls.network.UrlShortener;
-import com.aashreys.walls.ui.helpers.ImageDownloader;
-import com.aashreys.walls.ui.utils.UiHandlerFactory;
+import com.aashreys.walls.application.helpers.ImageDownloader;
+import com.aashreys.walls.application.helpers.UiHandler;
 
 import javax.inject.Inject;
 
@@ -36,7 +36,7 @@ public class ShareDelegateFactory {
 
     private final ShareActionFactory shareActionFactory;
 
-    private final UiHandlerFactory uiHandlerFactory;
+    private final UiHandler.Factory uiHandlerFactory;
 
     private final ImageDownloader imageDownloader;
 
@@ -45,7 +45,7 @@ public class ShareDelegateFactory {
             UrlShortener urlShortener,
             DeviceResolution deviceResolution,
             ShareActionFactory shareActionFactory,
-            UiHandlerFactory uiHandlerFactory,
+            UiHandler.Factory uiHandlerFactory,
             ImageDownloader imageDownloader
     ) {
         this.urlShortener = urlShortener;

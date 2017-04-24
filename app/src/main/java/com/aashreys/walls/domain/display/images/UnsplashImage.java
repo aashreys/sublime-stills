@@ -196,7 +196,7 @@ public class UnsplashImage implements Image {
         return exif;
     }
 
-    public void setExif(Exif exif) {
+    public void setExif(@Nullable Exif exif) {
         this.exif = exif;
     }
 
@@ -206,7 +206,7 @@ public class UnsplashImage implements Image {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(@Nullable Location location) {
         this.location = location;
     }
 

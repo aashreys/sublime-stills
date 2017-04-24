@@ -16,14 +16,13 @@
 
 package com.aashreys.walls.sharedelegates.mocks;
 
-import com.aashreys.walls.ui.utils.UiHandler;
-import com.aashreys.walls.ui.utils.UiHandlerFactory;
+import com.aashreys.walls.application.helpers.UiHandler;
 
 /**
  * Created by aashreys on 06/04/17.
  */
 
-public class MockUiHandlerFactory extends UiHandlerFactory {
+public class MockUiHandlerFactory extends UiHandler.Factory {
 
     private UiHandler mockUiHandler;
 

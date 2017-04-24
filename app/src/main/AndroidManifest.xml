@@ -22,7 +22,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:name=".WallsApplication"
+        android:name=".application.WallsApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,7 +30,7 @@
         android:theme="@style/SublimeTheme"
         tools:replace="android:allowBackup, android:supportsRtl">
         <activity
-            android:name=".ui.StreamActivity"
+            android:name=".application.activities.StreamActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
@@ -39,21 +39,21 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.CollectionsActivity"/>
-        <activity android:name=".ui.ImageDetailActivity"/>
-        <activity android:name=".ui.SettingsActivity"/>
+        <activity android:name=".application.activities.CollectionsActivity"/>
+        <activity android:name=".application.activities.ImageDetailActivity"/>
+        <activity android:name=".application.activities.SettingsActivity"/>
 
         <meta-data
-            android:name="com.aashreys.walls.ui.utils.GlideConfiguration"
+            android:name="com.aashreys.walls.application.GlideConfiguration"
             android:value="GlideModule"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d1d9ded86a522d4ae7651fac61fdd2cba46ccc22"/>
 
-        <activity android:name=".ui.OnboardingActivity">
+        <activity android:name=".application.activities.OnboardingActivity">
         </activity>
         <activity
-            android:name=".ui.AddCollectionsActivity">
+            android:name=".application.activities.AddCollectionsActivity">
         </activity>
     </application>
 

@@ -16,7 +16,7 @@
 
 package com.aashreys.walls.domain.share;
 
-import com.aashreys.walls.ui.helpers.ImageDownloader;
+import com.aashreys.walls.application.helpers.ImageDownloader;
 
 import java.io.File;
 

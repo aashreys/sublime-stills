@@ -22,8 +22,8 @@ import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.ShareImageAction;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.ui.helpers.ImageDownloader;
-import com.aashreys.walls.ui.utils.UiHandler;
+import com.aashreys.walls.application.helpers.ImageDownloader;
+import com.aashreys.walls.application.helpers.UiHandler;
 
 import java.io.File;
 

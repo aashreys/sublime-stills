@@ -20,13 +20,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.aashreys.maestro.ViewModelStore;
-import com.aashreys.walls.Migrator;
-import com.aashreys.walls.WallsApplication;
+import com.aashreys.walls.application.Migrator;
+import com.aashreys.walls.application.WallsApplication;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.device.DeviceInfoImpl;
 import com.aashreys.walls.domain.device.ResourceProvider;
 import com.aashreys.walls.persistence.KeyValueStore;
-import com.aashreys.walls.ui.helpers.NetworkHelper;
+import com.aashreys.walls.application.helpers.NetworkHelper;
 
 import dagger.Module;
 import dagger.Provides;

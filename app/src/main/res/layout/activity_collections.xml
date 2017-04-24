@@ -22,7 +22,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context="com.aashreys.walls.ui.CollectionsActivity">
+    tools:context="com.aashreys.walls.application.activities.CollectionsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.aashreys.walls.ui.views.HintView
+    <com.aashreys.walls.application.views.HintView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/spacing_medium"

@@ -23,7 +23,7 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
-import com.aashreys.walls.ui.helpers.UiHelper;
+import com.aashreys.walls.application.helpers.UiHelper;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 

@@ -39,7 +39,7 @@ import com.aashreys.walls.sharedelegates.mocks.MockImageDownloader;
 import com.aashreys.walls.sharedelegates.mocks.MockShareActionFactory;
 import com.aashreys.walls.sharedelegates.mocks.MockUiHandlerFactory;
 import com.aashreys.walls.sharedelegates.mocks.MockUrlShortener;
-import com.aashreys.walls.ui.utils.UiHandler;
+import com.aashreys.walls.application.helpers.UiHandler;
 
 import junit.framework.Assert;
 

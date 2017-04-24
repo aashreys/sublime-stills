@@ -101,7 +101,7 @@
             android:elevation="6dp"
             android:orientation="vertical">
 
-            <com.aashreys.walls.ui.views.HintView
+            <com.aashreys.walls.application.views.HintView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/spacing_medium"

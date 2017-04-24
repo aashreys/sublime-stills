@@ -28,8 +28,8 @@ import com.aashreys.walls.network.apis.UrlShortenerApi;
 import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
 import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
-import com.aashreys.walls.ui.tasks.CollectionSearchTaskFactory;
-import com.aashreys.walls.ui.tasks.FeaturedCollectionsTaskFactory;
+import com.aashreys.walls.application.tasks.CollectionSearchTaskFactory;
+import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
 
 import javax.inject.Provider;
 

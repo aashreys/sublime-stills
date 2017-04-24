@@ -17,7 +17,7 @@
 package com.aashreys.walls.di;
 
 import com.aashreys.maestro.ViewModelStore;
-import com.aashreys.walls.WallsApplication;
+import com.aashreys.walls.application.WallsApplication;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
 import com.aashreys.walls.di.modules.RepositoryModule;

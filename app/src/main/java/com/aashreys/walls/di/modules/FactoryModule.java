@@ -24,8 +24,8 @@ import com.aashreys.walls.domain.display.sources.UnsplashRecentSourceFactory;
 import com.aashreys.walls.domain.share.ShareDelegateFactory;
 import com.aashreys.walls.domain.share.actions.ShareActionFactory;
 import com.aashreys.walls.network.UrlShortener;
-import com.aashreys.walls.ui.helpers.ImageDownloader;
-import com.aashreys.walls.ui.utils.UiHandlerFactory;
+import com.aashreys.walls.application.helpers.ImageDownloader;
+import com.aashreys.walls.application.helpers.UiHandler;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,7 @@ public class FactoryModule {
             UrlShortener urlShortener,
             DeviceInfo deviceInfo,
             ShareActionFactory shareActionFactory,
-            UiHandlerFactory uiHandlerFactory,
+            UiHandler.Factory uiHandlerFactory,
             ImageDownloader imageDownloader
     ) {
         return new ShareDelegateFactory(

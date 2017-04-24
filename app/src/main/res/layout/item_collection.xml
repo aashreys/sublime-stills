@@ -16,7 +16,7 @@
   -->
 
 <view
-    class="com.aashreys.walls.ui.views.CollectionView"
+    class="com.aashreys.walls.application.views.CollectionView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/height_medium"

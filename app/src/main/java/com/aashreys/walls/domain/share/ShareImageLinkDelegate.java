@@ -23,7 +23,7 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.ShareImageLinkAction;
 import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.network.UrlShortener;
-import com.aashreys.walls.ui.utils.UiHandler;
+import com.aashreys.walls.application.helpers.UiHandler;
 import com.aashreys.walls.utils.LogWrapper;
 
 /**
