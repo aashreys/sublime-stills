@@ -50,6 +50,8 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private ImageProvider imageProvider;
 
+    private boolean isLoadingEnabled;
+
     /**
      * How many items from the end of the list should the adapter request for more data to be
      * loaded via an instance of {@link LoadingCallback} set via
@@ -101,7 +103,7 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             );
         }
         int thresholdDiff = getItemCount() - position;
-        if (loadingThreshold >= thresholdDiff && loadingCallback != null) {
+        if (isLoadingEnabled && loadingThreshold >= thresholdDiff && loadingCallback != null) {
             loadingCallback.onLoadRequested();
         }
     }
@@ -144,6 +146,10 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         holder.itemView.clearAnimation();
+    }
+
+    public void setIsLoadingEnabled(boolean isLoadingEnabled) {
+        this.isLoadingEnabled = isLoadingEnabled;
     }
 
     public interface LoadingCallback {

@@ -28,11 +28,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.application.fragments.StreamFragment;
 import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.application.views.libs.AspectRatioImageView;
-import com.aashreys.walls.utils.LogWrapper;
+import com.aashreys.walls.domain.display.images.Image;
 
 import javax.inject.Inject;
 
@@ -98,13 +97,11 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                LogWrapper.d(TAG, "View attached to Window");
                 viewModel.onViewOnScreen();
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                LogWrapper.d(TAG, "View detached to Window");
                 viewModel.onViewOffScreen();
             }
         });

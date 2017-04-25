@@ -20,6 +20,10 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.application.adapters.StreamAdapter;
+import com.aashreys.walls.application.helpers.NetworkHelper;
+import com.aashreys.walls.application.tasks.LoadImagesTask;
+import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
@@ -27,10 +31,6 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.application.adapters.StreamAdapter;
-import com.aashreys.walls.application.helpers.NetworkHelper;
-import com.aashreys.walls.application.tasks.LoadImagesTask;
-import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.utils.LogWrapper;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         favoriteImageRepository.addListener(favoriteRepoListener);
     }
 
-    void loadMoreImages() {
+    private void loadMoreImages() {
         LogWrapper.i(TAG, collection.getName().value() + " - loading images");
         if (loadImagesTask != null) {
             loadImagesTask.release();
@@ -159,16 +159,15 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
             @StreamFragment.LoadingViewStateManager.State int loadingState;
             if (!isFavoriteStream()) {
                 if (!networkHelper.isConnected()) {
-                    loadingState = StreamFragment.LoadingViewStateManager.State.NO_INTERNET;
+                    eventListener.onNoNetworkError();
                 } else if (!networkHelper.isFastNetworkConnected()) {
-                    loadingState = StreamFragment.LoadingViewStateManager.State.SLOW_INTERNET;
+                    eventListener.onSlowNetworkError();
                 } else {
-                    loadingState = StreamFragment.LoadingViewStateManager.State.LOADING;
+                    eventListener.onImagesLoading(false);
                 }
             } else {
-                loadingState = StreamFragment.LoadingViewStateManager.State.FAVORITE;
+                eventListener.onImagesLoading(true);
             }
-            eventListener.onLoadingUiStateChanged(loadingState);
         }
     }
 
@@ -178,15 +177,10 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         imageList.addAll(images);
         if (eventListener != null) {
             eventListener.onImagesAdded(oldPosition, images.size());
-            if (isFavoriteStream()) {
-                eventListener.onLoadingUiStateChanged(StreamFragment.LoadingViewStateManager.State.FAVORITE);
+            if (images.size() > 0) {
+                eventListener.onImageLoadingComplete(isFavoriteStream());
             } else {
-                if (images.size() > 0) {
-                    eventListener.onLoadingUiStateChanged(StreamFragment.LoadingViewStateManager
-                            .State.NOT_LOADING);
-                } else {
-                    eventListener.onLoadingUiStateChanged(StreamFragment.LoadingViewStateManager.State.END_OF_COLLECTION);
-                }
+                eventListener.onCollectionEndReached(isFavoriteStream());
             }
         }
     }
@@ -194,7 +188,7 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
     @Override
     public void onLoadError() {
         if (eventListener != null) {
-            eventListener.onLoadingUiStateChanged(StreamFragment.LoadingViewStateManager.State.GENERIC_ERROR);
+            eventListener.onGenericError();
         }
     }
 
@@ -248,7 +242,17 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
         void onImageRemoved(int position);
 
-        void onLoadingUiStateChanged(@StreamFragment.LoadingViewStateManager.State int loadingState);
+        void onImagesLoading(boolean isFavorite);
+
+        void onNoNetworkError();
+
+        void onSlowNetworkError();
+
+        void onImageLoadingComplete(boolean isFavorite);
+
+        void onCollectionEndReached(boolean isFavorite);
+
+        void onGenericError();
 
     }
 }

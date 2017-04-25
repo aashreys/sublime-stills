@@ -121,6 +121,7 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
         adapter = new StreamAdapter(this, viewModel.getImageInteractionListener(), viewModel);
         adapter.setLoadingView(loadingView);
         adapter.setLoadingCallback(viewModel);
+        adapter.setIsLoadingEnabled(true);
     }
 
     @Override
@@ -191,10 +192,34 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
     }
 
     @Override
-    public void onLoadingUiStateChanged(@LoadingViewStateManager.State int loadingState) {
-        if (loadingViewStateManager != null) {
-            loadingViewStateManager.setState(loadingState);
-        }
+    public void onImagesLoading(boolean isFavorite) {
+        loadingViewStateManager.setState(isFavorite ? FAVORITE : LOADING);
+    }
+
+    @Override
+    public void onNoNetworkError() {
+        loadingViewStateManager.setState(NO_INTERNET);
+    }
+
+    @Override
+    public void onSlowNetworkError() {
+        loadingViewStateManager.setState(SLOW_INTERNET);
+    }
+
+    @Override
+    public void onImageLoadingComplete(boolean isFavorite) {
+        loadingViewStateManager.setState(isFavorite ? FAVORITE : NOT_LOADING);
+    }
+
+    @Override
+    public void onCollectionEndReached(boolean isFavorite) {
+        loadingViewStateManager.setState(isFavorite ? FAVORITE : END_OF_COLLECTION);
+        adapter.setIsLoadingEnabled(false);
+    }
+
+    @Override
+    public void onGenericError() {
+        loadingViewStateManager.setState(GENERIC_ERROR);
     }
 
     static class LoadingViewStateManager {
