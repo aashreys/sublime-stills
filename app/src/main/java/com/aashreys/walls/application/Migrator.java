@@ -61,7 +61,7 @@ public class Migrator {
         LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + CURRENT_VERSION);
         switch (lastVersion) {
             case Version.V11:
-                migrateFromV0ToV10();
+                migrateFromV11ToV12();
             case CURRENT_VERSION:
                 break;
         }
@@ -73,7 +73,7 @@ public class Migrator {
         keyValueStore.putInt(KEY_LAST_VERSION, CURRENT_VERSION);
     }
 
-    private void migrateFromV0ToV10() {
+    private void migrateFromV11ToV12() {
         // Delete old SQL database since we've switched to NoSql
         context.deleteDatabase("walls_database");
         Paper.book(FavoriteImageRepositoryImpl.BOOK_NAME).destroy();
