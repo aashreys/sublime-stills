@@ -28,8 +28,6 @@ import javax.inject.Inject;
 
 import io.paperdb.Paper;
 
-import static com.aashreys.walls.application.Migrator.Version.V11;
-
 /**
  * A class for managing application migration across updates.
  * <p>
@@ -42,8 +40,6 @@ public class Migrator {
 
     private static final String KEY_LAST_VERSION = "migrator_key_last_version";
 
-    private static final int CURRENT_VERSION = Version.V12;
-
     private final KeyValueStore keyValueStore;
 
     private final Context context;
@@ -55,24 +51,24 @@ public class Migrator {
     }
 
     private int getLastVersion() {
-        return keyValueStore.getInt(KEY_LAST_VERSION, CURRENT_VERSION);
+        return keyValueStore.getInt(KEY_LAST_VERSION, Version.V11);
     }
 
     public void migrate() {
         int lastVersion = getLastVersion();
-        LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + V11);
+        LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + Version.CURRENT_VERSION);
         switch (lastVersion) {
-            case V11:
+            case Version.V11:
                 migrateFromV11ToV12();
-            case CURRENT_VERSION:
+            case Version.CURRENT_VERSION:
                 break;
         }
         completeMigration();
     }
 
     private void completeMigration() {
-        LogWrapper.i(TAG, "Migration to version " + CURRENT_VERSION + " complete");
-        keyValueStore.putInt(KEY_LAST_VERSION, CURRENT_VERSION);
+        LogWrapper.i(TAG, "Migration to version " + Version.CURRENT_VERSION + " complete");
+        keyValueStore.putInt(KEY_LAST_VERSION, Version.CURRENT_VERSION);
     }
 
     private void migrateFromV11ToV12() {
@@ -88,6 +84,8 @@ public class Migrator {
         int V11 = 11;
 
         int V12 = 12;
+
+        int CURRENT_VERSION = V12;
 
     }
 
