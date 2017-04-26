@@ -14,6 +14,10 @@
  *    limitations under the License.
  */
 
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply from: "../artifacts.gradle"
+
 buildscript {
     repositories { maven { url 'https://maven.fabric.io/public' } }
     dependencies {
@@ -22,11 +26,8 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
-
 // Load walls properties
-def wallsPropertiesFile = rootProject.file("walls.properties");
+def wallsPropertiesFile = rootProject.file("sublime.properties");
 def wallsProperties = new Properties()
 wallsProperties.load(new FileInputStream(wallsPropertiesFile))
 
