@@ -26,8 +26,6 @@ import com.aashreys.walls.persistence.collections.CollectionRepositoryImpl;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepositoryImpl;
 import com.aashreys.walls.persistence.favoriteimage.ImageModelFactory;
-import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
-import com.aashreys.walls.persistence.shorturl.ShortUrlRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,11 +47,6 @@ public class RepositoryModule {
     @Provides
     public FavoriteImageRepository providesFavoriteImageRepository(ImageModelFactory imageModelFactory) {
         return new FavoriteImageRepositoryImpl(imageModelFactory);
-    }
-
-    @Provides
-    public ShortUrlRepository providesShortUrlRepository() {
-        return new ShortUrlRepositoryImpl();
     }
 
     @Provides

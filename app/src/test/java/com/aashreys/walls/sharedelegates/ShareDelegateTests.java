@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import com.aashreys.walls.MockitoTestCase;
+import com.aashreys.walls.application.helpers.UiHandler;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.CopyLinkDelegate;
@@ -38,8 +39,6 @@ import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.sharedelegates.mocks.MockImageDownloader;
 import com.aashreys.walls.sharedelegates.mocks.MockShareActionFactory;
 import com.aashreys.walls.sharedelegates.mocks.MockUiHandlerFactory;
-import com.aashreys.walls.sharedelegates.mocks.MockUrlShortener;
-import com.aashreys.walls.application.helpers.UiHandler;
 
 import junit.framework.Assert;
 
@@ -62,8 +61,6 @@ public class ShareDelegateTests extends MockitoTestCase {
     private static final Name IMAGE_TITLE = new Name("Mister Howes");
 
     private static final Url IMAGE_SHARE_URL = new Url("https://www.someurl.com");
-
-    private MockUrlShortener mockUrlShortener;
 
     @Mock DeviceResolution deviceResolution;
 
@@ -97,8 +94,6 @@ public class ShareDelegateTests extends MockitoTestCase {
         MockUiHandlerFactory mockUiHandlerFactory = new MockUiHandlerFactory();
         mockUiHandlerFactory.setMockUiHandler(uiHandler);
 
-        mockUrlShortener = new MockUrlShortener();
-
         listener = new MockShareListener();
         Mockito.when(image.getTitle()).thenReturn(IMAGE_TITLE);
         Mockito.when(image.getShareUrl()).thenReturn(IMAGE_SHARE_URL);
@@ -130,7 +125,6 @@ public class ShareDelegateTests extends MockitoTestCase {
         mockImageLoader.setMockFile(mockFile);
 
         shareDelegateFactory = new ShareDelegateFactory(
-                mockUrlShortener,
                 deviceResolution,
                 mockShareActionFactory,
                 mockUiHandlerFactory,
@@ -165,23 +159,6 @@ public class ShareDelegateTests extends MockitoTestCase {
         shareImageLinkDelegate.share(context, image, listener);
 
         Mockito.verify(shareImageLinkAction).shareImageLink(context, IMAGE_TITLE, IMAGE_SHARE_URL);
-        Assert.assertTrue(listener.isShareComplete);
-    }
-
-    @Test
-    public void test_share_image_link_delegate_with_url_shortening() {
-        Url longImageShareUrl = new Url("https://someplace.com/image/sidjsdajssidjaosidjaosijfosijfisfdsij.jpg");
-        final Url shortenedUrl = new Url("https://spl.com/i/sda.jpg");
-
-        mockUrlShortener.setMockShortUrl(shortenedUrl);
-
-        Mockito.when(image.getShareUrl()).thenReturn(longImageShareUrl);
-
-        ShareImageLinkDelegate shareImageLinkDelegate =
-                (ShareImageLinkDelegate) shareDelegateFactory.create(Mode.LINK);
-        shareImageLinkDelegate.share(context, image, listener);
-
-        Mockito.verify(shareImageLinkAction).shareImageLink(context, IMAGE_TITLE, shortenedUrl);
         Assert.assertTrue(listener.isShareComplete);
     }
 

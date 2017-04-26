@@ -16,20 +16,16 @@
 
 package com.aashreys.walls.di.modules;
 
+import com.aashreys.walls.application.tasks.CollectionSearchTaskFactory;
+import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
 import com.aashreys.walls.domain.display.collections.search.CollectionSearchService;
 import com.aashreys.walls.domain.display.collections.search.CollectionSearchServiceImpl;
 import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
 import com.aashreys.walls.domain.display.images.ImageInfoService;
 import com.aashreys.walls.domain.display.images.ImageInfoServiceImpl;
-import com.aashreys.walls.network.UrlShortener;
-import com.aashreys.walls.network.UrlShortenerImpl;
 import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.apis.UrlShortenerApi;
 import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
-import com.aashreys.walls.persistence.shorturl.ShortUrlRepository;
-import com.aashreys.walls.application.tasks.CollectionSearchTaskFactory;
-import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
 
 import javax.inject.Provider;
 
@@ -60,14 +56,6 @@ public class ServiceModule {
     public FeaturedCollectionsTaskFactory providesFeaturedCollectionsTaskFactory
             (Provider<CollectionSearchService> collectionSearchServiceProvider) {
         return new FeaturedCollectionsTaskFactory(collectionSearchServiceProvider);
-    }
-
-    @Provides
-    public UrlShortener providesUrlShortener(
-            ShortUrlRepository shortUrlRepository,
-            UrlShortenerApi urlShortenerApi
-    ) {
-        return new UrlShortenerImpl(shortUrlRepository, urlShortenerApi);
     }
 
     @Provides

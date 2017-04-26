@@ -123,7 +123,7 @@ public class ImageTests extends BaseTestCase {
         String locationNameString = "The Hilltop";
         double latitude = 24.12;
         double longitude = 23.42;
-        Location location = createLocation(locationNameString, longitude, latitude);
+        Location location = createLocation(locationNameString, latitude, longitude);
 
         String camera = "Nikon D500";
         String exposureTime = "400 ms";
