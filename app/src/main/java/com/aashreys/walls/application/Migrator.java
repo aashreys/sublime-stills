@@ -28,6 +28,8 @@ import javax.inject.Inject;
 
 import io.paperdb.Paper;
 
+import static com.aashreys.walls.application.Migrator.Version.V11;
+
 /**
  * A class for managing application migration across updates.
  * <p>
@@ -58,9 +60,9 @@ public class Migrator {
 
     public void migrate() {
         int lastVersion = getLastVersion();
-        LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + CURRENT_VERSION);
+        LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + V11);
         switch (lastVersion) {
-            case Version.V11:
+            case V11:
                 migrateFromV11ToV12();
             case CURRENT_VERSION:
                 break;
