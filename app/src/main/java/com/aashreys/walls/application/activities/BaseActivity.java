@@ -32,7 +32,7 @@ import com.aashreys.walls.application.helpers.UiHelper;
  * Created by aashreys on 21/02/17.
  */
 
-public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
+public abstract class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
 
     private String ARG_VIEW_ID = "arg_view_id";
 
@@ -46,10 +46,8 @@ public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModelStore = getApplicationComponent().viewModelStore();
-        if (savedInstanceState != null) {
-            viewId = savedInstanceState.getString(ARG_VIEW_ID);
-            setViewModel((VM) viewModelStore.get(viewId));
-        } else {
+        setViewModel((VM) viewModelStore.get(viewId));
+        if (viewModel == null) {
             viewId = new ViewIdGenerator().generateId(this);
             setViewModel(createViewModel());
         }
@@ -69,7 +67,7 @@ public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
         outState.putString(ARG_VIEW_ID, viewId);
     }
 
-    protected final void setViewModel(VM viewModel) {
+    private void setViewModel(VM viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -78,16 +76,14 @@ public class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
     }
 
     /* Subclasses to override this to create their ViewModels */
-    protected VM createViewModel() {
-        return null;
-    }
+    protected abstract VM createViewModel();
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isFinishing()) {
+        if (!isChangingConfigurations()) {
             viewModelStore.remove(viewId);
-        } else if (viewModel != null) {
+        } else {
             viewModelStore.put(viewId, viewModel);
         }
     }

@@ -52,8 +52,6 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
 
     private FeaturedCollectionsTask collectionsTask;
 
-    private int chipViewHeight, chipViewMargin;
-
     @Inject
     public OnboardingActivityModel() {
         checkedCollectionList = new ArrayList<>();
