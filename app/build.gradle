@@ -31,8 +31,8 @@ def wallsPropertiesFile = rootProject.file("sublime.properties");
 def wallsProperties = new Properties()
 wallsProperties.load(new FileInputStream(wallsPropertiesFile))
 
-int versionCodeInt = 12;
-String versionNameString = "1.4.2";
+int versionCodeInt = 13;
+String versionNameString = "1.5";
 
 android {
     compileSdkVersion 25
@@ -56,6 +56,7 @@ android {
     }
 
     String STRING = "String";
+    String STRING_RESOURCE = "string"
     String UNSPLASH_API_KEY = "UNSPLASH_API_KEY"
     String GOOGL_API_KEY = "GOOGL_API_KEY";
     String FLICKR_API_KEY = "FLICKR_API_KEY";
@@ -69,13 +70,14 @@ android {
             it.buildConfigField(STRING, UNSPLASH_API_KEY, wallsProperties['unsplashApiKey'])
             it.buildConfigField(STRING, GOOGL_API_KEY, wallsProperties['googlApiKey'])
             it.buildConfigField(STRING, FLICKR_API_KEY, wallsProperties['flickrApiKey'])
-            it.resValue("string", VERSION_NAME, versionNameString)
+            it.resValue(STRING_RESOURCE, VERSION_NAME, versionNameString)
         }
         release {
             debuggable false
             jniDebuggable false
             renderscriptDebuggable false
             minifyEnabled true
+            zipAlignEnabled true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.release'
