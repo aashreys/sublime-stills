@@ -139,7 +139,9 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
                 recyclerView,
                 false
         );
-        loadingViewStateManager.loadingView = this.loadingView;
+        loadingViewStateManager.setLoadingView(loadingView);
+        loadingViewStateManager.setLoadingCallback(viewModel);
+
     }
 
     private void setupRecyclerView(View parentView) {
@@ -229,6 +231,14 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
         private LoadingView loadingView;
 
         private StreamAdapter.LoadingCallback loadingCallback;
+
+        void setLoadingView(LoadingView loadingView) {
+            this.loadingView = loadingView;
+        }
+
+        void setLoadingCallback(StreamAdapter.LoadingCallback loadingCallback) {
+            this.loadingCallback = loadingCallback;
+        }
 
         void setState(@State int state) {
             if (this.state != state) {
