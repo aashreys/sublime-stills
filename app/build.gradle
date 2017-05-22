@@ -31,8 +31,8 @@ def wallsPropertiesFile = rootProject.file("sublime.properties");
 def wallsProperties = new Properties()
 wallsProperties.load(new FileInputStream(wallsPropertiesFile))
 
-int versionCodeInt = 13;
-String versionNameString = "1.5";
+int versionCodeInt = 14;
+String versionNameString = "1.6";
 
 android {
     compileSdkVersion 25
