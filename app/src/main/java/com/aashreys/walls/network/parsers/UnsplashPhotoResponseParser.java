@@ -16,6 +16,7 @@
 
 package com.aashreys.walls.network.parsers;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -51,6 +52,7 @@ public class UnsplashPhotoResponseParser {
 
     private static final String TAG = UnsplashPhotoResponseParser.class.getSimpleName();
 
+    @SuppressLint("SimpleDateFormat")
     private final static SimpleDateFormat DATE_PARSER
             = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 

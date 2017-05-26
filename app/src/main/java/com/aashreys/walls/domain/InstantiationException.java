@@ -16,6 +16,9 @@
 
 package com.aashreys.walls.domain;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 /**
  * Created by aashreys on 23/04/17.
  */
@@ -36,6 +39,7 @@ public class InstantiationException extends Exception {
         super(cause);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public InstantiationException(
             String message,
             Throwable cause,

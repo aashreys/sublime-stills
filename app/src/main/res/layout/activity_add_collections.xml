@@ -35,8 +35,6 @@
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/spacing_large"
             android:gravity="center_horizontal"
             android:hint="@string/title_find_a_collection"
@@ -68,30 +66,24 @@
 
         </LinearLayout>
 
-        <FrameLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/spacing_medium"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:animateLayoutChanges="true"
+            android:fadingEdgeLength="@dimen/spacing_xs"
+            android:requiresFadingEdge="vertical"
+            android:scrollbars="none">
 
-            <ScrollView
+            <com.wefika.flowlayout.FlowLayout
+                android:id="@+id/parent_collections"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:animateLayoutChanges ="true"
-                android:fadingEdgeLength="@dimen/spacing_xs"
-                android:requiresFadingEdge="vertical"
-                android:scrollbars="none">
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:visibility="invisible"/>
 
-                <com.wefika.flowlayout.FlowLayout
-                    android:id="@+id/parent_collections"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:visibility="invisible"/>
-
-            </ScrollView>
-
-        </FrameLayout>
+        </ScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,8 +95,6 @@
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/spacing_medium"
                 android:layout_marginRight="@dimen/spacing_medium"
                 android:text="@string/action_cancel"/>
@@ -114,8 +104,6 @@
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/spacing_medium"
                 android:layout_marginLeft="@dimen/spacing_medium"
                 android:text="@string/action_search"/>
