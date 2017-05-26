@@ -78,7 +78,7 @@ public class UnsplashImageModel implements ImageModel {
 
     public UnsplashImageModel(UnsplashImage image) {
         this.id = image.getId().value();
-        this.rawImageUrl = image.rawImageUrl.value();
+        this.rawImageUrl = image.getRawImageUrl().value();
         this.imageShareUrl = image.getShareUrl().value();
         this.createdAt = image.getUploadDate();
         this.userModel = image.getUser() != null ? new UserModel(image.getUser()) : null;

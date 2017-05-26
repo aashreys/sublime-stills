@@ -51,7 +51,6 @@ public class UnsplashCollection implements Collection, Parcelable {
         this.name = name;
     }
 
-
     private UnsplashCollection(Parcel in) {
         this.id = in.readParcelable(Id.class.getClassLoader());
         this.name = in.readParcelable(Name.class.getClassLoader());
@@ -91,7 +90,6 @@ public class UnsplashCollection implements Collection, Parcelable {
         UnsplashCollection that = (UnsplashCollection) o;
 
         return id.equals(that.id);
-
     }
 
     @Override

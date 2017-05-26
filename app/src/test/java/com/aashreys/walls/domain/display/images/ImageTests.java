@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls;
+package com.aashreys.walls.domain.display.images;
 
+import com.aashreys.walls.BaseTestCase;
 import com.aashreys.walls.domain.InstantiationException;
-import com.aashreys.walls.domain.display.images.UnsplashImage;
 import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ImageTests extends BaseTestCase {
 
-    private UnsplashImage _createUnsplashImage(
+    static UnsplashImage createUnsplashImage(
             String id,
             int x,
             int y,
@@ -69,6 +69,25 @@ public class ImageTests extends BaseTestCase {
                     null,
                     null,
                     new Resolution(new Pixel(x), new Pixel(y)),
+                    null
+            );
+        } catch (InstantiationException e) {
+            return null;
+        }
+    }
+
+    static UnsplashImage createUnsplashImage(String id, String rawImageUrl, String shareImageUrl) {
+        try {
+            return new UnsplashImage(
+                    new Id(id),
+                    new Url(rawImageUrl),
+                    new Url(shareImageUrl),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null
             );
         } catch (InstantiationException e) {
@@ -132,7 +151,7 @@ public class ImageTests extends BaseTestCase {
         String iso = "1000";
         Exif exif = createExif(camera, exposureTime, aperture, focalLength, iso);
 
-        UnsplashImage unsplashImage = _createUnsplashImage(
+        UnsplashImage unsplashImage = createUnsplashImage(
                 id,
                 x,
                 y,

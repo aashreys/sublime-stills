@@ -55,7 +55,7 @@ public class UnsplashImage implements Image {
     );
 
     @NonNull
-    public final Url rawImageUrl;
+    private final Url rawImageUrl;
 
     @NonNull
     private final Id id;
@@ -138,6 +138,11 @@ public class UnsplashImage implements Image {
     @Override
     public Id getId() {
         return id;
+    }
+
+    @NonNull
+    public Url getRawImageUrl() {
+        return rawImageUrl;
     }
 
     @NonNull

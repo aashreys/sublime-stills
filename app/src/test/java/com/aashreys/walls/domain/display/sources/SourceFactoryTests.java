@@ -14,20 +14,12 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.sources;
+package com.aashreys.walls.domain.display.sources;
 
 import com.aashreys.walls.MockitoTestCase;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
-import com.aashreys.walls.domain.display.sources.DiscoverSource;
-import com.aashreys.walls.domain.display.sources.FavoriteSource;
-import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
-import com.aashreys.walls.domain.display.sources.Source;
-import com.aashreys.walls.domain.display.sources.SourceFactory;
-import com.aashreys.walls.domain.display.sources.UnsplashCollectionSource;
-import com.aashreys.walls.domain.display.sources.UnsplashCollectionSourceFactory;
-import com.aashreys.walls.domain.display.sources.UnsplashRecentSourceFactory;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.network.apis.UnsplashApi;

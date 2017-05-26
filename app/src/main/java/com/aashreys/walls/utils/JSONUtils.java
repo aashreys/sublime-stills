@@ -16,8 +16,6 @@
 
 package com.aashreys.walls.utils;
 
-import android.support.annotation.Nullable;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +27,11 @@ public class JSONUtils {
 
     public static String getString(JSONObject object, String key) throws JSONException {
         String value = object.getString(key);
-        return stringIsNotEqualsTo(value, null, "", "null") ? value : null;
+        if (value != null && !value.isEmpty() && !value.equals("null")) {
+            return value;
+        } else {
+            return null;
+        }
     }
 
     public static String optString(JSONObject object, String key, String fallback) {
@@ -37,19 +39,11 @@ public class JSONUtils {
         try {
             value = object.getString(key);
         } catch (Exception ignored) {}
-        return stringIsNotEqualsTo(value, null, "", "null") ? value : fallback;
-    }
-
-    private static boolean stringIsNotEqualsTo(@Nullable String string, String... values) {
-        for (String value : values) {
-            if (string == null && value == null) {
-                return false;
-            }
-            if (string != null && string.equals(value)) {
-                return false;
-            }
+        if (value != null && !value.isEmpty() && !value.equals("null")) {
+            return value;
+        } else {
+            return fallback;
         }
-        return true;
     }
 
 }

@@ -28,7 +28,7 @@ import javax.inject.Inject;
 public class CollectionFactory {
 
     @Inject
-    public CollectionFactory() {}
+    CollectionFactory() {}
 
     public Collection create(@Collection.Type String type, Id id, Name name) {
         switch (type) {

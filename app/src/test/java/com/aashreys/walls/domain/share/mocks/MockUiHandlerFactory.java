@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.sharedelegates.mocks;
+package com.aashreys.walls.domain.share.mocks;
 
 import com.aashreys.walls.application.helpers.UiHandler;
 

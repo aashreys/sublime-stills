@@ -26,6 +26,7 @@ import com.aashreys.walls.domain.display.images.ImageInfoServiceImpl;
 import com.aashreys.walls.network.apis.UnsplashApi;
 import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
 import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
+import com.aashreys.walls.utils.ColorParser;
 
 import javax.inject.Provider;
 
@@ -43,7 +44,7 @@ public class ServiceModule {
 
     @Provides
     public UnsplashPhotoResponseParser providesUnsplashImageResponseParser() {
-        return new UnsplashPhotoResponseParser();
+        return new UnsplashPhotoResponseParser(new ColorParser());
     }
 
     @Provides

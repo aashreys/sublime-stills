@@ -67,6 +67,7 @@ public class UnsplashPhotoInfoParser {
     }
 
     private Location createLocation(JSONObject locationJson) {
+        String title = JSONUtils.optString(locationJson, "title", null);
         String city = JSONUtils.optString(locationJson, "city", null);
         String country = JSONUtils.optString(locationJson, "country", null);
         JSONObject positionJson = locationJson.optJSONObject("position");
@@ -75,7 +76,7 @@ public class UnsplashPhotoInfoParser {
             longitude = positionJson.optDouble("longitude", 0);
             latitude = positionJson.optDouble("latitude", 0);
         }
-        String locationName = getFormattedLocationName(city, country);
+        String locationName = title != null ? title : getFormattedLocationName(city, country);
 
         Coordinates coordinates = null;
         try {
@@ -129,48 +130,32 @@ public class UnsplashPhotoInfoParser {
 
     private Name createCamera(JSONObject exifJson) {
         String camera = JSONUtils.optString(exifJson, "model", null);
-        if (camera != null) {
-            return new Name(camera);
-        }
-        return null;
+        return camera != null ? new Name(camera) : null;
     }
 
     private Name createExposureTime(JSONObject exifJson) {
         String exposureTime = JSONUtils.optString(exifJson, "exposure_time", null);
-        if (exposureTime != null) {
-            new Name(getFormattedExposureTime(exposureTime));
-        }
-        return null;
+        return exposureTime != null ? new Name(getFormattedExposureTime(exposureTime)) : null;
     }
 
     private Name createAperture(JSONObject exifJson) {
         String aperture = JSONUtils.optString(exifJson, "aperture", null);
-        if (aperture != null) {
-            new Name(getFormattedAperture(aperture));
-        }
-        return null;
+        return aperture != null ? new Name(getFormattedAperture(aperture)) : null;
     }
 
     private Name createFocalLength(JSONObject exifJson) {
         String focalLength = JSONUtils.optString(exifJson, "focal_length", null);
-        if (focalLength != null) {
-            new Name(getFormattedFocalLength(focalLength));
-        }
-        return null;
+        return focalLength != null ? new Name(getFormattedFocalLength(focalLength)) : null;
     }
 
     private Name createIso(JSONObject exifJson) {
         int iso = exifJson.optInt("iso", 0);
-        if (iso != 0) {
-            new Name(String.valueOf(iso));
-        }
-        return null;
+        return iso > 0 ? new Name(String.valueOf(iso)) : null;
     }
 
     private String getFormattedExposureTime(String rawExposureTime) {
         return rawExposureTime.concat(" sec");
     }
-
 
     private String getFormattedAperture(String rawAperture) {
         return "f/".concat(rawAperture);

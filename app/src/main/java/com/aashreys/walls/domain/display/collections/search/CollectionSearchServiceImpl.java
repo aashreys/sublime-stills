@@ -22,8 +22,6 @@ import com.aashreys.walls.domain.display.collections.Collection;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by aashreys on 05/03/17.
  */
@@ -32,7 +30,6 @@ public class CollectionSearchServiceImpl implements CollectionSearchService {
 
     private final UnsplashCollectionSearchService unsplashCollectionSearchService;
 
-    @Inject
     public CollectionSearchServiceImpl(
             UnsplashCollectionSearchService unsplashCollectionSearchService
     ) {

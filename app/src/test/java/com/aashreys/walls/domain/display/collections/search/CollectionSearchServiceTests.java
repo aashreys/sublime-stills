@@ -14,16 +14,15 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.collections;
+package com.aashreys.walls.domain.display.collections.search;
 
 import com.aashreys.walls.BaseTestCase;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.Collection.Type;
+import com.aashreys.walls.domain.display.collections.CollectionTests;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
-import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
-import com.aashreys.walls.network.apis.ApiInstanceCreator;
+import com.aashreys.walls.network.apis.ApiFactory;
 import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.responses.CollectionSearcherResponse;
 
 import org.junit.After;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -48,46 +46,58 @@ public class CollectionSearchServiceTests extends BaseTestCase {
 
     private UnsplashApi unsplashApi;
 
-    private UnsplashCollectionSearchService collectionSearcher;
+    private CollectionSearchServiceImpl collectionSearcher;
 
     @Override
     public void init() {
         super.init();
         mockWebServer = new MockWebServer();
-        HttpUrl baseUrl = mockWebServer.url("");
-        unsplashApi = new ApiInstanceCreator().createUnsplashApi(
+        unsplashApi = new ApiFactory().createUnsplashApi(
                 new OkHttpClient(),
-                baseUrl.toString()
+                mockWebServer.url("").toString()
         );
-        collectionSearcher = new UnsplashCollectionSearchService(unsplashApi);
+        collectionSearcher = new CollectionSearchServiceImpl(new UnsplashCollectionSearchService(unsplashApi));
     }
 
     @Test
-    public void test_search_with_invalid_response() throws IOException {
-        String searchString = "hallelujah";
-        mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(""));
-        unsplashApi.searchCollections(searchString, 1, 10);
-        List<Collection> collectionList = collectionSearcher.search(searchString, 10);
-        assertEquals(collectionList.size(), 0);
-    }
-
-    @Test
-    public void test_search_with_valid_response() {
-        String searchString = "hallelujah";
+    public void test_collection_search() {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
-                .setBody(CollectionSearcherResponse.VALID_RESPONSE));
-        List<Collection> collectionList = collectionSearcher.search(searchString, 10);
-        assertEquals(collectionList.size(), 1);
+                .setBody(readFile("response_search_collections.json")));
+        List<Collection> collectionList = collectionSearcher.search("", 10);
+        assertEquals(collectionList.size(), 4);
 
         Collection collection1 = collectionList.get(0);
         CollectionTests.testCollection(
                 collection1,
-                "193913",
-                "Office",
+                "497",
+                "fire, sun & lights",
                 Type.UNSPLASH_COLLECTION,
                 true,
                 UnsplashCollection.class
         );
+    }
+
+    @Test
+    public void test_collection_search_min_size() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(readFile("response_search_collections.json")));
+        List<Collection> collectionList = collectionSearcher.search("", 50);
+        // Only 3 collections are larger than 50 photos.
+        assertEquals(collectionList.size(), 3);
+
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(readFile("response_search_collections.json")));
+        collectionList = collectionSearcher.search("", 150);
+        // Only 3 collections are larger than 50 photos.
+        assertEquals(collectionList.size(), 0);
+    }
+
+    @Test
+    public void test_featured_collection() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200)
+                .setBody(readFile("response_get_featured_collections.json")));
+        List<Collection> collectionList = collectionSearcher.getFeatured();
+        assertEquals(collectionList.size(), 4);
     }
 
     @After

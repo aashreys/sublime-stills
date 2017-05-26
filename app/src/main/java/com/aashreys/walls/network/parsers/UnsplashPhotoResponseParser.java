@@ -29,6 +29,7 @@ import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Pixel;
 import com.aashreys.walls.domain.values.Url;
+import com.aashreys.walls.utils.ColorParser;
 import com.aashreys.walls.utils.JSONUtils;
 import com.aashreys.walls.utils.LogWrapper;
 
@@ -53,8 +54,12 @@ public class UnsplashPhotoResponseParser {
     private final static SimpleDateFormat DATE_PARSER
             = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+    private final ColorParser colorParser;
+
     @Inject
-    public UnsplashPhotoResponseParser() {}
+    public UnsplashPhotoResponseParser(ColorParser colorParser) {
+        this.colorParser = colorParser;
+    }
 
     @NonNull
     public List<Image> parse(String response) throws JSONException {
@@ -95,10 +100,10 @@ public class UnsplashPhotoResponseParser {
     }
 
     private Color createBackgroundColor(JSONObject response) {
-        String colorHex = JSONUtils.optString(response, "color", null);
+        String hexColor = JSONUtils.optString(response, "color", null);
         Color backgroundColor = null;
-        if (colorHex != null) {
-            backgroundColor = Color.createFromHex(colorHex);
+        if (hexColor != null) {
+            backgroundColor = new Color(colorParser.fromHex(hexColor));
         }
         return backgroundColor;
     }

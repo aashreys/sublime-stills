@@ -32,9 +32,9 @@ import retrofit2.Retrofit;
  * Created by aashreys on 04/03/17.
  */
 
-public class ApiInstanceCreator {
+public class ApiFactory {
 
-    private static final String TAG = ApiInstanceCreator.class.getSimpleName();
+    private static final String TAG = ApiFactory.class.getSimpleName();
 
     public UnsplashApi createUnsplashApi(OkHttpClient client, String baseUrl) {
         return new Retrofit.Builder()
@@ -79,28 +79,6 @@ public class ApiInstanceCreator {
                 .baseUrl(baseUrl)
                 .build()
                 .create(UnsplashApi.class);
-    }
-
-    public UrlShortenerApi createUrlShortenerApi(OkHttpClient client, String baseUrl) {
-        return new Retrofit.Builder()
-                .client(client.newBuilder()
-                        .addInterceptor(new Interceptor() {
-                            @Override
-                            public Response intercept(Chain chain) throws IOException {
-                                Request request = chain.request();
-                                // Add api key
-                                request = request.newBuilder().url(
-                                        request.url().toString() + "?key=" +
-                                                SafeApi.decrypt(BuildConfig.GOOGL_API_KEY)).build();
-                                return chain.proceed(request);
-                            }
-                        })
-                        .build()
-                )
-                .validateEagerly(true)
-                .baseUrl(baseUrl)
-                .build()
-                .create(UrlShortenerApi.class);
     }
 
 }

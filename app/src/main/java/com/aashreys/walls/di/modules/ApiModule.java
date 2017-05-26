@@ -19,9 +19,8 @@ package com.aashreys.walls.di.modules;
 import android.content.Context;
 
 import com.aashreys.walls.di.scopes.ApplicationScoped;
-import com.aashreys.walls.network.apis.ApiInstanceCreator;
+import com.aashreys.walls.network.apis.ApiFactory;
 import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.apis.UrlShortenerApi;
 
 import java.io.File;
 
@@ -41,8 +40,6 @@ public class ApiModule {
 
     private final UnsplashApi unsplashApi;
 
-    private final UrlShortenerApi urlShortenerApi;
-
     private static final String CACHE_DIR = "http_response_cache";
 
     public ApiModule(Context context) {
@@ -51,23 +48,13 @@ public class ApiModule {
         okHttpClient = new OkHttpClient.Builder()
                 .cache(cache)
                 .build();
-        ApiInstanceCreator apiInstanceCreator = new ApiInstanceCreator();
-        unsplashApi = apiInstanceCreator.createUnsplashApi(okHttpClient, UnsplashApi.ENDPOINT);
-        urlShortenerApi = apiInstanceCreator.createUrlShortenerApi(
-                okHttpClient,
-                UrlShortenerApi.ENDPOINT
-        );
+        ApiFactory apiFactory = new ApiFactory();
+        unsplashApi = apiFactory.createUnsplashApi(okHttpClient, UnsplashApi.ENDPOINT);
     }
 
     @Provides
     @ApplicationScoped
     public UnsplashApi providesUnsplashApi() {
         return unsplashApi;
-    }
-
-    @Provides
-    @ApplicationScoped
-    public UrlShortenerApi providesUrlShortenerApi() {
-        return urlShortenerApi;
     }
 }

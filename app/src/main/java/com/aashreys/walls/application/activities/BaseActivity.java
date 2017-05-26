@@ -34,7 +34,7 @@ import com.aashreys.walls.application.helpers.UiHelper;
 
 public abstract class BaseActivity<VM extends ViewModel> extends AppCompatActivity {
 
-    private String ARG_VIEW_ID = "arg_view_id";
+    private static final String ARG_VIEW_ID = "arg_view_id";
 
     private String viewId;
 

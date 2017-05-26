@@ -22,6 +22,9 @@ import com.aashreys.walls.utils.LogWrapper;
 
 import org.junit.Before;
 
+import java.io.InputStream;
+import java.util.Scanner;
+
 /**
  * Created by aashreys on 11/02/17.
  */
@@ -33,6 +36,13 @@ public class BaseTestCase {
     public void init() {
         // Disable Android logging so we don't run into mocking errors
         LogWrapper.setEnabled(false);
+    }
+
+    protected final String readFile(String filepath) {
+        InputStream inputStream = ClassLoader.getSystemResourceAsStream(filepath);
+        Scanner s = new Scanner(inputStream).useDelimiter("\\A");
+        String result = s.hasNext() ? s.next() : "";
+        return result;
     }
 
 }

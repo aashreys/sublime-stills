@@ -51,7 +51,7 @@ public class UnsplashCollectionSearchService implements CollectionSearchService 
     private final UnsplashApi unsplashApi;
 
     @Inject
-    public UnsplashCollectionSearchService(UnsplashApi unsplashApi) {
+    UnsplashCollectionSearchService(UnsplashApi unsplashApi) {
         this.unsplashApi = unsplashApi;
     }
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.sharedelegates;
+package com.aashreys.walls.domain.share;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -23,22 +23,16 @@ import com.aashreys.walls.MockitoTestCase;
 import com.aashreys.walls.application.helpers.UiHandler;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.share.CopyLinkDelegate;
-import com.aashreys.walls.domain.share.SetAsDelegate;
-import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.domain.share.ShareDelegate.Mode;
-import com.aashreys.walls.domain.share.ShareDelegateFactory;
-import com.aashreys.walls.domain.share.ShareImageDelegate;
-import com.aashreys.walls.domain.share.ShareImageLinkDelegate;
 import com.aashreys.walls.domain.share.actions.CopyLinkAction;
 import com.aashreys.walls.domain.share.actions.SetAsAction;
 import com.aashreys.walls.domain.share.actions.ShareImageAction;
 import com.aashreys.walls.domain.share.actions.ShareImageLinkAction;
 import com.aashreys.walls.domain.values.Name;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.sharedelegates.mocks.MockImageDownloader;
-import com.aashreys.walls.sharedelegates.mocks.MockShareActionFactory;
-import com.aashreys.walls.sharedelegates.mocks.MockUiHandlerFactory;
+import com.aashreys.walls.domain.share.mocks.MockImageDownloader;
+import com.aashreys.walls.domain.share.mocks.MockShareActionFactory;
+import com.aashreys.walls.domain.share.mocks.MockUiHandlerFactory;
 
 import junit.framework.Assert;
 
@@ -172,9 +166,9 @@ public class ShareDelegateTests extends MockitoTestCase {
         Assert.assertTrue(listener.isShareComplete);
     }
 
-    private class MockShareListener implements ShareDelegate.Listener {
+    private static class MockShareListener implements ShareDelegate.Listener {
 
-        boolean isShareComplete;
+        private boolean isShareComplete;
 
         @Override
         public void onShareComplete() {

@@ -14,15 +14,10 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.collections;
+package com.aashreys.walls.domain.display.collections;
 
 import com.aashreys.walls.BaseTestCase;
-import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.Collection.Type;
-import com.aashreys.walls.domain.display.collections.CollectionFactory;
-import com.aashreys.walls.domain.display.collections.DiscoverCollection;
-import com.aashreys.walls.domain.display.collections.FavoriteCollection;
-import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
 
@@ -43,7 +38,7 @@ public class CollectionTests extends BaseTestCase {
     public final ExpectedException exception = ExpectedException.none();
 
     /** Common tests for all collections */
-    static <T extends Collection> void testCollection(
+    public static <T extends Collection> void testCollection(
             Collection collection,
             String id,
             String name,
@@ -71,7 +66,6 @@ public class CollectionTests extends BaseTestCase {
         Collection unsplashCollection = factory.create(Type.UNSPLASH_COLLECTION, id, name);
         Collection discoverCollection = factory.create(Type.DISCOVER, null, null);
         Collection favoriteCollection = factory.create(Type.FAVORITE, null, null);
-
 
         assertTrue(unsplashCollection instanceof UnsplashCollection);
         assertTrue(discoverCollection instanceof DiscoverCollection);
