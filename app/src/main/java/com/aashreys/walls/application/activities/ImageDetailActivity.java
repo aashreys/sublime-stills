@@ -141,9 +141,7 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
 
     @Override
     protected ImageDetailActivityModel createViewModel() {
-        ImageDetailActivityModel viewModel = getUiComponent().createImageDetailActivityModel();
-        viewModel.onInjectionComplete();
-        return viewModel;
+        return getUiComponent().createImageDetailActivityModel();
     }
 
     private void displayInfo() {

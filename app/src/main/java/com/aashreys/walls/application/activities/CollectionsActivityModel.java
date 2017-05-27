@@ -17,9 +17,9 @@
 package com.aashreys.walls.application.activities;
 
 import com.aashreys.maestro.ViewModel;
+import com.aashreys.walls.application.adapters.CollectionsAdapterModel;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
-import com.aashreys.walls.application.adapters.CollectionsAdapterModel;
 
 import java.util.List;
 
@@ -34,18 +34,15 @@ public class CollectionsActivityModel implements ViewModel, CollectionRepository
 
     private final CollectionsAdapterModel collectionsAdapterModel;
 
-    @Inject CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
     private EventListener eventListener;
 
     @Inject
-    public CollectionsActivityModel() {
+    CollectionsActivityModel(CollectionRepository collectionRepository) {
+        this.collectionRepository = collectionRepository;
         this.collectionsAdapterModel = new CollectionsAdapterModel();
-    }
-
-    void onInjectionComplete() {
         collectionsAdapterModel.addCollectionList(collectionRepository.getAll());
-        collectionRepository.addListener(this);
     }
 
     public void setEventListener(EventListener eventListener) {
@@ -90,6 +87,10 @@ public class CollectionsActivityModel implements ViewModel, CollectionRepository
 
     CollectionsAdapterModel getCollectionsAdapterModel()  {
         return collectionsAdapterModel;
+    }
+
+    void onActivityCreated() {
+        collectionRepository.addListener(this);
     }
 
     interface EventListener {

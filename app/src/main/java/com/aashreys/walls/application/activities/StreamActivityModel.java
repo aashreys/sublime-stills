@@ -48,22 +48,28 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
 
     private final List<Collection> collectionsList;
 
-    @Inject FavoriteImageRepository favoriteImageRepository;
+    private final FavoriteImageRepository favoriteImageRepository;
 
-    @Inject CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
-    @Inject CollectionFactory collectionFactory;
+    private final CollectionFactory collectionFactory;
 
-    @Inject KeyValueStore keyValueStore;
+    private final KeyValueStore keyValueStore;
 
     @Nullable private EventListener eventListener;
 
     @Inject
-    public StreamActivityModel() {
+    StreamActivityModel(
+            FavoriteImageRepository favoriteImageRepository,
+            CollectionRepository collectionRepository,
+            CollectionFactory collectionFactory,
+            KeyValueStore keyValueStore
+    ) {
+        this.favoriteImageRepository = favoriteImageRepository;
+        this.collectionRepository = collectionRepository;
+        this.collectionFactory = collectionFactory;
+        this.keyValueStore = keyValueStore;
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
-    }
-
-    void onInjectionComplete() {
         this.collectionsList.addAll(collectionRepository.getAll());
     }
 

@@ -52,19 +52,19 @@ public class ImageDetailActivityModel implements ViewModel {
 
     private static final String TAG = ImageDetailActivityModel.class.getSimpleName();
 
-    @Inject ImageInfoBuilder imageInfoBuilder;
+    private final ImageInfoBuilder imageInfoBuilder;
 
-    @Inject ShareDelegateFactory shareDelegateFactory;
+    private final ShareDelegateFactory shareDelegateFactory;
 
-    @Inject FavoriteImageRepository favoriteImageRepository;
+    private final FavoriteImageRepository favoriteImageRepository;
 
-    @Inject ImageInfoService imageInfoService;
+    private final ImageInfoService imageInfoService;
 
-    @Inject DeviceInfo deviceInfo;
+    private final DeviceInfo deviceInfo;
 
-    @Inject ImageDownloader imageDownloader;
+    private final ImageDownloader imageDownloader;
 
-    @Inject ResourceProvider resourceProvider;
+    private final ResourceProvider resourceProvider;
 
     private ImageView imageView;
 
@@ -80,7 +80,24 @@ public class ImageDetailActivityModel implements ViewModel {
     private boolean isImageLoaded, isImageInfoLoaded, isFavorite;
 
     @Inject
-    public ImageDetailActivityModel() {}
+    ImageDetailActivityModel(
+            ImageInfoBuilder imageInfoBuilder,
+            ShareDelegateFactory shareDelegateFactory,
+            FavoriteImageRepository favoriteImageRepository,
+            ImageInfoService imageInfoService,
+            DeviceInfo deviceInfo,
+            ImageDownloader imageDownloader,
+            ResourceProvider resourceProvider
+    ) {
+        this.imageInfoBuilder = imageInfoBuilder;
+        this.shareDelegateFactory = shareDelegateFactory;
+        this.favoriteImageRepository = favoriteImageRepository;
+        this.imageInfoService = imageInfoService;
+        this.deviceInfo = deviceInfo;
+        this.imageDownloader = imageDownloader;
+        this.resourceProvider = resourceProvider;
+        createShareDelegates();
+    }
 
     void setImage(Image image) {
         this.image = image;
@@ -98,10 +115,6 @@ public class ImageDetailActivityModel implements ViewModel {
     @DimenRes
     int getInfoViewHeightRes() {
         return R.dimen.height_small;
-    }
-
-    void onInjectionComplete() {
-        createShareDelegates();
     }
 
     private void createShareDelegates() {

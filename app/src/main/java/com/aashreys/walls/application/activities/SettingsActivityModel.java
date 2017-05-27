@@ -29,14 +29,17 @@ import javax.inject.Inject;
 
 public class SettingsActivityModel implements ViewModel {
 
-    @Inject KeyValueStore keyValueStore;
+    private final KeyValueStore keyValueStore;
 
-    @Inject ResourceProvider resourceProvider;
+    private final ResourceProvider resourceProvider;
 
     private EventListener eventListener;
 
     @Inject
-    public SettingsActivityModel() {}
+    SettingsActivityModel(KeyValueStore keyValueStore, ResourceProvider resourceProvider) {
+        this.keyValueStore = keyValueStore;
+        this.resourceProvider = resourceProvider;
+    }
 
     void onResetTipsSettingClicked() {
         keyValueStore.putBoolean(resourceProvider.getString(R.string.tag_hint_collection), false);
@@ -54,10 +57,6 @@ public class SettingsActivityModel implements ViewModel {
         if (eventListener != null) {
             eventListener.onOnboardingReset();
         }
-    }
-
-    void onInjectionComplete() {
-
     }
 
     public void setEventListener(EventListener eventListener) {

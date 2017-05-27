@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 public class HintViewModel implements ViewModel {
 
-    @Inject KeyValueStore keyValueStore;
+    private final KeyValueStore keyValueStore;
 
     private String hint;
 
@@ -36,7 +36,7 @@ public class HintViewModel implements ViewModel {
     private EventListener eventListener;
 
     @Inject
-    public HintViewModel() {}
+    HintViewModel(KeyValueStore keyValueStore) {this.keyValueStore = keyValueStore;}
 
     void setSeenKey(String key) {
         this.seenKey = key;

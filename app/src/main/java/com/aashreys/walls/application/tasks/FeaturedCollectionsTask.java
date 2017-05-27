@@ -36,8 +36,7 @@ public class FeaturedCollectionsTask extends AsyncTask<Void, Void, List<Collecti
 
     private CollectionSearchTask.CollectionSearchListener listener;
 
-    public FeaturedCollectionsTask(@Provided CollectionSearchService collectionSearchService
-    ) {
+    public FeaturedCollectionsTask(@Provided CollectionSearchService collectionSearchService) {
         this.collectionSearchService = collectionSearchService;
     }
 

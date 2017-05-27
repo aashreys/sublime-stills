@@ -20,13 +20,13 @@ import android.support.annotation.DimenRes;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.persistence.KeyValueStore;
-import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.application.tasks.CollectionSearchTask;
 import com.aashreys.walls.application.tasks.FeaturedCollectionsTask;
 import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
 import com.aashreys.walls.application.views.ChipView;
+import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.persistence.KeyValueStore;
+import com.aashreys.walls.persistence.collections.CollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,19 +42,26 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
 
     private final List<Collection> checkedCollectionList;
 
-    @Inject FeaturedCollectionsTaskFactory collectionsTaskFactory;
+    private final FeaturedCollectionsTaskFactory collectionsTaskFactory;
 
-    @Inject KeyValueStore keyValueStore;
+    private final KeyValueStore keyValueStore;
 
-    @Inject CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
     private EventListener eventListener;
 
     private FeaturedCollectionsTask collectionsTask;
 
     @Inject
-    public OnboardingActivityModel() {
-        checkedCollectionList = new ArrayList<>();
+    OnboardingActivityModel(
+            FeaturedCollectionsTaskFactory collectionsTaskFactory,
+            KeyValueStore keyValueStore,
+            CollectionRepository collectionRepository
+    ) {
+        this.collectionsTaskFactory = collectionsTaskFactory;
+        this.keyValueStore = keyValueStore;
+        this.collectionRepository = collectionRepository;
+        this.checkedCollectionList = new ArrayList<>();
     }
 
     @DimenRes
@@ -131,11 +138,6 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
             eventListener.onOnboardingComplete();
         }
     }
-
-    void onInjectionComplete() {
-
-    }
-
 
     interface EventListener {
 

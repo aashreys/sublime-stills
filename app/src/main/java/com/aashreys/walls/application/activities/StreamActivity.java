@@ -104,9 +104,7 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
 
     @Override
     protected StreamActivityModel createViewModel() {
-        StreamActivityModel vm = getUiComponent().createStreamActivityModel();
-        vm.onInjectionComplete();
-        return vm;
+        return getUiComponent().createStreamActivityModel();
     }
 
     @Override

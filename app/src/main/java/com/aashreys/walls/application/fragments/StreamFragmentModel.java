@@ -49,13 +49,13 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
     private static final String TAG = StreamFragmentModel.class.getSimpleName();
 
-    @Inject Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy;
+    private final Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy;
 
-    @Inject DeviceInfo deviceInfo;
+    private final DeviceInfo deviceInfo;
 
-    @Inject SourceFactory sourceFactory;
+    private final SourceFactory sourceFactory;
 
-    @Inject NetworkHelper networkHelper;
+    private final NetworkHelper networkHelper;
 
     private Collection collection;
 
@@ -74,7 +74,16 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
     private List<Image> imageList;
 
     @Inject
-    public StreamFragmentModel() {
+    StreamFragmentModel(
+            Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy,
+            DeviceInfo deviceInfo,
+            SourceFactory sourceFactory,
+            NetworkHelper networkHelper
+    ) {
+        this.favoriteImageRepositoryLazy = favoriteImageRepositoryLazy;
+        this.deviceInfo = deviceInfo;
+        this.sourceFactory = sourceFactory;
+        this.networkHelper = networkHelper;
         imageList = new ArrayList<>();
     }
 
@@ -228,10 +237,6 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
             loadImagesTask.release();
             loadImagesTask = null;
         }
-    }
-
-    void onInjectionComplete() {
-
     }
 
     interface EventListener {

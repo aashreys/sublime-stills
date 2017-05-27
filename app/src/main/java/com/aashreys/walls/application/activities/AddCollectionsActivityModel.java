@@ -23,13 +23,13 @@ import android.support.annotation.StringRes;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.application.tasks.CollectionSearchTask;
 import com.aashreys.walls.application.tasks.CollectionSearchTaskFactory;
 import com.aashreys.walls.application.tasks.FeaturedCollectionsTask;
 import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
 import com.aashreys.walls.application.views.ChipView;
+import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.persistence.collections.CollectionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +58,11 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
 
     private final int actionButtonSearchText, actionButtonAddText;
 
-    @Inject FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory;
+    private final FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory;
 
-    @Inject CollectionSearchTaskFactory collectionSearchTaskFactory;
+    private final CollectionSearchTaskFactory collectionSearchTaskFactory;
 
-    @Inject CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
     private FeaturedCollectionsTask featuredCollectionsTask;
 
@@ -80,7 +80,14 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
             currentActionButtonClickDelegate;
 
     @Inject
-    public AddCollectionsActivityModel() {
+    AddCollectionsActivityModel(
+            FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory,
+            CollectionSearchTaskFactory collectionSearchTaskFactory,
+            CollectionRepository collectionRepository
+    ) {
+        this.featuredCollectionsTaskFactory = featuredCollectionsTaskFactory;
+        this.collectionSearchTaskFactory = collectionSearchTaskFactory;
+        this.collectionRepository = collectionRepository;
         this.selectedCollectionHolder = new SelectedCollectionHolder() {
             @Override
             void onCollectionListModified() {
@@ -116,8 +123,6 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
         };
         setCurrentActionButtonClickDelegate(searchCollectionsDelegate);
     }
-
-    void onInjectionComplete() {}
 
     void setEventListener(EventListener eventListener) {
         this.eventListener = eventListener;

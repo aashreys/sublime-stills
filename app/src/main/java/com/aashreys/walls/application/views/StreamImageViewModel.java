@@ -40,11 +40,11 @@ import javax.inject.Inject;
 
 public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image> {
 
-    @Inject DeviceInfo deviceInfo;
+    private final DeviceInfo deviceInfo;
 
-    @Inject FavoriteImageRepository favoriteImageRepository;
+    private final FavoriteImageRepository favoriteImageRepository;
 
-    @Inject ImageDownloader imageDownloader;
+    private final ImageDownloader imageDownloader;
 
     private FavoriteSyncTask favoriteSyncTask;
 
@@ -59,7 +59,15 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
     private boolean isFavoriteSyncComplete;
 
     @Inject
-    public StreamImageViewModel() {}
+    public StreamImageViewModel(
+            DeviceInfo deviceInfo,
+            FavoriteImageRepository favoriteImageRepository,
+            ImageDownloader imageDownloader
+    ) {
+        this.deviceInfo = deviceInfo;
+        this.favoriteImageRepository = favoriteImageRepository;
+        this.imageDownloader = imageDownloader;
+    }
 
     private int getImageWidth() {
         return deviceInfo.getDeviceResolution().getWidth() / deviceInfo.getNumberOfStreamColumns();

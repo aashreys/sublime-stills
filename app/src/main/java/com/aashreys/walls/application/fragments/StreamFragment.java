@@ -77,7 +77,6 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
 
     private void createViewModel() {
         viewModel = UiHelper.getUiComponent(getContext()).createStreamFragmentModel();
-        viewModel.onInjectionComplete();
     }
 
     @Override

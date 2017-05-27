@@ -36,7 +36,7 @@ class InfoViewModel implements ViewModel {
     private Info info;
 
     @Inject
-    public InfoViewModel() {}
+    InfoViewModel() {}
 
     @DrawableRes
     int getIcon() {

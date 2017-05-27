@@ -35,15 +35,17 @@ import javax.inject.Inject;
 
 public class CollectionViewModel implements ViewModel {
 
-    @Inject CollectionRepository collectionRepository;
+    private final CollectionRepository collectionRepository;
 
     private Collection collection;
 
-    @Inject
-    public CollectionViewModel() {}
-
     @Nullable
     private EventCallback eventCallback;
+
+    @Inject
+    public CollectionViewModel(CollectionRepository collectionRepository) {
+        this.collectionRepository = collectionRepository;
+    }
 
     void onRemoveButtonClicked() {
         if (collection != null && collection.isRemovable()) {
