@@ -44,6 +44,8 @@
 -dontwarn retrofit2.Platform$Java8
 -keepattributes Signature
 -keepattributes Exceptions
+-dontwarn javax.annotation.**
+-dontwarn okio.**
 
 # Paper
 -keep class org.objenesis.** { *; }
