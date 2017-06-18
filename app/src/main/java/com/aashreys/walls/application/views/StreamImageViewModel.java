@@ -23,22 +23,30 @@ import android.widget.ImageView;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
+import com.aashreys.walls.utils.SchedulerProvider;
+import com.aashreys.walls.application.fragments.StreamFragment;
+import com.aashreys.walls.application.helpers.ImageDownloader;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Value;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.application.fragments.StreamFragment;
-import com.aashreys.walls.application.helpers.ImageDownloader;
+import com.aashreys.walls.utils.LogWrapper;
 import com.bumptech.glide.Priority;
 
 import javax.inject.Inject;
+
+import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by aashreys on 09/04/17.
  */
 
 public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image> {
+
+    private static final String TAG = StreamImageViewModel.class.getSimpleName();
 
     private final DeviceInfo deviceInfo;
 
@@ -58,27 +66,36 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
 
     private boolean isFavoriteSyncComplete;
 
+    private Disposable imageDownloadDisposable;
+
+    private final SchedulerProvider schedulerProvider;
+
     @Inject
     public StreamImageViewModel(
             DeviceInfo deviceInfo,
             FavoriteImageRepository favoriteImageRepository,
-            ImageDownloader imageDownloader
+            ImageDownloader imageDownloader,
+            SchedulerProvider schedulerProvider
     ) {
         this.deviceInfo = deviceInfo;
         this.favoriteImageRepository = favoriteImageRepository;
         this.imageDownloader = imageDownloader;
+        this.schedulerProvider = schedulerProvider;
     }
 
     private int getImageWidth() {
         return deviceInfo.getDeviceResolution().getWidth() / deviceInfo.getNumberOfStreamColumns();
     }
 
-    void onViewOnScreen() {
+    void onViewAttachedToWindow() {
         favoriteImageRepository.addListener(this);
     }
 
-    void onViewOffScreen() {
+    void onViewDetachedFromWindow() {
         favoriteImageRepository.removeListener(this);
+        if (imageDownloadDisposable != null && !imageDownloadDisposable.isDisposed()) {
+            imageDownloadDisposable.dispose();
+        }
     }
 
     void setInteractionCallback(StreamImageView.InteractionCallback interactionCallback) {
@@ -133,23 +150,31 @@ public class StreamImageViewModel implements ViewModel, RepositoryCallback<Image
                 fragment,
                 image.getUrl(getImageWidth()),
                 fragment.isDisplayed() ? Priority.IMMEDIATE : Priority.LOW,
-                imageView,
-                new ImageDownloader.Listener<Drawable>() {
+                imageView
+        )
+                .subscribeOn(schedulerProvider.mainThread())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(new SingleObserver<Drawable>() {
                     @Override
-                    public void onComplete(Drawable result) {
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        imageDownloadDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull Drawable drawable) {
                         if (eventCallback != null) {
-                            eventCallback.onImageDownloaded(result);
+                            eventCallback.onImageDownloaded(drawable);
                         }
                     }
 
                     @Override
-                    public void onError(Exception e) {
+                    public void onError(@NonNull Throwable throwable) {
+                        LogWrapper.w(TAG, "Image download failed", throwable);
                         if (eventCallback != null) {
                             eventCallback.onImageDownloadFailed();
                         }
                     }
-                }
-        );
+                });
     }
 
     private void evaluateFavoriteState(Image oldImage, boolean isFavorite) {

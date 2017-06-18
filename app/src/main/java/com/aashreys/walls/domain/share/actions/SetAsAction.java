@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.aashreys.walls.R;
+import com.aashreys.walls.utils.FileUtils;
 
 import java.io.File;
 
@@ -32,12 +33,12 @@ public class SetAsAction {
 
     private static final String MIME_TYPE = "image/*";
 
-    public void setAs(Context context, File fileToSet) {
-        Uri imageUri = Uri.fromFile(fileToSet);
+    public void setAs(Context context, File file) {
+        Uri uri = FileUtils.createUri(context, file);
         Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setDataAndType(imageUri, MIME_TYPE);
-        intent.putExtra("mimeType", MIME_TYPE);
+        intent.setDataAndType(uri, MIME_TYPE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(Intent.createChooser(
                 intent,
                 context.getString(R.string.share_set_as_title)

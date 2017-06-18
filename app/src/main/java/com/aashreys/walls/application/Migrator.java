@@ -57,17 +57,21 @@ public class Migrator {
     public void migrate() {
         int lastVersion = getLastVersion();
         LogWrapper.i(TAG, "Migrating from version " + lastVersion + " to " + Version.CURRENT_VERSION);
-        switch (lastVersion) {
+        _migrate(lastVersion);
+        onMigrationComplete();
+    }
+
+    private void _migrate(int fromVersion) {
+        switch (fromVersion) {
             case Version.V11:
                 migrateFromV11ToV12();
             case Version.CURRENT_VERSION:
                 break;
         }
-        completeMigration();
     }
 
-    private void completeMigration() {
-        LogWrapper.i(TAG, "Migration to version " + Version.CURRENT_VERSION + " complete");
+    private void onMigrationComplete() {
+        LogWrapper.i(TAG, "Migration complete");
         keyValueStore.putInt(KEY_LAST_VERSION, Version.CURRENT_VERSION);
     }
 

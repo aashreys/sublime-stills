@@ -36,6 +36,11 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.annotations.NonNull;
+
 /**
  * Created by aashreys on 06/04/17.
  */
@@ -45,102 +50,112 @@ public class ImageDownloader {
     @Inject
     public ImageDownloader() {}
 
-    public void asFile(Context context, Url url, final Listener<File> listener) {
-        RequestManager requestManager = getRequestManagerFromContext(context);
-        requestManager.load(url.value())
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        if (listener != null) {
-                            listener.onError(e);
-                        }
-                    }
+    public Single<File> asFile(final Context context, final Url url) {
+        return Single.create(new SingleOnSubscribe<File>() {
+            @Override
+            public void subscribe(@NonNull final SingleEmitter<File> singleEmitter) throws
+                    Exception {
+                getRequestManager(context)
+                        .load(url.value())
+                        .downloadOnly(new SimpleTarget<File>() {
+                            @Override
+                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                super.onLoadFailed(e, errorDrawable);
+                                if (!singleEmitter.isDisposed()) {
+                                    singleEmitter.onError(e);
+                                }
+                            }
 
-                    @Override
-                    public void onResourceReady(
-                            File resource, GlideAnimation<? super File> glideAnimation
-                    ) {
-                        if (listener != null) {
-                            listener.onComplete(resource);
-                        }
-                    }
-                });
+                            @Override
+                            public void onResourceReady(
+                                    File file, GlideAnimation<? super File> glideAnimation
+                            ) {
+                                if (!singleEmitter.isDisposed()) {
+                                    singleEmitter.onSuccess(file);
+                                }
+                            }
+                        });
+            }
+        });
     }
 
-    public void asDrawable(
+    public Single<Drawable> asDrawable(
             Context context,
             Url url,
             Priority priority,
-            ImageView imageView,
-            Listener<Drawable> listener
+            ImageView imageView
     ) {
-        configureRequestManagerToLoadImage(
-                getRequestManagerFromContext(context),
+        return createDownloadSingle(
+                getRequestManager(context),
                 url,
                 priority,
-                imageView,
-                listener
+                imageView
         );
     }
 
-    public void asDrawable(
+    public Single<Drawable> asDrawable(
             Fragment fragment,
             Url url,
             Priority priority,
-            ImageView imageView,
-            final Listener<Drawable> listener
+            ImageView imageView
     ) {
-        configureRequestManagerToLoadImage(
+        return createDownloadSingle(
                 Glide.with(fragment),
                 url,
                 priority,
-                imageView,
-                listener
+                imageView
         );
     }
 
-    private void configureRequestManagerToLoadImage(
-            RequestManager requestManager,
-            Url url,
-            Priority priority,
-            ImageView imageView,
-            final Listener<Drawable> listener
+    private Single<Drawable> createDownloadSingle(
+            final RequestManager requestManager,
+            final Url url,
+            final Priority priority,
+            final ImageView imageView
     ) {
-        requestManager.load(url.value())
-                .priority(priority)
-                .crossFade()
-                .listener(new RequestListener<String, GlideDrawable>() {
+        return Single.create(
+                new SingleOnSubscribe<Drawable>() {
                     @Override
-                    public boolean onException(
-                            Exception e,
-                            String model,
-                            Target<GlideDrawable> target,
-                            boolean isFirstResource
-                    ) {
-                        if (listener != null) {
-                            listener.onError(e);
-                        }
-                        return true;
-                    }
+                    public void subscribe(
+                            @NonNull final SingleEmitter<Drawable> singleEmitter
+                    ) throws Exception {
+                        requestManager.load(url.value())
+                                .priority(priority)
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(
+                                            Exception e,
+                                            String model,
+                                            Target<GlideDrawable> target,
+                                            boolean isFirstResource
+                                    ) {
+                                        if (!singleEmitter.isDisposed()) {
+                                            singleEmitter.onError(e);
+                                        }
+                                        return true;
+                                    }
 
-                    @Override
-                    public boolean onResourceReady(
-                            GlideDrawable resource,
-                            String model,
-                            Target<GlideDrawable> target,
-                            boolean isFromMemoryCache,
-                            boolean isFirstResource
-                    ) {
-                        if (listener != null) {
-                            listener.onComplete(resource);
-                        }
-                        return true;
+                                    @Override
+                                    public boolean onResourceReady(
+                                            GlideDrawable resource,
+                                            String model,
+                                            Target<GlideDrawable> target,
+                                            boolean isFromMemoryCache,
+                                            boolean isFirstResource
+                                    ) {
+                                        if (!singleEmitter.isDisposed()) {
+                                            singleEmitter.onSuccess(resource);
+                                        }
+                                        return true;
+                                    }
+                                })
+                                .into(imageView);
                     }
-                })
-                .into(imageView);
+                }
+        );
     }
 
-    private RequestManager getRequestManagerFromContext(Context context) {
+    private RequestManager getRequestManager(Context context) {
         RequestManager requestManager;
         if (context instanceof Activity) {
             requestManager = Glide.with((Activity) context);
@@ -148,14 +163,6 @@ public class ImageDownloader {
             requestManager = Glide.with(context);
         }
         return requestManager;
-    }
-
-    public interface Listener<T> {
-
-        void onComplete(T result);
-
-        void onError(Exception e);
-
     }
 
 }

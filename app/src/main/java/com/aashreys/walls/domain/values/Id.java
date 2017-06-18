@@ -36,7 +36,7 @@ public class Id extends Value<String> {
 
     @Override
     public boolean isValid() {
-        return value() != null && !value().isEmpty();
+        return value() != null && !value().isEmpty() && !value().equals("null");
     }
 
     public Id(String value) {

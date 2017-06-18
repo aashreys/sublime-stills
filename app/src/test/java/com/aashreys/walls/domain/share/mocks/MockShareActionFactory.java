@@ -19,7 +19,6 @@ package com.aashreys.walls.domain.share.mocks;
 import com.aashreys.walls.domain.share.actions.CopyLinkAction;
 import com.aashreys.walls.domain.share.actions.SetAsAction;
 import com.aashreys.walls.domain.share.actions.ShareActionFactory;
-import com.aashreys.walls.domain.share.actions.ShareImageAction;
 import com.aashreys.walls.domain.share.actions.ShareImageLinkAction;
 
 /**
@@ -32,19 +31,15 @@ public class MockShareActionFactory extends ShareActionFactory {
 
     private SetAsAction setAsAction;
 
-    private ShareImageAction shareImageAction;
-
     private ShareImageLinkAction shareImageLinkAction;
 
     public void setMockActions(
             CopyLinkAction copyLinkAction,
             SetAsAction setAsAction,
-            ShareImageAction shareImageAction,
             ShareImageLinkAction shareImageLinkAction
     ) {
         this.copyLinkAction = copyLinkAction;
         this.setAsAction = setAsAction;
-        this.shareImageAction = shareImageAction;
         this.shareImageLinkAction = shareImageLinkAction;
     }
 
@@ -56,11 +51,6 @@ public class MockShareActionFactory extends ShareActionFactory {
     @Override
     public SetAsAction createSetAsAction() {
         return setAsAction;
-    }
-
-    @Override
-    public ShareImageAction createShareImageAction() {
-        return shareImageAction;
     }
 
     @Override

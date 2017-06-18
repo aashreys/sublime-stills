@@ -18,14 +18,21 @@ package com.aashreys.walls.domain.share;
 
 import android.content.Context;
 
+import com.aashreys.walls.utils.SchedulerProvider;
+import com.aashreys.walls.application.helpers.ImageDownloader;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.SetAsAction;
 import com.aashreys.walls.domain.values.Url;
-import com.aashreys.walls.application.helpers.ImageDownloader;
-import com.aashreys.walls.application.helpers.UiHandler;
 
 import java.io.File;
+
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
+import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by aashreys on 05/12/16.
@@ -37,68 +44,56 @@ public class SetAsDelegate implements ShareDelegate {
 
     private final DeviceResolution deviceResolution;
 
-    private final UiHandler uiHandler;
-
     private final ImageDownloader imageDownloader;
 
-    private SetAsAction setAsAction;
+    private final SetAsAction setAsAction;
 
-    private ImageFileDownloadListener imageFileDownloadListener;
+    private final SchedulerProvider schedulerProvider;
 
     public SetAsDelegate(
             DeviceResolution deviceResolution,
             SetAsAction setAsAction,
-            UiHandler uiHandler,
-            ImageDownloader imageDownloader
+            ImageDownloader imageDownloader,
+            SchedulerProvider schedulerProvider
     ) {
         this.deviceResolution = deviceResolution;
         this.setAsAction = setAsAction;
-        this.uiHandler = uiHandler;
         this.imageDownloader = imageDownloader;
+        this.schedulerProvider = schedulerProvider;
     }
 
     @Override
-    public void share(final Context context, final Image image, final Listener listener) {
-        imageFileDownloadListener = createImageFileDownloadListener(context, listener);
-        final Url imageUrl = image.getUrl(deviceResolution.getWidth() * 2);
-        imageDownloader.asFile(context, imageUrl, imageFileDownloadListener);
-    }
-
-    private ImageFileDownloadListener createImageFileDownloadListener(
-            final Context context,
-            final Listener listener
-    ) {
-        return new ImageFileDownloadListener() {
+    public Completable share(final Context context, final Image image) {
+        return Completable.create(new CompletableOnSubscribe() {
             @Override
-            public void onComplete(File result) {
-                if (!isCancelled) {
-                    setAsAction.setAs(context, result);
-                    uiHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.onShareComplete();
-                        }
-                    });
-                }
+            public void subscribe(
+                    @NonNull final CompletableEmitter completableEmitter
+            ) throws Exception {
+                final Url imageUrl = image.getUrl(deviceResolution.getWidth() * 2);
+                imageDownloader.asFile(context, imageUrl)
+                        .subscribeOn(schedulerProvider.mainThread())
+                        .observeOn(schedulerProvider.mainThread())
+                        .subscribe(new SingleObserver<File>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable disposable) {
+                            }
+
+                            @Override
+                            public void onSuccess(@NonNull File file) {
+                                if (!completableEmitter.isDisposed()) {
+                                    setAsAction.setAs(context, file);
+                                    completableEmitter.onComplete();
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                if (!completableEmitter.isDisposed()) {
+                                    completableEmitter.onError(throwable);
+                                }
+                            }
+                        });
             }
-
-            @Override
-            public void onError(Exception e) {
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onShareFailed();
-                    }
-                });
-            }
-        };
+        });
     }
-
-    @Override
-    public void cancel() {
-        if (imageFileDownloadListener != null) {
-            imageFileDownloadListener.isCancelled = true;
-        }
-    }
-
 }

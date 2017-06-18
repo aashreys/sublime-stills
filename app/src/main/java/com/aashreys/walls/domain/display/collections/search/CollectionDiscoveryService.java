@@ -22,30 +22,18 @@ import com.aashreys.walls.domain.display.collections.Collection;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 /**
  * Created by aashreys on 05/03/17.
  */
 
-public class CollectionSearchServiceImpl implements CollectionSearchService {
-
-    private final UnsplashCollectionSearchService unsplashCollectionSearchService;
-
-    public CollectionSearchServiceImpl(
-            UnsplashCollectionSearchService unsplashCollectionSearchService
-    ) {
-        this.unsplashCollectionSearchService = unsplashCollectionSearchService;
-    }
+public interface CollectionDiscoveryService {
 
     @NonNull
-    @Override
-    public List<Collection> search(String collection, int minCollectionSize) {
-        return unsplashCollectionSearchService.search(collection, minCollectionSize);
-    }
+    Single<List<Collection>> search(String collection, int minSize);
 
     @NonNull
-    @Override
-    public List<Collection> getFeatured() {
-        return unsplashCollectionSearchService.getFeatured();
-    }
+    Single<List<Collection>> getFeatured();
 
 }

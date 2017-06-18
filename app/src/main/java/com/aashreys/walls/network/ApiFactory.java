@@ -14,10 +14,15 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.network.apis;
+package com.aashreys.walls.network;
 
 import com.aashreys.safeapi.SafeApi;
 import com.aashreys.walls.BuildConfig;
+import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
+import com.aashreys.walls.network.unsplash.UnsplashImageResponseParser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -26,6 +31,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A class for creating implementations of Retrofit api interfaces.
@@ -37,6 +44,9 @@ public class ApiFactory {
     private static final String TAG = ApiFactory.class.getSimpleName();
 
     public UnsplashApi createUnsplashApi(OkHttpClient client, String baseUrl) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Image.class, new UnsplashImageResponseParser())
+                .create();
         return new Retrofit.Builder()
                 .client(client.newBuilder()
                         .addInterceptor(new Interceptor() {
@@ -67,7 +77,8 @@ public class ApiFactory {
                                     header = "public, " + UnsplashApi.PHOTO_INFO_CACHE_DURATION;
                                 }
                                 if (requestUrl.contains("/collections/featured")) {
-                                    header = "public, " + UnsplashApi.FEATURED_COLLECTION_CACHE_DURATION;
+                                    header = "public, " +
+                                            UnsplashApi.FEATURED_COLLECTION_CACHE_DURATION;
                                 }
                                 return response.newBuilder()
                                         .header("Cache-Control", header)
@@ -77,6 +88,8 @@ public class ApiFactory {
                         .build())
                 .validateEagerly(true)
                 .baseUrl(baseUrl)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(UnsplashApi.class);
     }

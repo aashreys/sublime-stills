@@ -19,8 +19,8 @@ package com.aashreys.walls.di.modules;
 import android.content.Context;
 
 import com.aashreys.walls.di.scopes.ApplicationScoped;
-import com.aashreys.walls.network.apis.ApiFactory;
-import com.aashreys.walls.network.apis.UnsplashApi;
+import com.aashreys.walls.network.ApiFactory;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 
 import java.io.File;
 

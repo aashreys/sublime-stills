@@ -23,29 +23,31 @@ import android.support.annotation.StringRes;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
-import com.aashreys.walls.application.tasks.CollectionSearchTask;
-import com.aashreys.walls.application.tasks.CollectionSearchTaskFactory;
-import com.aashreys.walls.application.tasks.FeaturedCollectionsTask;
-import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
+import com.aashreys.walls.utils.SchedulerProvider;
 import com.aashreys.walls.application.views.ChipView;
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.domain.display.collections.search.CollectionDiscoveryService;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
+import com.aashreys.walls.utils.LogWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+
 /**
  * Created by aashreys on 12/04/17.
  */
 
-public class AddCollectionsActivityModel implements ViewModel, CollectionSearchTask
-        .CollectionSearchListener, ChipView.OnCheckedListener {
+public class AddCollectionsActivityModel implements ViewModel, ChipView.OnCheckedListener {
+
+    private static final String TAG = AddCollectionsActivityModel.class.getSimpleName();
 
     private static final int MIN_COLLECTION_SIZE = 15;
-
-    private static final int MIN_COLLECTION_NAME_LENGTH = 3;
 
     private final SelectedCollectionHolder selectedCollectionHolder;
 
@@ -58,17 +60,13 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
 
     private final int actionButtonSearchText, actionButtonAddText;
 
-    private final FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory;
-
-    private final CollectionSearchTaskFactory collectionSearchTaskFactory;
+    private final CollectionDiscoveryService collectionDiscoveryService;
 
     private final CollectionRepository collectionRepository;
 
-    private FeaturedCollectionsTask featuredCollectionsTask;
+    private final SchedulerProvider schedulerProvider;
 
-    private CollectionSearchTask collectionSearchTask;
-
-    private String searchString;
+    private String lastSearchString, searchString;
 
     private boolean isSearchingOrDisplayingFeaturedCollections;
 
@@ -76,18 +74,19 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
 
     private EventListener eventListener;
 
-    private ActionButtonClickDelegate
-            currentActionButtonClickDelegate;
+    private ActionButtonClickDelegate currentActionButtonClickDelegate;
+
+    private Disposable featuredCollectionDisposable, collectionSearchDisposable;
 
     @Inject
     AddCollectionsActivityModel(
-            FeaturedCollectionsTaskFactory featuredCollectionsTaskFactory,
-            CollectionSearchTaskFactory collectionSearchTaskFactory,
-            CollectionRepository collectionRepository
+            CollectionDiscoveryService collectionDiscoveryService,
+            CollectionRepository collectionRepository,
+            SchedulerProvider schedulerProvder
     ) {
-        this.featuredCollectionsTaskFactory = featuredCollectionsTaskFactory;
-        this.collectionSearchTaskFactory = collectionSearchTaskFactory;
+        this.collectionDiscoveryService = collectionDiscoveryService;
         this.collectionRepository = collectionRepository;
+        this.schedulerProvider = schedulerProvder;
         this.selectedCollectionHolder = new SelectedCollectionHolder() {
             @Override
             void onCollectionListModified() {
@@ -102,7 +101,7 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
         searchCollectionsDelegate = new ActionButtonClickDelegate() {
             @Override
             void handleClick() {
-                searchForCollectionsIfNeeded();
+                searchForCollections();
             }
 
             @Override
@@ -163,16 +162,20 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
         }
     }
 
-    private void searchForCollectionsIfNeeded() {
+    private void searchForCollections() {
         if (hasSearchTextChangedSinceLastSearch()) {
-            cancelSearchTasks();
-            collectionSearchTask = collectionSearchTaskFactory.create(
-                    searchString,
-                    MIN_COLLECTION_SIZE
-            );
-            collectionSearchTask.setListener(this);
-            collectionSearchTask.execute();
+            disposeCollectionDisposables();
+            collectionDiscoveryService.search(searchString, MIN_COLLECTION_SIZE)
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.mainThread())
+                    .subscribe(new CollectionObserver(this) {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable disposable) {
+                            collectionSearchDisposable = disposable;
+                        }
+                    });
             onSearchStarted(false);
+            lastSearchString = searchString;
         }
         if (eventListener != null) {
             eventListener.onSearchAttempted();
@@ -192,22 +195,17 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
     }
 
     private void searchForFeaturedCollections() {
-        cancelSearchTasks();
-        featuredCollectionsTask = featuredCollectionsTaskFactory.create();
-        featuredCollectionsTask.setListener(this);
-        featuredCollectionsTask.execute();
+        disposeCollectionDisposables();
+        collectionDiscoveryService.getFeatured()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(new CollectionObserver(this) {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        featuredCollectionDisposable = disposable;
+                    }
+                });
         onSearchStarted(true);
-    }
-
-    private void cancelSearchTasks() {
-        if (featuredCollectionsTask != null) {
-            featuredCollectionsTask.cancel(true);
-            featuredCollectionsTask = null;
-        }
-        if (collectionSearchTask != null) {
-            collectionSearchTask.cancel(true);
-            collectionSearchTask = null;
-        }
     }
 
     private void onSearchStarted(boolean isFeaturedSearch) {
@@ -219,8 +217,6 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
     }
 
     private boolean hasSearchTextChangedSinceLastSearch() {
-        String lastSearchString =
-                collectionSearchTask != null ? collectionSearchTask.getSearchString() : null;
         return !searchString.equals(lastSearchString);
     }
 
@@ -240,7 +236,7 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
     }
 
     void onKeyboardSearchClicked() {
-        searchForCollectionsIfNeeded();
+        searchForCollections();
     }
 
     int getSearchProgressText() {
@@ -260,8 +256,7 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
                 resources.getString(R.string.title_results_for_collection, searchString);
     }
 
-    @Override
-    public void onSearchComplete(List<Collection> collectionList) {
+    private void onSearchComplete(List<Collection> collectionList) {
         if (eventListener != null) {
             eventListener.onSearchComplete(collectionList);
         }
@@ -291,8 +286,19 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
         return selectedCollectionHolder.contains(collection);
     }
 
-    int getMinCollectionNameLength() {
-        return MIN_COLLECTION_NAME_LENGTH;
+    private void disposeCollectionDisposables() {
+        if (collectionSearchDisposable != null && !collectionSearchDisposable.isDisposed()) {
+            collectionSearchDisposable.dispose();
+            collectionSearchDisposable = null;
+        }
+        if (featuredCollectionDisposable != null && !featuredCollectionDisposable.isDisposed()) {
+            featuredCollectionDisposable.dispose();
+            featuredCollectionDisposable = null;
+        }
+    }
+
+    void onActivityDestroyed() {
+        disposeCollectionDisposables();
     }
 
     interface EventListener {
@@ -355,6 +361,26 @@ public class AddCollectionsActivityModel implements ViewModel, CollectionSearchT
 
         boolean contains(Collection collection) {
             return collectionList.contains(collection);
+        }
+    }
+
+    private abstract class CollectionObserver implements SingleObserver<List<Collection>> {
+
+        private AddCollectionsActivityModel model;
+
+        private CollectionObserver(AddCollectionsActivityModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public void onSuccess(@NonNull List<Collection> collections) {
+            model.onSearchComplete(collections);
+        }
+
+        @Override
+        public void onError(@NonNull Throwable throwable) {
+            LogWrapper.w(TAG, throwable);
+            model.onSearchComplete(new ArrayList<Collection>());
         }
     }
 

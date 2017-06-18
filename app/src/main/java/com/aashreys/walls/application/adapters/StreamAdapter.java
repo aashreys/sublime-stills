@@ -102,10 +102,14 @@ public class StreamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     streamImageViewInteractionCallback
             );
         }
-        int thresholdDiff = getItemCount() - position;
-        if (isLoadingEnabled && loadingThreshold >= thresholdDiff && loadingCallback != null) {
+        if (isLoadingRequired(position) && loadingCallback != null) {
             loadingCallback.onLoadRequested();
         }
+    }
+
+    private boolean isLoadingRequired(int position) {
+        int thresholdDiff = getItemCount() - position;
+        return isLoadingEnabled && getItemCount() > 0 && loadingThreshold >= thresholdDiff;
     }
 
     @Override

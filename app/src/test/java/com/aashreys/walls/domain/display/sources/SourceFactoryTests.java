@@ -22,8 +22,7 @@ import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
-import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 
 import org.junit.Test;
@@ -40,20 +39,13 @@ public class SourceFactoryTests extends MockitoTestCase {
 
     @Test
     public void test_return_types() {
-        Provider<UnsplashApi> unsplashApiProvider = new Provider<UnsplashApi>() {
+        Provider<UnsplashApi> mockUnsplashApiProvider = new Provider<UnsplashApi>() {
             @Override
             public UnsplashApi get() {
                 return null;
             }
         };
-        Provider<UnsplashPhotoResponseParser> unsplashImageResponseParserProvider = new Provider
-                <UnsplashPhotoResponseParser>() {
-            @Override
-            public UnsplashPhotoResponseParser get() {
-                return null;
-            }
-        };
-        Provider<FavoriteImageRepository> favoriteImageRepositoryProvider = new Provider
+        Provider<FavoriteImageRepository> mockFavoriteImageRepositoryProvider = new Provider
                 <FavoriteImageRepository>() {
             @Override
             public FavoriteImageRepository get() {
@@ -62,15 +54,9 @@ public class SourceFactoryTests extends MockitoTestCase {
         };
 
         SourceFactory sourceFactory = new SourceFactory(
-                new UnsplashCollectionSourceFactory(
-                        unsplashApiProvider,
-                        unsplashImageResponseParserProvider
-                ),
-                new UnsplashRecentSourceFactory(
-                        unsplashApiProvider,
-                        unsplashImageResponseParserProvider
-                ),
-                new FavoriteSourceFactory(favoriteImageRepositoryProvider)
+                new UnsplashCollectionSourceFactory(mockUnsplashApiProvider),
+                new UnsplashRecentSourceFactory(mockUnsplashApiProvider),
+                new FavoriteSourceFactory(mockFavoriteImageRepositoryProvider)
         );
 
         Id id = new Id("2314");

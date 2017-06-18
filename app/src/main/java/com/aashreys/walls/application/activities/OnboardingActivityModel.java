@@ -20,11 +20,10 @@ import android.support.annotation.DimenRes;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
-import com.aashreys.walls.application.tasks.CollectionSearchTask;
-import com.aashreys.walls.application.tasks.FeaturedCollectionsTask;
-import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
+import com.aashreys.walls.utils.SchedulerProvider;
 import com.aashreys.walls.application.views.ChipView;
 import com.aashreys.walls.domain.display.collections.Collection;
+import com.aashreys.walls.domain.display.collections.search.CollectionDiscoveryService;
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 
@@ -33,34 +32,41 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+
 /**
  * Created by aashreys on 17/04/17.
  */
 
-public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedListener,
-        CollectionSearchTask.CollectionSearchListener {
+public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedListener {
 
     private final List<Collection> checkedCollectionList;
 
-    private final FeaturedCollectionsTaskFactory collectionsTaskFactory;
-
     private final KeyValueStore keyValueStore;
+
+    private final CollectionDiscoveryService collectionDiscoveryService;
 
     private final CollectionRepository collectionRepository;
 
+    private Disposable collectionObserver;
+
     private EventListener eventListener;
 
-    private FeaturedCollectionsTask collectionsTask;
+    private final SchedulerProvider schedulerProvider;
 
     @Inject
     OnboardingActivityModel(
-            FeaturedCollectionsTaskFactory collectionsTaskFactory,
             KeyValueStore keyValueStore,
-            CollectionRepository collectionRepository
+            CollectionDiscoveryService collectionDiscoveryService,
+            CollectionRepository collectionRepository,
+            SchedulerProvider schedulerProvider
     ) {
-        this.collectionsTaskFactory = collectionsTaskFactory;
         this.keyValueStore = keyValueStore;
+        this.collectionDiscoveryService = collectionDiscoveryService;
         this.collectionRepository = collectionRepository;
+        this.schedulerProvider = schedulerProvider;
         this.checkedCollectionList = new ArrayList<>();
     }
 
@@ -96,25 +102,44 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
         }
     }
 
-    private void loadCuratedCollections() {
-        if (collectionsTask != null) {
-            collectionsTask.cancel(true);
+    private void loadFeaturedCollections() {
+        disposeCollectionObserver();
+        collectionDiscoveryService.getFeatured()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(new SingleObserver<List<Collection>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        collectionObserver = disposable;
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull List<Collection> collectionList) {
+                        onSearchComplete(collectionList);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable throwable) {
+                        onSearchComplete(new ArrayList<Collection>());
+                    }
+                });
+    }
+
+    private void disposeCollectionObserver() {
+        if (collectionObserver != null && !collectionObserver.isDisposed()) {
+            collectionObserver.dispose();
         }
-        collectionsTask = collectionsTaskFactory.create();
-        collectionsTask.setListener(this);
-        collectionsTask.execute();
     }
 
     void onActivityReady() {
-        loadCuratedCollections();
+        loadFeaturedCollections();
     }
 
     boolean isCollectionChecked(Collection collection) {
         return checkedCollectionList.contains(collection);
     }
 
-    @Override
-    public void onSearchComplete(List<Collection> collectionList) {
+    private void onSearchComplete(List<Collection> collectionList) {
         if (eventListener != null) {
             eventListener.onSearchComplete(collectionList);
         }
@@ -122,7 +147,7 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
 
     void onContinueButtonClicked() {
         saveCollections();
-        markOnboardingAsComplete();
+        saveOnboardingComplete();
 
     }
 
@@ -132,11 +157,15 @@ public class OnboardingActivityModel implements ViewModel, ChipView.OnCheckedLis
         }
     }
 
-    private void markOnboardingAsComplete() {
+    private void saveOnboardingComplete() {
         keyValueStore.putBoolean(StreamActivityModel.KEY_IS_ONBOARDING_COMPLETED, true);
         if (eventListener != null) {
             eventListener.onOnboardingComplete();
         }
+    }
+
+    void onActivityDestroyed() {
+        disposeCollectionObserver();
     }
 
     interface EventListener {

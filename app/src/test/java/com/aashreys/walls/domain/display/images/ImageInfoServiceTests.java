@@ -3,13 +3,10 @@ package com.aashreys.walls.domain.display.images;
 import com.aashreys.walls.BaseTestCase;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.display.images.metadata.Location;
-import com.aashreys.walls.network.apis.ApiFactory;
-import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
+import com.aashreys.walls.network.ApiFactory;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 
 import org.junit.Test;
-
-import java.util.concurrent.CountDownLatch;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -27,7 +24,7 @@ public class ImageInfoServiceTests extends BaseTestCase {
 
     private UnsplashApi unsplashApi;
 
-    private ImageInfoServiceImpl imageInfoService;
+    private ImageService imageService;
 
     @Override
     public void init() {
@@ -37,37 +34,34 @@ public class ImageInfoServiceTests extends BaseTestCase {
                 new OkHttpClient(),
                 mockWebServer.url("").toString()
         );
-        imageInfoService = new ImageInfoServiceImpl(unsplashApi, new UnsplashPhotoInfoParser());
+        imageService = new ImageServiceImpl(unsplashApi);
     }
 
     @Test
     public void test_image_info() throws InterruptedException {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(readFile("response_get_photo_info.json")));
-        UnsplashImage image = ImageTests.createUnsplashImage("123", "http://google.com", "http://google.com");
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        imageInfoService.addInfo(image, new ImageInfoService.Listener() {
-            @Override
-            public void onComplete(Image imageWithProperties) {
-                testExif(
-                        imageWithProperties.getExif(),
-                        "Canon EOS 5D Mark III",
-                        "1/4000 sec",
-                        "f/4",
-                        "105 mm",
-                        "100"
-                );
-                testLocation(
-                        imageWithProperties.getLocation(),
-                        "Sydney, Australia",
-                        -33.8688197,
-                        151.2092955
-                );
-                latch.countDown();
-            }
-        });
-        latch.await();
+        UnsplashImage image = ImageTests.createUnsplashImage(
+                "123",
+                "http://google.com",
+                "http://google.com"
+        );
+        Image downloadedImage = imageService.getImage(image.getType(), image.getId().value())
+                .blockingGet();
+        testExif(
+                downloadedImage.getExif(),
+                "Canon EOS 5D Mark III",
+                "1/4000 sec",
+                "f/4",
+                "105 mm",
+                "100"
+        );
+        testLocation(
+                downloadedImage.getLocation(),
+                "Sydney, Australia",
+                -33.8688197,
+                151.2092955
+        );
     }
 
     private void testExif(

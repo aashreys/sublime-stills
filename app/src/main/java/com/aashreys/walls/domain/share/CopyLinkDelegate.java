@@ -21,6 +21,9 @@ import android.content.Context;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.CopyLinkAction;
 
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+
 /**
  * Created by aashreys on 20/03/17.
  */
@@ -34,15 +37,12 @@ public class CopyLinkDelegate implements ShareDelegate {
     }
 
     @Override
-    public void share(
-            Context context, Image image, Listener listener
-    ) {
-        copyLinkAction.copy(context, image.getShareUrl());
-        listener.onShareComplete();
-    }
-
-    @Override
-    public void cancel() {
-
+    public Completable share(final Context context, final Image image) {
+        return Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                copyLinkAction.copy(context, image.getShareUrl());
+            }
+        });
     }
 }

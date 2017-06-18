@@ -19,21 +19,15 @@ package com.aashreys.walls.domain.display.sources;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
 import com.aashreys.walls.application.helpers.UiHelper;
+import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
+import io.reactivex.Single;
 
 /**
  * Created by aashreys on 21/11/16.
@@ -46,33 +40,17 @@ public class UnsplashRecentSource implements Source {
 
     private UnsplashApi unsplashApi;
 
-    private final UnsplashPhotoResponseParser responseParser;
-
-    public UnsplashRecentSource(
-            @Provided UnsplashApi unsplashApi,
-            @Provided UnsplashPhotoResponseParser responseParser
-    ) {
+    public UnsplashRecentSource(@Provided UnsplashApi unsplashApi) {
         this.unsplashApi = unsplashApi;
-        this.responseParser = responseParser;
     }
 
     @NonNull
     @WorkerThread
     @Override
-    public List<Image> getImages(int fromIndex) throws IOException {
-        try {
-            Call<ResponseBody> call = unsplashApi.getRecentPhotos(
-                    UiHelper.getPageNumber(fromIndex, UnsplashApi.ITEMS_PER_PAGE),
-                    UnsplashApi.ITEMS_PER_PAGE
-            );
-            Response<ResponseBody> response = call.execute();
-            if (response.isSuccessful()) {
-                return responseParser.parse(response.body().string());
-            } else {
-                throw new IOException("Unexpected error code " + response.code());
-            }
-        } catch (JSONException e) {
-            throw new IOException("Image loading failed with JSONException", e);
-        }
+    public Single<List<Image>> getImages(int fromIndex) {
+        return unsplashApi.getRecentPhotos(
+                UiHelper.getPageNumber(fromIndex, UnsplashApi.ITEMS_PER_PAGE),
+                UnsplashApi.ITEMS_PER_PAGE
+        );
     }
 }

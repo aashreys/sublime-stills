@@ -21,11 +21,13 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
-import com.aashreys.walls.domain.values.Url;
 import com.aashreys.walls.application.helpers.ImageDownloader;
+import com.aashreys.walls.domain.values.Url;
 import com.bumptech.glide.Priority;
 
 import java.io.File;
+
+import io.reactivex.Single;
 
 /**
  * Created by aashreys on 06/04/17.
@@ -58,43 +60,39 @@ public class MockImageDownloader extends ImageDownloader {
     }
 
     @Override
-    public void asFile(
-            Context context, Url url, Listener<File> listener
-    ) {
-        if (shouldFail) {
-            listener.onError(mockException);
+    public Single<File> asFile(Context context, Url url) {
+        if (!shouldFail) {
+            return Single.just(mockFile);
         } else {
-            listener.onComplete(mockFile);
+            return Single.error(mockException);
         }
     }
 
     @Override
-    public void asDrawable(
+    public Single<Drawable> asDrawable(
             Context context,
             Url url,
             Priority priority,
-            ImageView imageView,
-            Listener<Drawable> listener
+            ImageView imageView
     ) {
-        if (shouldFail) {
-            listener.onError(mockException);
+        if (!shouldFail) {
+            return Single.just(mockDrawable);
         } else {
-            listener.onComplete(mockDrawable);
+            return Single.error(mockException);
         }
     }
 
     @Override
-    public void asDrawable(
+    public Single<Drawable> asDrawable(
             Fragment fragment,
             Url url,
             Priority priority,
-            ImageView imageView,
-            Listener<Drawable> listener
+            ImageView imageView
     ) {
-        if (shouldFail) {
-            listener.onError(mockException);
+        if (!shouldFail) {
+            return Single.just(mockDrawable);
         } else {
-            listener.onComplete(mockDrawable);
+            return Single.error(mockException);
         }
     }
 }

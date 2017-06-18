@@ -16,19 +16,12 @@
 
 package com.aashreys.walls.di.modules;
 
-import com.aashreys.walls.application.tasks.CollectionSearchTaskFactory;
-import com.aashreys.walls.application.tasks.FeaturedCollectionsTaskFactory;
-import com.aashreys.walls.domain.display.collections.search.CollectionSearchService;
-import com.aashreys.walls.domain.display.collections.search.CollectionSearchServiceImpl;
-import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionSearchService;
-import com.aashreys.walls.domain.display.images.ImageInfoService;
-import com.aashreys.walls.domain.display.images.ImageInfoServiceImpl;
-import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.parsers.UnsplashPhotoInfoParser;
-import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
-import com.aashreys.walls.utils.ColorParser;
-
-import javax.inject.Provider;
+import com.aashreys.walls.domain.display.collections.search.CollectionDiscoveryService;
+import com.aashreys.walls.domain.display.collections.search.CollectionDiscoveryServiceImpl;
+import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionDiscoveryService;
+import com.aashreys.walls.domain.display.images.ImageService;
+import com.aashreys.walls.domain.display.images.ImageServiceImpl;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,38 +36,15 @@ public class ServiceModule {
     public ServiceModule() {}
 
     @Provides
-    public UnsplashPhotoResponseParser providesUnsplashImageResponseParser() {
-        return new UnsplashPhotoResponseParser(new ColorParser());
+    public ImageService providesImageService(UnsplashApi unsplashApi) {
+        return new ImageServiceImpl(unsplashApi);
     }
 
     @Provides
-    public CollectionSearchTaskFactory providesCollectionSearchTaskFactory
-            (Provider<CollectionSearchService> collectionSearchServiceProvider) {
-        return new CollectionSearchTaskFactory(collectionSearchServiceProvider);
-    }
-
-    @Provides
-    public FeaturedCollectionsTaskFactory providesFeaturedCollectionsTaskFactory
-            (Provider<CollectionSearchService> collectionSearchServiceProvider) {
-        return new FeaturedCollectionsTaskFactory(collectionSearchServiceProvider);
-    }
-
-    @Provides
-    public ImageInfoService providesImagePropertiesService(
-            UnsplashApi unsplashApi,
-            UnsplashPhotoInfoParser unsplashPhotoInfoParser
+    public CollectionDiscoveryService providesCollectionDiscoveryService(
+            UnsplashCollectionDiscoveryService unsplashCollectionSearchService
     ) {
-        return new ImageInfoServiceImpl(
-                unsplashApi,
-                unsplashPhotoInfoParser
-        );
-    }
-
-    @Provides
-    public CollectionSearchService providesCollectionSearchService(
-            UnsplashCollectionSearchService unsplashCollectionSearchService
-    ) {
-        return new CollectionSearchServiceImpl(unsplashCollectionSearchService);
+        return new CollectionDiscoveryServiceImpl(unsplashCollectionSearchService);
     }
 
 }

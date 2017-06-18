@@ -16,8 +16,8 @@
 
 package com.aashreys.walls.di.modules;
 
+import com.aashreys.walls.utils.SchedulerProvider;
 import com.aashreys.walls.application.helpers.ImageDownloader;
-import com.aashreys.walls.application.helpers.UiHandler;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.sources.FavoriteSourceFactory;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
@@ -55,14 +55,14 @@ public class FactoryModule {
     public ShareDelegateFactory providesSharerFactory(
             DeviceInfo deviceInfo,
             ShareActionFactory shareActionFactory,
-            UiHandler.Factory uiHandlerFactory,
-            ImageDownloader imageDownloader
+            ImageDownloader imageDownloader,
+            SchedulerProvider schedulerProvider
     ) {
         return new ShareDelegateFactory(
                 deviceInfo.getDeviceResolution(),
                 shareActionFactory,
-                uiHandlerFactory,
-                imageDownloader
+                imageDownloader,
+                schedulerProvider
         );
     }
 

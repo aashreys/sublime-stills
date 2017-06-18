@@ -16,18 +16,18 @@
 
 package com.aashreys.walls.application.fragments;
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.utils.SchedulerProvider;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.helpers.NetworkHelper;
-import com.aashreys.walls.application.tasks.LoadImagesTask;
 import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.display.sources.Source;
 import com.aashreys.walls.domain.display.sources.SourceFactory;
 import com.aashreys.walls.persistence.RepositoryCallback;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
@@ -39,13 +39,15 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by aashreys on 17/04/17.
  */
 
 public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
-        LoadImagesTask.LoadCallback, StreamAdapter.ImageProvider {
+        StreamAdapter.ImageProvider {
 
     private static final String TAG = StreamFragmentModel.class.getSimpleName();
 
@@ -57,6 +59,8 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
     private final NetworkHelper networkHelper;
 
+    private final List<Image> imageList;
+
     private Collection collection;
 
     @Nullable private FavoriteImageRepository favoriteImageRepository;
@@ -65,26 +69,28 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
     private StreamImageView.InteractionCallback imageInteractionListener;
 
-    private LoadImagesTask loadImagesTask;
-
-    private boolean isDisplayed;
-
     private EventListener eventListener;
 
-    private List<Image> imageList;
+    private Disposable imageDisposable;
+
+    private boolean isLoading, isDisplayed;
+
+    private SchedulerProvider schedulerProvider;
 
     @Inject
     StreamFragmentModel(
             Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy,
             DeviceInfo deviceInfo,
             SourceFactory sourceFactory,
-            NetworkHelper networkHelper
+            NetworkHelper networkHelper,
+            SchedulerProvider schedulerProvider
     ) {
         this.favoriteImageRepositoryLazy = favoriteImageRepositoryLazy;
         this.deviceInfo = deviceInfo;
         this.sourceFactory = sourceFactory;
         this.networkHelper = networkHelper;
-        imageList = new ArrayList<>();
+        this.schedulerProvider = schedulerProvider;
+        this.imageList = new ArrayList<>();
     }
 
     void setCollection(Collection collection) {
@@ -153,35 +159,62 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         favoriteImageRepository.addListener(favoriteRepoListener);
     }
 
-    private void loadMoreImages() {
-        LogWrapper.i(TAG, collection.getName().value() + " - loading images");
-        if (loadImagesTask != null) {
-            loadImagesTask.release();
-            loadImagesTask = null;
+    private void disposeImageDisposable() {
+        if (imageDisposable != null && !imageDisposable.isDisposed()) {
+            imageDisposable.dispose();
+            imageDisposable = null;
         }
-        loadImagesTask = new LoadImagesTask(sourceFactory.create(collection), this);
-        loadImagesTask.executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR,
-                imageList.size()
-        );
-        if (eventListener != null) {
-            @StreamFragment.LoadingViewStateManager.State int loadingState;
-            if (!isFavoriteStream()) {
-                if (!networkHelper.isConnected()) {
-                    eventListener.onNoNetworkError();
-                } else if (!networkHelper.isFastNetworkConnected()) {
-                    eventListener.onSlowNetworkError();
+    }
+
+    private void loadMoreImages() {
+        if (!isLoading) {
+            LogWrapper.d(TAG, collection.getName().value() + " - loading images");
+            disposeImageDisposable();
+            Source source = sourceFactory.create(collection);
+            source.getImages(imageList.size())
+                    .subscribeOn(schedulerProvider.io())
+                    .unsubscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.mainThread())
+                    .subscribe(new SingleObserver<List<Image>>() {
+                        @Override
+                        public void onSubscribe(
+                                @io.reactivex.annotations.NonNull Disposable disposable
+                        ) {
+                            imageDisposable = disposable;
+                        }
+
+                        @Override
+                        public void onSuccess(
+                                @io.reactivex.annotations.NonNull List<Image> images
+                        ) {
+                            onLoadComplete(images);
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable throwable) {
+                            onLoadError(throwable);
+                        }
+                    });
+            isLoading = true;
+            if (eventListener != null) {
+                @StreamFragment.LoadingViewStateManager.State int loadingState;
+                if (!isFavoriteStream()) {
+                    if (!networkHelper.isConnected()) {
+                        eventListener.onNoNetworkError();
+                    } else if (!networkHelper.isFastNetworkConnected()) {
+                        eventListener.onSlowNetworkError();
+                    } else {
+                        eventListener.onImagesLoading(false);
+                    }
                 } else {
-                    eventListener.onImagesLoading(false);
+                    eventListener.onImagesLoading(true);
                 }
-            } else {
-                eventListener.onImagesLoading(true);
             }
         }
     }
 
-    @Override
-    public void onLoadComplete(@NonNull List<Image> images) {
+    private void onLoadComplete(@NonNull List<Image> images) {
+        isLoading = false;
         int oldPosition = imageList.size();
         imageList.addAll(images);
         if (eventListener != null) {
@@ -194,8 +227,9 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         }
     }
 
-    @Override
-    public void onLoadError() {
+    private void onLoadError(Throwable throwable) {
+        isLoading = false;
+        LogWrapper.e(TAG, "Failed to load image stream", throwable);
         if (eventListener != null) {
             eventListener.onGenericError();
         }
@@ -203,9 +237,7 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
     @Override
     public void onLoadRequested() {
-        if (loadImagesTask == null || !loadImagesTask.isLoading()) {
-            loadMoreImages();
-        }
+        loadMoreImages();
     }
 
     void setEventListener(EventListener eventListener) {
@@ -231,12 +263,9 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
     }
 
     void onFragmentViewDestroyed() {
+        disposeImageDisposable();
         imageInteractionListener = null;
         stopListeningToFavoritesRepo();
-        if (loadImagesTask != null) {
-            loadImagesTask.release();
-            loadImagesTask = null;
-        }
     }
 
     interface EventListener {

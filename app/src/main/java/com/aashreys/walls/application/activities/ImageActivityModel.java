@@ -26,17 +26,18 @@ import android.widget.ImageView;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
+import com.aashreys.walls.utils.SchedulerProvider;
+import com.aashreys.walls.application.helpers.ImageDownloader;
+import com.aashreys.walls.application.helpers.ImageInfoBuilder;
+import com.aashreys.walls.application.views.InfoView;
 import com.aashreys.walls.domain.device.DeviceInfo;
 import com.aashreys.walls.domain.device.ResourceProvider;
 import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.display.images.ImageInfoService;
+import com.aashreys.walls.domain.display.images.ImageService;
 import com.aashreys.walls.domain.display.images.metadata.User;
 import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.domain.share.ShareDelegateFactory;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.application.helpers.ImageDownloader;
-import com.aashreys.walls.application.helpers.ImageInfoBuilder;
-import com.aashreys.walls.application.views.InfoView;
 import com.aashreys.walls.utils.LogWrapper;
 import com.bumptech.glide.Priority;
 
@@ -44,13 +45,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.CompletableObserver;
+import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
 /**
  * Created by aashreys on 15/04/17.
  */
 
-public class ImageDetailActivityModel implements ViewModel {
+public class ImageActivityModel implements ViewModel {
 
-    private static final String TAG = ImageDetailActivityModel.class.getSimpleName();
+    private static final String TAG = ImageActivityModel.class.getSimpleName();
 
     private final ImageInfoBuilder imageInfoBuilder;
 
@@ -58,7 +65,7 @@ public class ImageDetailActivityModel implements ViewModel {
 
     private final FavoriteImageRepository favoriteImageRepository;
 
-    private final ImageInfoService imageInfoService;
+    private final ImageService imageService;
 
     private final DeviceInfo deviceInfo;
 
@@ -72,30 +79,37 @@ public class ImageDetailActivityModel implements ViewModel {
 
     private Image image;
 
-    private ShareDelegate.Listener imageShareListener;
-
-    private ShareDelegate shareImageDelegate, shareLinkDelegate, copyLinkDelegate,
+    private ShareDelegate shareLinkDelegate, copyLinkDelegate,
             setAsShareDelegate;
 
     private boolean isImageLoaded, isImageInfoLoaded, isFavorite;
 
+    private Disposable imageInfoDisposable, imageDrawableDisposable;
+
+    private final CompositeDisposable shareCompositeDisposable;
+
+    private final SchedulerProvider schedulerProvider;
+
     @Inject
-    ImageDetailActivityModel(
+    ImageActivityModel(
             ImageInfoBuilder imageInfoBuilder,
             ShareDelegateFactory shareDelegateFactory,
             FavoriteImageRepository favoriteImageRepository,
-            ImageInfoService imageInfoService,
+            ImageService imageService,
             DeviceInfo deviceInfo,
             ImageDownloader imageDownloader,
-            ResourceProvider resourceProvider
+            ResourceProvider resourceProvider,
+            SchedulerProvider schedulerProvider
     ) {
         this.imageInfoBuilder = imageInfoBuilder;
         this.shareDelegateFactory = shareDelegateFactory;
         this.favoriteImageRepository = favoriteImageRepository;
-        this.imageInfoService = imageInfoService;
+        this.imageService = imageService;
         this.deviceInfo = deviceInfo;
         this.imageDownloader = imageDownloader;
         this.resourceProvider = resourceProvider;
+        this.shareCompositeDisposable = new CompositeDisposable();
+        this.schedulerProvider = schedulerProvider;
         createShareDelegates();
     }
 
@@ -118,25 +132,9 @@ public class ImageDetailActivityModel implements ViewModel {
     }
 
     private void createShareDelegates() {
-        shareImageDelegate = shareDelegateFactory.create(ShareDelegate.Mode.PHOTO);
         shareLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.LINK);
         copyLinkDelegate = shareDelegateFactory.create(ShareDelegate.Mode.COPY_LINK);
         setAsShareDelegate = shareDelegateFactory.create(ShareDelegate.Mode.SET_AS);
-        imageShareListener = new ShareDelegate.Listener() {
-            @Override
-            public void onShareComplete() {
-                if (eventListener != null) {
-                    eventListener.onImageShareFinished();
-                }
-            }
-
-            @Override
-            public void onShareFailed() {
-                if (eventListener != null) {
-                    eventListener.onImageShareFinished();
-                }
-            }
-        };
     }
 
     int getFavoriteButtonIcon() {
@@ -161,72 +159,58 @@ public class ImageDetailActivityModel implements ViewModel {
         if (eventListener != null) {
             eventListener.onSetAsShareStarted();
         }
-        setAsShareDelegate.share(
-                context,
-                image,
-                new ShareDelegate.Listener() {
+        setAsShareDelegate.share(context, image)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(new CompletableObserver() {
                     @Override
-                    public void onShareComplete() {
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        shareCompositeDisposable.add(disposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
                         if (eventListener != null) {
                             eventListener.onSetAsShareFinished();
                         }
                     }
 
                     @Override
-                    public void onShareFailed() {
+                    public void onError(@NonNull Throwable throwable) {
                         if (eventListener != null) {
                             eventListener.onSetAsShareFinished();
                         }
                     }
-                }
-        );
+                });
     }
 
     void onActivityDestroyed() {
         this.imageView = null;
         this.eventListener = null;
-        cancelShareDelegates();
-    }
-
-    private void cancelShareDelegates() {
-        shareImageDelegate.cancel();
-        shareLinkDelegate.cancel();
-        copyLinkDelegate.cancel();
-        setAsShareDelegate.cancel();
+        disposeDisposables();
     }
 
     void onActivityReady(Context context) {
         downloadImage(context);
-        downloadImageInfo();
+        downloadImageDetails();
     }
 
-    private void downloadImageInfo() {
-        imageInfoService.addInfo(image, new ImageInfoService.Listener() {
-            @Override
-            public void onComplete(Image imageWithProperties) {
-                isImageInfoLoaded = true;
-                if (eventListener != null) {
-                    eventListener.onImageInfoDownloaded();
-                }
-                if (isViewReady() && eventListener != null) {
-                    eventListener.onViewReady();
-                }
-            }
-        });
-    }
-
-    private void downloadImage(Context context) {
-        imageDownloader.asDrawable(
-                context,
-                image.getUrl(deviceInfo.getDeviceResolution().getWidth()),
-                Priority.IMMEDIATE,
-                imageView,
-                new ImageDownloader.Listener<Drawable>() {
+    private void downloadImageDetails() {
+        imageService.getImage(image.getType(), image.getId().value())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(new SingleObserver<Image>() {
                     @Override
-                    public void onComplete(Drawable result) {
-                        isImageLoaded = true;
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        imageInfoDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull Image image) {
+                        ImageActivityModel.this.image = image;
+                        isImageInfoLoaded = true;
                         if (eventListener != null) {
-                            eventListener.onImageDownloaded(result);
+                            eventListener.onImageInfoDownloaded();
                         }
                         if (isViewReady() && eventListener != null) {
                             eventListener.onViewReady();
@@ -234,14 +218,59 @@ public class ImageDetailActivityModel implements ViewModel {
                     }
 
                     @Override
-                    public void onError(Exception e) {
-                        LogWrapper.i(TAG, "Error loading image, finishing", e);
+                    public void onError(@NonNull Throwable throwable) {
+                        onSuccess(ImageActivityModel.this.image);
+                    }
+                });
+    }
+
+    private void disposeDisposables() {
+        if (imageInfoDisposable != null && !imageInfoDisposable.isDisposed()) {
+            imageInfoDisposable.dispose();
+            imageInfoDisposable = null;
+        }
+        if (imageDrawableDisposable != null && !imageDrawableDisposable.isDisposed()) {
+            imageDrawableDisposable.dispose();
+            imageDrawableDisposable = null;
+        }
+        shareCompositeDisposable.dispose();
+        shareCompositeDisposable.clear();
+    }
+
+    private void downloadImage(Context context) {
+        imageDownloader.asDrawable(
+                context,
+                image.getUrl(deviceInfo.getDeviceResolution().getWidth()),
+                Priority.IMMEDIATE,
+                imageView
+        )
+                .subscribeOn(schedulerProvider.mainThread())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(new SingleObserver<Drawable>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable disposable) {
+                        imageDrawableDisposable = disposable;
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull Drawable drawable) {
+                        isImageLoaded = true;
+                        if (eventListener != null) {
+                            eventListener.onImageDownloaded(drawable);
+                        }
+                        if (isViewReady() && eventListener != null) {
+                            eventListener.onViewReady();
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable throwable) {
+                        LogWrapper.i(TAG, "Error in downloading image", throwable);
                         if (eventListener != null) {
                             eventListener.onImageDownloadFailed();
                         }
                     }
-                }
-        );
+                });
     }
 
     private boolean isViewReady() {
@@ -317,7 +346,10 @@ public class ImageDetailActivityModel implements ViewModel {
                 );
             }
         } else {
-            metaString = resourceProvider.getString(R.string.title_photo_by_only_service_name, serviceName);
+            metaString = resourceProvider.getString(
+                    R.string.title_photo_by_only_service_name,
+                    serviceName
+            );
             spannableString = new SpannableString(metaString);
         }
 
@@ -351,25 +383,44 @@ public class ImageDetailActivityModel implements ViewModel {
         return deviceInfo.getNumberOfImageInfoColumns();
     }
 
-    void onShareImageClicked(Context context) {
-        notifyImageShareStarted();
-        shareImageDelegate.share(context, image, imageShareListener);
-    }
-
     void onShareImageLinkClicked(Context context) {
-        notifyImageShareStarted();
-        shareLinkDelegate.share(context, image, imageShareListener);
+        shareLinkDelegate.share(context, image)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(createShareCompletableObserver());
     }
 
     void onCopyImageLinkClicked(Context context) {
-        notifyImageShareStarted();
-        copyLinkDelegate.share(context, image, imageShareListener);
+        copyLinkDelegate.share(context, image)
+                .subscribeOn(schedulerProvider.mainThread())
+                .observeOn(schedulerProvider.mainThread())
+                .subscribe(createShareCompletableObserver());
     }
 
-    private void notifyImageShareStarted() {
-        if (eventListener != null) {
-            eventListener.onImageShareStarted();
-        }
+    private CompletableObserver createShareCompletableObserver() {
+        return new CompletableObserver() {
+            @Override
+            public void onSubscribe(@NonNull Disposable disposable) {
+                shareCompositeDisposable.add(disposable);
+                if (eventListener != null) {
+                    eventListener.onImageShareStarted();
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                if (eventListener != null) {
+                    eventListener.onImageShareFinished();
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
+                if (eventListener != null) {
+                    eventListener.onImageShareFinished();
+                }
+            }
+        };
     }
 
     interface EventListener {

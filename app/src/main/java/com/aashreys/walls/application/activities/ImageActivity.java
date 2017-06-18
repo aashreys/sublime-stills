@@ -40,24 +40,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.images.Image;
-import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.application.helpers.ChromeTabHelper;
 import com.aashreys.walls.application.views.InfoView;
+import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.utils.LogWrapper;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by aashreys on 21/02/17.
  */
 
-public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> implements
-        ImageDetailActivityModel.EventListener {
+public class ImageActivity extends BaseActivity<ImageActivityModel> implements
+        ImageActivityModel.EventListener {
 
-    private static final String TAG = ImageDetailActivity.class.getSimpleName();
+    private static final String TAG = ImageActivity.class.getSimpleName();
 
     private static final String ARG_IMAGE = "arg_image";
 
@@ -78,7 +76,7 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
     private ProgressBar setAsProgressBar;
 
     public static Intent createLaunchIntent(Context context, Image image) {
-        Intent intent = new Intent(context, ImageDetailActivity.class);
+        Intent intent = new Intent(context, ImageActivity.class);
         intent.putExtra(ARG_IMAGE, image);
         return intent;
     }
@@ -127,7 +125,7 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
             setAsButton.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
-                    getViewModel().onSetAsButtonClicked(ImageDetailActivity.this);
+                    getViewModel().onSetAsButtonClicked(ImageActivity.this);
                 }
             });
 
@@ -140,7 +138,7 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
     }
 
     @Override
-    protected ImageDetailActivityModel createViewModel() {
+    protected ImageActivityModel createViewModel() {
         return getUiComponent().createImageDetailActivityModel();
     }
 
@@ -196,10 +194,6 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
         subtitleText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private String getFormattedDate(Date date) {
-        return SimpleDateFormat.getDateInstance().format(date);
-    }
-
     private String formatResolution(int resX, int resY) {
         return getString(R.string.resolution_formatted_string, resX, resY);
     }
@@ -213,20 +207,16 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
 
-                    case R.id.menu_share_photo:
-                        handleImageShare(ShareDelegate.Mode.PHOTO);
-                        return true;
-
                     case R.id.menu_share_link:
                         handleImageShare(ShareDelegate.Mode.LINK);
-                        return true;
+                        break;
 
                     case R.id.menu_copy_link:
                         handleImageShare(ShareDelegate.Mode.COPY_LINK);
-                        return true;
+                        break;
 
                 }
-                return false;
+                return true;
             }
         });
         shareMenuHelper = new MenuPopupHelper(
@@ -239,10 +229,6 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
 
     private void handleImageShare(ShareDelegate.Mode mode) {
         switch (mode) {
-            case PHOTO:
-                getViewModel().onShareImageClicked(this);
-                break;
-
             case LINK:
                 getViewModel().onShareImageLinkClicked(this);
                 break;
@@ -255,8 +241,8 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         getViewModel().onActivityDestroyed();
+        super.onDestroy();
     }
 
     @Override
@@ -323,4 +309,6 @@ public class ImageDetailActivity extends BaseActivity<ImageDetailActivityModel> 
         shareProgress.setVisibility(android.view.View.INVISIBLE);
         shareButton.setVisibility(android.view.View.VISIBLE);
     }
+
+
 }

@@ -16,26 +16,29 @@
 
 package com.aashreys.walls.domain.display.images;
 
+import com.aashreys.walls.network.unsplash.UnsplashApi;
+
+import io.reactivex.Single;
+
 /**
  * Created by aashreys on 05/03/17.
  */
 
-public interface ImageInfoService {
+public class ImageServiceImpl implements ImageService {
 
-    /**
-     * Sets values for various metadata members of an {@link Image}. The image with property data
-     * is delivered via {@link Listener#onComplete(Image)}. The caller should still null check
-     * image data since not all properties may apply to all image types.
-     *
-     * @param image    image to set properties on
-     * @param listener listener to delivery results to
-     */
-    void addInfo(Image image, Listener listener);
+    private static final String TAG = ImageServiceImpl.class.getSimpleName();
 
-    interface Listener {
+    private final UnsplashApi unsplashApi;
 
-        void onComplete(Image imageWithProperties);
-
+    public ImageServiceImpl(UnsplashApi unsplashApi) {
+        this.unsplashApi = unsplashApi;
     }
 
+    @Override
+    public Single<Image> getImage(@Image.Type String imageType, String id) {
+        if (imageType.equals(Image.Type.UNSPLASH)) {
+            return unsplashApi.getPhoto(id);
+        }
+        return null;
+    }
 }

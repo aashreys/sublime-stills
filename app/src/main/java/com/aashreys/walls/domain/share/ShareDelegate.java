@@ -20,29 +20,20 @@ import android.content.Context;
 
 import com.aashreys.walls.domain.display.images.Image;
 
+import io.reactivex.Completable;
+
 /**
  * Created by aashreys on 03/12/16.
  */
 
 public interface ShareDelegate {
 
-    void share(Context context, Image image, Listener listener);
-
-    void cancel();
+    Completable share(Context context, Image image);
 
     enum Mode {
         LINK,
         COPY_LINK,
-        PHOTO,
         SET_AS
-    }
-
-    interface Listener {
-
-        void onShareComplete();
-
-        void onShareFailed();
-
     }
 
 }

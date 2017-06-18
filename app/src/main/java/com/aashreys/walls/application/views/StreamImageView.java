@@ -97,12 +97,12 @@ public class StreamImageView extends FrameLayout implements StreamImageViewModel
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                viewModel.onViewOnScreen();
+                viewModel.onViewAttachedToWindow();
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                viewModel.onViewOffScreen();
+                viewModel.onViewDetachedFromWindow();
             }
         });
     }

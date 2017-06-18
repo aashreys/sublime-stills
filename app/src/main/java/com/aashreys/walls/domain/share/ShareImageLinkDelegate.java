@@ -22,6 +22,9 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.ShareImageLinkAction;
 import com.aashreys.walls.domain.values.Url;
 
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+
 /**
  * Created by aashreys on 08/02/17.
  */
@@ -37,14 +40,13 @@ public class ShareImageLinkDelegate implements ShareDelegate {
     }
 
     @Override
-    public void share(final Context context, final Image image, final Listener listener) {
-        Url imageUrl = image.getShareUrl();
-        shareImageLinkAction.shareImageLink(context, image.getTitle(), imageUrl);
-        listener.onShareComplete();
-    }
-
-    @Override
-    public void cancel() {
-
+    public Completable share(final Context context, final Image image) {
+        return Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                Url imageUrl = image.getShareUrl();
+                shareImageLinkAction.shareImageLink(context, image.getTitle(), imageUrl);
+            }
+        });
     }
 }

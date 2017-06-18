@@ -16,8 +16,8 @@
 
 package com.aashreys.walls.domain.share;
 
+import com.aashreys.walls.utils.SchedulerProvider;
 import com.aashreys.walls.application.helpers.ImageDownloader;
-import com.aashreys.walls.application.helpers.UiHandler;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.share.actions.ShareActionFactory;
 
@@ -33,21 +33,21 @@ public class ShareDelegateFactory {
 
     private final ShareActionFactory shareActionFactory;
 
-    private final UiHandler.Factory uiHandlerFactory;
-
     private final ImageDownloader imageDownloader;
+
+    private final SchedulerProvider schedulerProvider;
 
     @Inject
     public ShareDelegateFactory(
             DeviceResolution deviceResolution,
             ShareActionFactory shareActionFactory,
-            UiHandler.Factory uiHandlerFactory,
-            ImageDownloader imageDownloader
+            ImageDownloader imageDownloader,
+            SchedulerProvider schedulerProvider
     ) {
         this.deviceResolution = deviceResolution;
         this.shareActionFactory = shareActionFactory;
-        this.uiHandlerFactory = uiHandlerFactory;
         this.imageDownloader = imageDownloader;
+        this.schedulerProvider = schedulerProvider;
     }
 
     public ShareDelegate create(ShareDelegate.Mode mode) {
@@ -56,19 +56,12 @@ public class ShareDelegateFactory {
                 return new ShareImageLinkDelegate(shareActionFactory.createShareImageLinkAction());
             case COPY_LINK:
                 return new CopyLinkDelegate(shareActionFactory.createCopyLinkAction());
-            case PHOTO:
-                return new ShareImageDelegate(
-                        deviceResolution,
-                        shareActionFactory.createShareImageAction(),
-                        uiHandlerFactory.create(),
-                        imageDownloader
-                );
             case SET_AS:
                 return new SetAsDelegate(
                         deviceResolution,
                         shareActionFactory.createSetAsAction(),
-                        uiHandlerFactory.create(),
-                        imageDownloader
+                        imageDownloader,
+                        schedulerProvider
                 );
         }
         throw new IllegalArgumentException("Unexpected share mode");

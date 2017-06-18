@@ -32,16 +32,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.application.tasks.CollectionSearchTask;
 import com.aashreys.walls.application.views.ChipView;
+import com.aashreys.walls.domain.display.collections.Collection;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.Collections;
 import java.util.List;
 
 public class AddCollectionsActivity extends BaseActivity<AddCollectionsActivityModel> implements
-        CollectionSearchTask.CollectionSearchListener, AddCollectionsActivityModel.EventListener {
+        AddCollectionsActivityModel.EventListener {
 
     private static final String ARG_RETURN_TO_STREAM = "arg_return_to_stream";
 
@@ -166,21 +165,18 @@ public class AddCollectionsActivity extends BaseActivity<AddCollectionsActivityM
                 Collections.shuffle(collectionList);
             }
             for (Collection collection : collectionList) {
-                if (collection.getName().value().length() >
-                        getViewModel().getMinCollectionNameLength()) {
-                    ChipView chipView = new ChipView(this);
-                    chipView.setCollection(collection);
-                    chipView.setChecked(getViewModel().isCollectionSelected(collection));
-                    chipView.setOnCheckedListener(getViewModel());
-                    FlowLayout.LayoutParams params = new FlowLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            getResources().getDimensionPixelSize(getViewModel().getChipViewHeight())
-                    );
-                    int margin = getResources()
-                            .getDimensionPixelSize(getViewModel().getChipViewMargin());
-                    params.setMargins(margin, margin, margin, margin);
-                    collectionsParent.addView(chipView, params);
-                }
+                ChipView chipView = new ChipView(this);
+                chipView.setCollection(collection);
+                chipView.setChecked(getViewModel().isCollectionSelected(collection));
+                chipView.setOnCheckedListener(getViewModel());
+                FlowLayout.LayoutParams params = new FlowLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        getResources().getDimensionPixelSize(getViewModel().getChipViewHeight())
+                );
+                int margin = getResources()
+                        .getDimensionPixelSize(getViewModel().getChipViewMargin());
+                params.setMargins(margin, margin, margin, margin);
+                collectionsParent.addView(chipView, params);
             }
         }
     }
@@ -194,5 +190,11 @@ public class AddCollectionsActivity extends BaseActivity<AddCollectionsActivityM
             ));
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        getViewModel().onActivityDestroyed();
+        super.onDestroy();
     }
 }

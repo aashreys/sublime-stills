@@ -23,7 +23,7 @@ import com.aashreys.walls.di.modules.ServiceModule;
 import com.aashreys.walls.di.scopes.UiScoped;
 import com.aashreys.walls.application.activities.AddCollectionsActivityModel;
 import com.aashreys.walls.application.activities.CollectionsActivityModel;
-import com.aashreys.walls.application.activities.ImageDetailActivityModel;
+import com.aashreys.walls.application.activities.ImageActivityModel;
 import com.aashreys.walls.application.activities.OnboardingActivityModel;
 import com.aashreys.walls.application.activities.SettingsActivityModel;
 import com.aashreys.walls.application.activities.StreamActivityModel;
@@ -51,7 +51,7 @@ public interface UiComponent {
 
     StreamActivityModel createStreamActivityModel();
 
-    ImageDetailActivityModel createImageDetailActivityModel();
+    ImageActivityModel createImageDetailActivityModel();
 
     CollectionsActivityModel createCollectionsActivityModel();
 

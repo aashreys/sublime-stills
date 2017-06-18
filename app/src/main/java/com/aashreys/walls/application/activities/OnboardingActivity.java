@@ -104,4 +104,10 @@ public class OnboardingActivity extends BaseActivity<OnboardingActivityModel> im
         startActivity(new Intent(this, StreamActivity.class));
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
+
+    @Override
+    protected void onDestroy() {
+        getViewModel().onActivityDestroyed();
+        super.onDestroy();
+    }
 }

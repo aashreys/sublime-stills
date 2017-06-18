@@ -14,14 +14,15 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.network.apis;
+package com.aashreys.walls.network.unsplash;
 
 import android.support.annotation.IntRange;
 
-import java.io.IOException;
+import com.aashreys.walls.domain.display.images.Image;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
+import java.util.List;
+
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -45,32 +46,32 @@ public interface UnsplashApi {
     String API_VERSION = "v1";
 
     @GET("photos")
-    Call<ResponseBody> getRecentPhotos(
+    Single<List<Image>> getRecentPhotos(
             @Query("page") int pageNumber,
             @IntRange(from = 1, to = 30) @Query("per_page") int imagesPerPage
-    ) throws IOException;
+    );
 
     @GET("collections/{id}/photos")
-    Call<ResponseBody> getCollectionPhotos(
+    Single<List<Image>> getCollectionPhotos(
             @Path("id") String collectionId,
             @Query("page") int pageNumber,
             @IntRange(from = 1, to = 30) @Query("per_page") int imagesPerPage
-    ) throws IOException;
+    );
 
     @GET("search/collections")
-    Call<ResponseBody> searchCollections(
+    Single<UnsplashCollectionSearchResponse> searchCollections(
             @Query("query") String searchString,
             @Query("page") int pageNumber,
             @IntRange(from = 1, to = 30) @Query("per_page") int imagesPerPage
-    ) throws IOException;
+    );
 
     @GET("photos/{id}")
-    Call<ResponseBody> getPhoto(
+    Single<Image> getPhoto(
             @Path("id") String photoId
     );
 
     @GET("/collections/featured")
-    Call<ResponseBody> getFeaturedCollections(
+    Single<List<UnsplashCollectionResponse>> getFeaturedCollections(
             @Query("page") int pageNumber,
             @IntRange(from = 1, to = 30) @Query("per_page") int imagesPerPage
     );

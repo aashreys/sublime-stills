@@ -16,25 +16,18 @@
 
 package com.aashreys.walls.domain.display.sources;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
+import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.values.Id;
-import com.aashreys.walls.network.apis.UnsplashApi;
-import com.aashreys.walls.network.parsers.UnsplashPhotoResponseParser;
-import com.aashreys.walls.application.helpers.UiHelper;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
+import io.reactivex.Single;
 
 /**
  * Created by aashreys on 31/01/17.
@@ -47,38 +40,20 @@ public class UnsplashCollectionSource implements Source {
 
     private final UnsplashApi unsplashApi;
 
-    private final UnsplashPhotoResponseParser responseParser;
-
     private final Id collectionId;
 
-    public UnsplashCollectionSource(
-            @Provided UnsplashApi unsplashApi,
-            @Provided UnsplashPhotoResponseParser responseParser,
-            Id collectionId
-    ) {
+    public UnsplashCollectionSource(@Provided UnsplashApi unsplashApi, Id collectionId) {
         this.unsplashApi = unsplashApi;
-        this.responseParser = responseParser;
         this.collectionId = collectionId;
     }
 
     @NonNull
-    @SuppressLint("DefaultLocale")
     @Override
-    public List<Image> getImages(int fromIndex) throws IOException {
-        try {
-            Call<ResponseBody> call = unsplashApi.getCollectionPhotos(
-                    collectionId.value(),
-                    UiHelper.getPageNumber(fromIndex, UnsplashApi.ITEMS_PER_PAGE),
-                    UnsplashApi.ITEMS_PER_PAGE
-            );
-            Response<ResponseBody> response = call.execute();
-            if (response.isSuccessful()) {
-                return responseParser.parse(response.body().string());
-            } else {
-                throw new IOException("Unexpected response code " + response.code());
-            }
-        } catch (JSONException e) {
-            throw new IOException("Image loading failed with JSONException", e);
-        }
+    public Single<List<Image>> getImages(int fromIndex) {
+        return unsplashApi.getCollectionPhotos(
+                collectionId.value(),
+                UiHelper.getPageNumber(fromIndex, UnsplashApi.ITEMS_PER_PAGE),
+                UnsplashApi.ITEMS_PER_PAGE
+        );
     }
 }

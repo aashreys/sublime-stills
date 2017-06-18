@@ -23,8 +23,10 @@ import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 /**
  * Created by aashreys on 06/12/16.
@@ -43,8 +45,16 @@ public class FavoriteSource implements Source {
 
     @NonNull
     @Override
-    public List<Image> getImages(int fromIndex) throws IOException {
-        return favoriteImageRepository.get(fromIndex, ITEMS_PER_PAGE);
+    public Single<List<Image>> getImages(final int fromIndex) {
+        return Single.fromCallable(new Callable<List<Image>>() {
+            @Override
+            public List<Image> call() throws Exception {
+                return favoriteImageRepository.get(
+                        fromIndex,
+                        ITEMS_PER_PAGE
+                );
+            }
+        });
     }
 
 }

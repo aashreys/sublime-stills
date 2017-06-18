@@ -21,8 +21,8 @@ import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.Collection.Type;
 import com.aashreys.walls.domain.display.collections.CollectionTests;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
-import com.aashreys.walls.network.apis.ApiFactory;
-import com.aashreys.walls.network.apis.UnsplashApi;
+import com.aashreys.walls.network.ApiFactory;
+import com.aashreys.walls.network.unsplash.UnsplashApi;
 
 import org.junit.After;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class CollectionSearchServiceTests extends BaseTestCase {
 
     private UnsplashApi unsplashApi;
 
-    private CollectionSearchServiceImpl collectionSearcher;
+    private CollectionDiscoveryServiceImpl collectionDiscoveryService;
 
     @Override
     public void init() {
@@ -56,14 +56,16 @@ public class CollectionSearchServiceTests extends BaseTestCase {
                 new OkHttpClient(),
                 mockWebServer.url("").toString()
         );
-        collectionSearcher = new CollectionSearchServiceImpl(new UnsplashCollectionSearchService(unsplashApi));
+        collectionDiscoveryService = new CollectionDiscoveryServiceImpl(
+                new UnsplashCollectionDiscoveryService(unsplashApi)
+        );
     }
 
     @Test
     public void test_collection_search() {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(readFile("response_search_collections.json")));
-        List<Collection> collectionList = collectionSearcher.search("", 10);
+        List<Collection> collectionList = collectionDiscoveryService.search("", 10).blockingGet();
         assertEquals(collectionList.size(), 4);
 
         Collection collection1 = collectionList.get(0);
@@ -81,13 +83,13 @@ public class CollectionSearchServiceTests extends BaseTestCase {
     public void test_collection_search_min_size() {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(readFile("response_search_collections.json")));
-        List<Collection> collectionList = collectionSearcher.search("", 50);
+        List<Collection> collectionList = collectionDiscoveryService.search("", 50).blockingGet();
         // Only 3 collections are larger than 50 photos.
         assertEquals(collectionList.size(), 3);
 
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(readFile("response_search_collections.json")));
-        collectionList = collectionSearcher.search("", 150);
+        collectionList = collectionDiscoveryService.search("", 150).blockingGet();
         // Only 3 collections are larger than 50 photos.
         assertEquals(collectionList.size(), 0);
     }
@@ -96,7 +98,7 @@ public class CollectionSearchServiceTests extends BaseTestCase {
     public void test_featured_collection() {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200)
                 .setBody(readFile("response_get_featured_collections.json")));
-        List<Collection> collectionList = collectionSearcher.getFeatured();
+        List<Collection> collectionList = collectionDiscoveryService.getFeatured().blockingGet();
         assertEquals(collectionList.size(), 4);
     }
 

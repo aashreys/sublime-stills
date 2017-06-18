@@ -115,7 +115,7 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
 
     @Override
     public void onImageClicked(Image image) {
-        startActivity(ImageDetailActivity.createLaunchIntent(this, image));
+        startActivity(ImageActivity.createLaunchIntent(this, image));
     }
 
     @Override

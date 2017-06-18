@@ -26,6 +26,8 @@ import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import javax.inject.Inject;
 
 /**
@@ -99,7 +101,7 @@ class ChipViewModel implements ViewModel {
     void setCollection(Collection collection) {
         this.collection = collection;
         if (eventCallback != null) {
-            eventCallback.onCollectionChanged(collection.getName().value());
+            eventCallback.onCollectionChanged(WordUtils.capitalizeFully(collection.getName().value()));
         }
     }
 

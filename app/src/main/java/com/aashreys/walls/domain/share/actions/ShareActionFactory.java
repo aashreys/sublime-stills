@@ -35,10 +35,6 @@ public class ShareActionFactory {
         return new SetAsAction();
     }
 
-    public ShareImageAction createShareImageAction() {
-        return new ShareImageAction();
-    }
-
     public ShareImageLinkAction createShareImageLinkAction() {
         return new ShareImageLinkAction();
     }

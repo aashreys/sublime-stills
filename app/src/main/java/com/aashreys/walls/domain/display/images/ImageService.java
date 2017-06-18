@@ -14,17 +14,16 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.domain.share;
+package com.aashreys.walls.domain.display.images;
 
-import com.aashreys.walls.application.helpers.ImageDownloader;
-
-import java.io.File;
+import io.reactivex.Single;
 
 /**
- * Created by aashreys on 08/04/17.
+ * Created by aashreys on 05/03/17.
  */
-abstract class ImageFileDownloadListener implements ImageDownloader.Listener<File> {
 
-    boolean isCancelled;
+public interface ImageService {
+
+    Single<Image> getImage(@Image.Type String imageType, String id);
 
 }

@@ -20,8 +20,9 @@ import android.support.annotation.NonNull;
 
 import com.aashreys.walls.domain.display.images.Image;
 
-import java.io.IOException;
 import java.util.List;
+
+import io.reactivex.Single;
 
 /**
  * Created by aashreys on 03/03/17.
@@ -37,7 +38,7 @@ public class DiscoverSource implements Source {
 
     @NonNull
     @Override
-    public List<Image> getImages(int fromIndex) throws IOException {
+    public Single<List<Image>> getImages(int fromIndex) {
         return unsplashRecentSource.getImages(fromIndex);
     }
 }
