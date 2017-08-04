@@ -16,6 +16,7 @@
 
 package com.aashreys.walls.persistence.models;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 
@@ -23,6 +24,7 @@ import com.aashreys.walls.domain.display.collections.DiscoverCollection;
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class DiscoverCollectionModel implements CollectionModel {
 
     @Override

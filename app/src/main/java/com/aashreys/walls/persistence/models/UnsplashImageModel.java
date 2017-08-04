@@ -20,6 +20,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.InstantiationException;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.display.images.UnsplashImage;
@@ -42,6 +43,7 @@ import java.util.Date;
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class UnsplashImageModel implements ImageModel {
 
     private static final String TAG = UnsplashImageModel.class.getSimpleName();

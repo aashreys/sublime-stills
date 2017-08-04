@@ -16,12 +16,14 @@
 
 package com.aashreys.walls.persistence.models;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.images.metadata.Coordinates;
 
 /**
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class CoordinatesModel {
 
     private final double latitude, longitude;

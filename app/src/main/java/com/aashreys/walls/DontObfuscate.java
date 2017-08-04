@@ -14,26 +14,15 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.persistence.models;
+package com.aashreys.walls;
 
-import com.aashreys.walls.DontObfuscate;
-import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.FavoriteCollection;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by aashreys on 23/04/17.
+ * Created by aashreys on 05/08/17.
  */
 
-@DontObfuscate
-public class FavoriteCollectionModel implements CollectionModel {
-
-    @Override
-    public Collection createCollection() {
-        return new FavoriteCollection();
-    }
-
-    @Override
-    public String getId() {
-        return FavoriteCollection.ID.value();
-    }
+@Retention(RetentionPolicy.CLASS)
+public @interface DontObfuscate {
 }

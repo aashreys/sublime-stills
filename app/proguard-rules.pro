@@ -52,9 +52,6 @@
 -keep interface org.objenesis.** { *; }
 -dontwarn org.objenesis.**
 
-# Persisted models
--keep class com.aashreys.walls.persistence.models.** { *; }
-
 ##---------------Begin: proguard configuration for Gson  ----------
 # Gson uses generic type information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.
@@ -77,3 +74,7 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 ##---------------End: proguard configuration for Gson  ----------
+
+# Excluded from Obfuscation
+-keep class com.aashreys.walls.DontObfuscate
+-keep @com.aashreys.walls.DontObfuscate class * { *; }

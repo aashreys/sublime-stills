@@ -18,6 +18,7 @@ package com.aashreys.walls.persistence.models;
 
 import android.support.annotation.Nullable;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.images.metadata.Exif;
 import com.aashreys.walls.domain.values.Value;
 
@@ -25,6 +26,7 @@ import com.aashreys.walls.domain.values.Value;
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class ExifModel {
 
     @Nullable

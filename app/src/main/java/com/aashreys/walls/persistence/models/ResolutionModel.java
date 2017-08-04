@@ -16,12 +16,14 @@
 
 package com.aashreys.walls.persistence.models;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.images.metadata.Resolution;
 
 /**
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class ResolutionModel {
 
     private final int width, height;

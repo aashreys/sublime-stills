@@ -16,6 +16,7 @@
 
 package com.aashreys.walls.persistence.models;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.images.metadata.Location;
 import com.aashreys.walls.domain.values.Value;
 
@@ -23,6 +24,7 @@ import com.aashreys.walls.domain.values.Value;
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class LocationModel {
 
     private final String name;

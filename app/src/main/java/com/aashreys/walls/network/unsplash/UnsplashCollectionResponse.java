@@ -1,5 +1,6 @@
 package com.aashreys.walls.network.unsplash;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.values.Id;
 import com.aashreys.walls.domain.values.Name;
@@ -8,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by aashreys on 17/06/17.
  */
+
+@DontObfuscate
 public class UnsplashCollectionResponse {
 
     private long id;

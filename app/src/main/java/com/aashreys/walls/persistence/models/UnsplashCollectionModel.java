@@ -16,6 +16,7 @@
 
 package com.aashreys.walls.persistence.models;
 
+import com.aashreys.walls.DontObfuscate;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.UnsplashCollection;
 import com.aashreys.walls.domain.values.Id;
@@ -25,6 +26,7 @@ import com.aashreys.walls.domain.values.Name;
  * Created by aashreys on 23/04/17.
  */
 
+@DontObfuscate
 public class UnsplashCollectionModel implements CollectionModel {
 
     private final String id;
