@@ -16,11 +16,11 @@
 
 package com.aashreys.walls.domain.share.actions;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.aashreys.walls.R;
 import com.aashreys.walls.utils.FileUtils;
 
 import java.io.File;
@@ -35,14 +35,10 @@ public class SetAsAction {
 
     public void setAs(Context context, File file) {
         Uri uri = FileUtils.createUri(context, file);
-        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        Intent intent = new Intent(WallpaperManager.ACTION_CROP_AND_SET_WALLPAPER);
         intent.setDataAndType(uri, MIME_TYPE);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(Intent.createChooser(
-                intent,
-                context.getString(R.string.share_set_as_title)
-        ));
+        context.startActivity(intent);
     }
 
 }
