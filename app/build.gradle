@@ -27,12 +27,12 @@ buildscript {
 }
 
 // Load walls properties
-def wallsPropertiesFile = rootProject.file("sublime.properties");
-def wallsProperties = new Properties()
-wallsProperties.load(new FileInputStream(wallsPropertiesFile))
+def propertiesFile = rootProject.file("sublime.properties");
+def properties = new Properties()
+properties.load(new FileInputStream(propertiesFile))
 
-int versionCodeInt = 15;
-String versionNameString = "1.6.1";
+int versionCodeInt = 16;
+String versionNameString = "1.6.2";
 
 android {
     compileSdkVersion 26
@@ -48,10 +48,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(wallsProperties['storeFile'])
-            storePassword wallsProperties['storePassword']
-            keyAlias wallsProperties['keyAlias']
-            keyPassword wallsProperties['keyPassword']
+            storeFile file(properties['storeFile'])
+            storePassword properties['storePassword']
+            keyAlias properties['keyAlias']
+            keyPassword properties['keyPassword']
         }
     }
 
@@ -67,9 +67,9 @@ android {
     buildTypes {
         buildTypes.each {
             // Common build config vars
-            it.buildConfigField(STRING, UNSPLASH_API_KEY, wallsProperties['unsplashApiKey'])
-            it.buildConfigField(STRING, GOOGL_API_KEY, wallsProperties['googlApiKey'])
-            it.buildConfigField(STRING, FLICKR_API_KEY, wallsProperties['flickrApiKey'])
+            it.buildConfigField(STRING, UNSPLASH_API_KEY, properties['unsplashApiKey'])
+            it.buildConfigField(STRING, GOOGL_API_KEY, properties['googlApiKey'])
+            it.buildConfigField(STRING, FLICKR_API_KEY, properties['flickrApiKey'])
             it.resValue(STRING_RESOURCE, VERSION_NAME, versionNameString)
         }
         release {
