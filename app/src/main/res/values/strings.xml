@@ -48,7 +48,7 @@
     <string name="share_text_template">"%1$s" - "%2$s"</string>
     <string name="share_text_template_notitle">"%1$s"</string>
     <string name="share_set_as_title">Set as</string>
-    <string name="share_more_options">More Options</string>
+    <string name="share_more_options">Lock Screen and Others</string>
 
     <string name="action_add">Add</string>
     <string name="action_cancel">Cancel</string>

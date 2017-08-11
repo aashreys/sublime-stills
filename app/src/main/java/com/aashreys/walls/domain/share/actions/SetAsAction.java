@@ -67,7 +67,7 @@ public class SetAsAction {
                                     context,
                                     moreOptionsIntent,
                                     R.string.share_more_options,
-                                    R.drawable.ic_more_horiz_black_24dp
+                                    R.drawable.ic_screen_lock_portrait_black_24dp
                             )
                     }
             );
