@@ -99,21 +99,26 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 25 Platform (1)" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="kryo-4.0.0" level="project" />
+    <orderEntry type="library" exported="" name="support-core-ui-26.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="runner-0.5" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-idling-resource-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="dagger-2.11" level="project" />
+    <orderEntry type="library" exported="" name="support-media-compat-26.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-library-1.3" level="project" />
+    <orderEntry type="library" exported="" name="support-vector-drawable-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="asm-5.0.4" level="project" />
-    <orderEntry type="library" exported="" name="transition-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="support-core-utils-26.0.0" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="commons-lang3-3.5" level="project" />
+    <orderEntry type="library" exported="" name="rxjava-2.1.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="byte-buddy-1.6.5" level="project" />
     <orderEntry type="library" exported="" name="glide-3.8.0" level="project" />
-    <orderEntry type="library" exported="" name="rxjava-2.1.0" level="project" />
     <orderEntry type="library" exported="" name="reactive-streams-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="animated-vector-drawable-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="guava-18.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="exposed-instrumentation-api-publish-0.5" level="project" />
     <orderEntry type="library" exported="" name="fabric-1.3.16" level="project" />
@@ -121,50 +126,46 @@
     <orderEntry type="library" exported="" scope="TEST" name="javax.annotation-api-1.2" level="project" />
     <orderEntry type="library" exported="" name="minlog-1.3.0" level="project" />
     <orderEntry type="library" exported="" name="annotations-12.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="mockwebserver-3.8.1" level="project" />
     <orderEntry type="library" exported="" name="javawriter-2.5.1" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="support-media-compat-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="support-vector-drawable-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="support-compat-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-26.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="bcprov-jdk15on-1.50" level="project" />
     <orderEntry type="library" exported="" name="okhttp3-integration-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="kryo-serializers-0.40" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.8.1" level="project" />
     <orderEntry type="library" exported="" name="auto-factory-1.0-beta3" level="project" />
     <orderEntry type="library" exported="" name="reflectasm-1.11.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-integration-1.3" level="project" />
-    <orderEntry type="library" exported="" name="design-25.3.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="byte-buddy-agent-1.6.5" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="mockwebserver-3.8.0" level="project" />
-    <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-core-2.3.16" level="project" />
-    <orderEntry type="library" exported="" name="customtabs-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="auto-common-0.4" level="project" />
     <orderEntry type="library" exported="" name="javax.annotation-10.0-b28" level="project" />
     <orderEntry type="library" exported="" name="safeapi" level="project" />
     <orderEntry type="library" exported="" name="objenesis-2.5" level="project" />
-    <orderEntry type="library" exported="" name="support-core-utils-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="support-fragment-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="transition-26.0.0" level="project" />
+    <orderEntry type="library" exported="" name="customtabs-26.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-core-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="support-fragment-26.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="mockito-core-2.7.5" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="rules-0.5" level="project" />
     <orderEntry type="library" exported="" name="adapter-rxjava2-2.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-compat-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="okio-1.13.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="converter-gson-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="beta-1.2.4" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="json-20160810" level="project" />
-    <orderEntry type="library" exported="" name="okhttp-3.8.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-26.0.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.8.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-26.0.0" level="project" />
     <orderEntry type="library" exported="" name="answers-1.3.12" level="project" />
+    <orderEntry type="library" exported="" name="design-26.0.0" level="project" />
+    <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="flowlayout-0.4.1" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="paperdb-2.1" level="project" />
     <orderEntry type="library" exported="" name="maestro" level="project" />
-    <orderEntry type="library" exported="" name="animated-vector-drawable-25.3.1" level="project" />
   </component>
 </module>
