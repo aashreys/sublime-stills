@@ -39,4 +39,8 @@ public class ShareActionFactory {
         return new ShareImageLinkAction();
     }
 
+    public SetWallpaperAction createSetWallpaperAction() {
+        return new SetWallpaperAction();
+    }
+
 }

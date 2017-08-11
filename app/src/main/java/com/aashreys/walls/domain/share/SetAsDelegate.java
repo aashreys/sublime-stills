@@ -17,13 +17,17 @@
 package com.aashreys.walls.domain.share;
 
 import android.content.Context;
+import android.widget.Toast;
 
-import com.aashreys.walls.utils.SchedulerProvider;
+import com.aashreys.walls.R;
 import com.aashreys.walls.application.helpers.ImageDownloader;
 import com.aashreys.walls.domain.device.DeviceResolution;
 import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.domain.share.actions.SetAsAction;
+import com.aashreys.walls.domain.share.actions.SetWallpaperAction;
 import com.aashreys.walls.domain.values.Url;
+import com.aashreys.walls.utils.LogWrapper;
+import com.aashreys.walls.utils.SchedulerProvider;
 
 import java.io.File;
 
@@ -48,16 +52,20 @@ public class SetAsDelegate implements ShareDelegate {
 
     private final SetAsAction setAsAction;
 
+    private final SetWallpaperAction setWallpaperAction;
+
     private final SchedulerProvider schedulerProvider;
 
     public SetAsDelegate(
             DeviceResolution deviceResolution,
             SetAsAction setAsAction,
+            SetWallpaperAction setWallpaperAction,
             ImageDownloader imageDownloader,
             SchedulerProvider schedulerProvider
     ) {
         this.deviceResolution = deviceResolution;
         this.setAsAction = setAsAction;
+        this.setWallpaperAction = setWallpaperAction;
         this.imageDownloader = imageDownloader;
         this.schedulerProvider = schedulerProvider;
     }
@@ -67,8 +75,7 @@ public class SetAsDelegate implements ShareDelegate {
         return Completable.create(new CompletableOnSubscribe() {
             @Override
             public void subscribe(
-                    @NonNull final CompletableEmitter completableEmitter
-            ) throws Exception {
+                    @NonNull final CompletableEmitter completableEmitter) throws Exception {
                 final Url imageUrl = image.getUrl(deviceResolution.getWidth() * 2);
                 imageDownloader.asFile(context, imageUrl)
                         .subscribeOn(schedulerProvider.mainThread())
@@ -81,7 +88,7 @@ public class SetAsDelegate implements ShareDelegate {
                             @Override
                             public void onSuccess(@NonNull File file) {
                                 if (!completableEmitter.isDisposed()) {
-                                    setAsAction.setAs(context, file);
+                                    doSetAs(context, file);
                                     completableEmitter.onComplete();
                                 }
                             }
@@ -95,5 +102,22 @@ public class SetAsDelegate implements ShareDelegate {
                         });
             }
         });
+    }
+
+    private void doSetAs(Context context, File file) {
+        try {
+            setAsAction.setAs(context, file);
+        } catch (Exception e) {
+            try {
+                setWallpaperAction.setWallpaper(context, file);
+                Toast.makeText(context, R.string.toast_wallpaper_changed, Toast.LENGTH_SHORT).show();
+            } catch (UnsupportedOperationException e1) {
+                LogWrapper.e(TAG, "Not allowed to set wallpaper", e1);
+                Toast.makeText(context, R.string.toast_wallpaper_change_not_allowed, Toast.LENGTH_SHORT).show();
+            } catch (Exception e1) {
+                LogWrapper.e(TAG, "Error occured while setting wallpaper", e1);
+                Toast.makeText(context, R.string.toast_could_not_set_walllaper, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

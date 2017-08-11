@@ -60,6 +60,7 @@ public class ShareDelegateFactory {
                 return new SetAsDelegate(
                         deviceResolution,
                         shareActionFactory.createSetAsAction(),
+                        shareActionFactory.createSetWallpaperAction(),
                         imageDownloader,
                         schedulerProvider
                 );

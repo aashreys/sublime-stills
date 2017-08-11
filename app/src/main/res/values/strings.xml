@@ -48,6 +48,7 @@
     <string name="share_text_template">"%1$s" - "%2$s"</string>
     <string name="share_text_template_notitle">"%1$s"</string>
     <string name="share_set_as_title">Set as</string>
+    <string name="share_more_options">More Options</string>
 
     <string name="action_add">Add</string>
     <string name="action_cancel">Cancel</string>
@@ -92,5 +93,9 @@
     <string name="title_featured_collections">Featured Collections</string>
 
     <string name="title_results_for_collection">Results for %s</string>
+
+    <string name="toast_wallpaper_changed">Wallpaper changed successfully</string>
+    <string name="toast_wallpaper_change_not_allowed">Not allowed to change Wallpaper</string>
+    <string name="toast_could_not_set_walllaper">Could not set Wallpaper</string>
 
 </resources>
