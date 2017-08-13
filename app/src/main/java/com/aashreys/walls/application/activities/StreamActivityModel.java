@@ -20,6 +20,9 @@ import android.support.annotation.Nullable;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
+import com.aashreys.walls.application.adapters.StreamAdapter;
+import com.aashreys.walls.application.fragments.StreamFragmentModel;
+import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
@@ -28,8 +31,6 @@ import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
-import com.aashreys.walls.application.adapters.StreamAdapter;
-import com.aashreys.walls.application.views.StreamImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +43,8 @@ import javax.inject.Inject;
  */
 
 public class StreamActivityModel implements ViewModel, StreamImageView.InteractionCallback,
-        CollectionRepository.CollectionRepositoryListener, StreamAdapter.CollectionProvider {
+        CollectionRepository.CollectionRepositoryListener, StreamAdapter.CollectionProvider,
+        StreamFragmentModel.StreamScrollListener {
 
     public static final String KEY_IS_ONBOARDING_COMPLETED = "key_is_onboarding_completed";
 
@@ -213,6 +215,20 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
         eventListener = null;
     }
 
+    @Override
+    public void onStreamScrolledUp() {
+        if (eventListener != null) {
+            eventListener.onStreamScrolledUp();
+        }
+    }
+
+    @Override
+    public void onStreamScrolledDown() {
+        if (eventListener != null) {
+            eventListener.onStreamScrolledDown();
+        }
+    }
+
     /**
      * Created by aashreys on 08/04/17.
      */
@@ -234,6 +250,10 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
         void onAddCollectionsButtonClicked();
 
         void onCollectionsModified();
+
+        void onStreamScrolledUp();
+
+        void onStreamScrolledDown();
 
     }
 }

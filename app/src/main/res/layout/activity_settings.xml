@@ -69,13 +69,13 @@
         style="@style/Sublime.Text.Subhead"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_small"
-        android:text="@string/title_miscellaneous"/>
+        android:text="@string/title_user_tips"/>
 
     <TextView
         android:id="@+id/text_display_tips"
         style="@style/Sublime.Text.SingleListItem"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_medium"
+        android:layout_height="@dimen/height_small"
         android:background="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/spacing_medium"
@@ -88,7 +88,7 @@
         android:id="@+id/text_display_onboarding"
         style="@style/Sublime.Text.SingleListItem"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_medium"
+        android:layout_height="@dimen/height_small"
         android:background="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/spacing_medium"

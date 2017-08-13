@@ -29,9 +29,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/SublimeTheme"
+        android:theme="@style/Sublime.AppTheme.Default"
         tools:replace="android:allowBackup, android:supportsRtl">
-
         <activity
             android:name=".application.activities.StreamActivity"
             android:label="@string/app_name"

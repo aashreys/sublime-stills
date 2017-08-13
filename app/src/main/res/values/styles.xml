@@ -16,25 +16,24 @@
 
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="SublimeTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="Sublime"/>
+
+    <style name="Sublime.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="selectableItemBackgroundBorderlessCompat">?attr/selectableItemBackground</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
     </style>
 
+    <!-- Base application theme. -->
+    <style name="Sublime.AppTheme.Default" parent="Sublime.AppTheme"/>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
-    <style name="Sublime" />
 
     <style name="Sublime.Divider">
         <item name="android:layout_height">1dp</item>

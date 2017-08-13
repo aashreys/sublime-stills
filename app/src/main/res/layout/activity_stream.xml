@@ -41,8 +41,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_medium"
+                android:layout_marginTop="@dimen/height_status_bar"
                 app:contentInsetStart="0dp"
-                app:layout_scrollFlags="scroll|snap|enterAlways">
+                app:layout_scrollFlags="scroll|enterAlways">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,9 +87,10 @@
                 android:id="@+id/tablayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_small"
+                android:clipToPadding="false"
                 android:paddingLeft="@dimen/spacing_medium"
                 android:paddingRight="@dimen/spacing_medium"
-                android:clipToPadding="false"
+                app:layout_scrollFlags="scroll|enterAlways"
                 app:tabMode="scrollable"
                 app:tabTextAppearance="@style/Sublime.TextAppearance.Tab"/>
 
@@ -110,15 +112,6 @@
         android:background="@color/navigationDrawerBackground"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
-        app:menu="@menu/menu_nav_drawer">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="@dimen/spacing_medium"
-            android:text="@string/version_name"/>
-
-    </android.support.design.widget.NavigationView>
+        app:menu="@menu/menu_nav_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

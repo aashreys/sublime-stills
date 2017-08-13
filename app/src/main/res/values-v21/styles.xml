@@ -17,17 +17,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="SublimeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Sublime.AppTheme.Default" parent="Sublime.AppTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/statusBarBackground</item>
         <item name="selectableItemBackgroundBorderlessCompat">
             ?attr/selectableItemBackgroundBorderless
         </item>
     </style>
-
 
 </resources>

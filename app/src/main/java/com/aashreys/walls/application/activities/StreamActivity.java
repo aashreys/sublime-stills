@@ -18,6 +18,7 @@ package com.aashreys.walls.application.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -31,11 +32,12 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
-import com.aashreys.walls.domain.display.images.Image;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.adapters.StreamViewPagerAdapter;
+import com.aashreys.walls.application.fragments.StreamFragmentModel;
 import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.application.views.StreamImageView;
+import com.aashreys.walls.domain.display.images.Image;
 
 public class StreamActivity extends BaseActivity<StreamActivityModel> implements
         NavigationView.OnNavigationItemSelectedListener, StreamActivityModel.EventListener {
@@ -134,6 +136,16 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
     }
 
     @Override
+    public void onStreamScrolledUp() {
+        hideSystemBars();
+    }
+
+    @Override
+    public void onStreamScrolledDown() {
+        showSystemBars();
+    }
+
+    @Override
     public void onImageUnfavorited(final Image image) {
         Snackbar snackbar = Snackbar.make(
                 viewPager,
@@ -205,4 +217,30 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
         return getViewModel();
     }
 
+    private void hideSystemBars() {
+        int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        if (Build.VERSION.SDK_INT > 23) {
+            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+    }
+
+    private void showSystemBars() {
+        int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        if (Build.VERSION.SDK_INT > 23) {
+            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
+        getWindow().getDecorView().setSystemUiVisibility(flags);
+    }
+
+    public StreamFragmentModel.StreamScrollListener getStreamScrollListener() {
+        return getViewModel();
+    }
 }

@@ -48,4 +48,6 @@
 
     <dimen name="image_button_size">@dimen/height_small</dimen>
 
+    <dimen name="height_status_bar">24dp</dimen>
+
 </resources>

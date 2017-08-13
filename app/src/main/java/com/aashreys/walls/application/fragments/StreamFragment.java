@@ -34,6 +34,7 @@ import com.aashreys.walls.application.activities.StreamActivity;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.application.views.LoadingView;
+import com.aashreys.walls.utils.LogWrapper;
 
 import static com.aashreys.walls.application.fragments.StreamFragment.LoadingViewStateManager.State.END_OF_COLLECTION;
 import static com.aashreys.walls.application.fragments.StreamFragment.LoadingViewStateManager.State.FAVORITE;
@@ -99,6 +100,7 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
                     .getCollection(getArguments().getInt(ARG_POSITION)));
             viewModel.setImageInteractionListener(activity.getImageInteractionCallback());
             viewModel.setEventListener(this);
+            viewModel.setStreamScrollListener(activity.getStreamScrollListener());
             loadingViewStateManager = new LoadingViewStateManager();
             setupRecyclerView(getView());
             setupLoadingView();
@@ -146,7 +148,7 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
     private void setupRecyclerView(View parentView) {
         this.recyclerView = (RecyclerView) parentView.findViewById(R.id.recyclerview);
         int columnCount = viewModel.getNumberOfStreamColumns();
-        RecyclerView.LayoutManager manager;
+        final RecyclerView.LayoutManager manager;
         if (columnCount == 1) {
             manager = new LinearLayoutManager(getContext());
             ((LinearLayoutManager) manager).setInitialPrefetchItemCount(5);
@@ -161,6 +163,23 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
         }
         manager.setItemPrefetchEnabled(true);
         recyclerView.setLayoutManager(manager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LogWrapper.d(TAG, "Y-axis scroll: " + dy);
+                if (dy > 0) {
+                    viewModel.notifyStreamScrollUp();
+                } else {
+                    viewModel.notifyStreamScrollDown();
+                }
+            }
+        });
     }
 
     public boolean isDisplayed() {

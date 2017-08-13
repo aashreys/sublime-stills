@@ -77,6 +77,8 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
 
     private SchedulerProvider schedulerProvider;
 
+    private StreamScrollListener streamScrollListener;
+
     @Inject
     StreamFragmentModel(
             Lazy<FavoriteImageRepository> favoriteImageRepositoryLazy,
@@ -91,6 +93,10 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         this.networkHelper = networkHelper;
         this.schedulerProvider = schedulerProvider;
         this.imageList = new ArrayList<>();
+    }
+
+    public void setStreamScrollListener(StreamScrollListener listener) {
+        this.streamScrollListener = listener;
     }
 
     void setCollection(Collection collection) {
@@ -268,6 +274,18 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         stopListeningToFavoritesRepo();
     }
 
+    void notifyStreamScrollUp() {
+        if (streamScrollListener != null) {
+            streamScrollListener.onStreamScrolledUp();
+        }
+    }
+
+    void notifyStreamScrollDown() {
+        if (streamScrollListener != null) {
+            streamScrollListener.onStreamScrolledDown();
+        }
+    }
+
     interface EventListener {
 
         void onImagesAdded(int positionStart, int itemCount);
@@ -287,6 +305,14 @@ public class StreamFragmentModel implements StreamAdapter.LoadingCallback,
         void onCollectionEndReached(boolean isFavorite);
 
         void onGenericError();
+
+    }
+
+    public interface StreamScrollListener {
+
+        void onStreamScrolledUp();
+
+        void onStreamScrolledDown();
 
     }
 }
