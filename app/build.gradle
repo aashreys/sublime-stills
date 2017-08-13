@@ -31,8 +31,8 @@ def propertiesFile = rootProject.file("sublime.properties");
 def properties = new Properties()
 properties.load(new FileInputStream(propertiesFile))
 
-int versionCodeInt = 17;
-String versionNameString = "1.6.3";
+int versionCodeInt = 18;
+String versionNameString = "1.7.0";
 
 android {
     compileSdkVersion 26
