@@ -26,7 +26,7 @@ buildscript {
     }
 }
 
-// Load walls properties
+// Load properties
 def propertiesFile = rootProject.file("sublime.properties");
 def properties = new Properties()
 properties.load(new FileInputStream(propertiesFile))
@@ -58,8 +58,6 @@ android {
     String STRING = "String";
     String STRING_RESOURCE = "string"
     String UNSPLASH_API_KEY = "UNSPLASH_API_KEY"
-    String GOOGL_API_KEY = "GOOGL_API_KEY";
-    String FLICKR_API_KEY = "FLICKR_API_KEY";
     String BOOLEAN = "boolean";
     String IS_PRODUCTION = "IS_PRODUCTION";
     String VERSION_NAME = "version_name"
@@ -68,8 +66,6 @@ android {
         buildTypes.each {
             // Common build config vars
             it.buildConfigField(STRING, UNSPLASH_API_KEY, properties['unsplashApiKey'])
-            it.buildConfigField(STRING, GOOGL_API_KEY, properties['googlApiKey'])
-            it.buildConfigField(STRING, FLICKR_API_KEY, properties['flickrApiKey'])
             it.resValue(STRING_RESOURCE, VERSION_NAME, versionNameString)
         }
         release {
