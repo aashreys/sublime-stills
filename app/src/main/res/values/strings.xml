@@ -98,4 +98,9 @@
     <string name="toast_wallpaper_change_not_allowed">Not allowed to change Wallpaper</string>
     <string name="toast_could_not_set_walllaper">Could not set Wallpaper</string>
 
+    <string name="action_favorite">Favorite</string>
+    <string name="action_unfavorite">Unfavorite</string>
+    <string name="action_set">Set</string>
+    <string name="action_share">Share</string>
+
 </resources>

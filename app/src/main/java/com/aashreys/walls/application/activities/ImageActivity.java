@@ -30,7 +30,6 @@ import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -61,13 +60,15 @@ public class ImageActivity extends BaseActivity<ImageActivityModel> implements
 
     private ImageView imageView;
 
-    private ImageButton favoriteButton, setAsButton, shareButton;
+    private ImageView favoriteButton, setAsButton, shareButton;
 
     private ProgressBar progressBar, shareProgress;
 
     private ViewGroup contentParent;
 
-    private TextView titleText, subtitleText;
+    private TextView titleText, subtitleText, favoriteStatusText;
+
+    private ViewGroup parentActionFavorite, parentActionSet, parentActionShare;
 
     private TableLayout infoTable;
 
@@ -94,27 +95,33 @@ public class ImageActivity extends BaseActivity<ImageActivityModel> implements
             progressBar = (ProgressBar) findViewById(R.id.progress_bar);
             infoTable = (TableLayout) findViewById(R.id.table_info);
 
+            parentActionFavorite = findViewById(R.id.parent_action_favorite);
+            parentActionSet = findViewById(R.id.parent_action_set);
+            parentActionShare = findViewById(R.id.parent_action_share);
+
             titleText = (TextView) findViewById(R.id.text_title);
             subtitleText = (TextView) findViewById(R.id.text_subtitle);
+            favoriteStatusText = findViewById(R.id.text_favorite_status);
 
-            favoriteButton = (ImageButton) findViewById(R.id.button_favorite);
-            shareButton = (ImageButton) findViewById(R.id.button_share);
-            setAsButton = (ImageButton) findViewById(R.id.button_set_as);
+            favoriteButton = findViewById(R.id.button_favorite);
+            shareButton = findViewById(R.id.button_share);
+            setAsButton = findViewById(R.id.button_set_as);
 
             shareProgress = (ProgressBar) findViewById(R.id.progress_share);
             setAsProgressBar = (ProgressBar) findViewById(R.id.progress_set_as);
 
             buildShareMenu(shareButton);
 
+            favoriteStatusText.setText(getViewModel().getFavoriteStatusText());
             favoriteButton.setImageResource(getViewModel().getFavoriteButtonIcon());
-            favoriteButton.setOnClickListener(new android.view.View.OnClickListener() {
+            parentActionFavorite.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     getViewModel().onFavoriteButtonClicked();
                 }
             });
 
-            shareButton.setOnClickListener(new android.view.View.OnClickListener() {
+            parentActionShare.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     //noinspection RestrictedApi
@@ -122,7 +129,7 @@ public class ImageActivity extends BaseActivity<ImageActivityModel> implements
                 }
             });
 
-            setAsButton.setOnClickListener(new android.view.View.OnClickListener() {
+            parentActionSet.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
                     getViewModel().onSetAsButtonClicked(ImageActivity.this);
@@ -248,6 +255,7 @@ public class ImageActivity extends BaseActivity<ImageActivityModel> implements
     @Override
     public void onFavoriteStateChanged() {
         favoriteButton.setImageResource(getViewModel().getFavoriteButtonIcon());
+        favoriteStatusText.setText(getViewModel().getFavoriteStatusText());
     }
 
     @Override

@@ -19,6 +19,7 @@ package com.aashreys.walls.application.activities;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DimenRes;
+import android.support.annotation.StringRes;
 import android.text.SpannableString;
 import android.text.style.ClickableSpan;
 import android.view.View;
@@ -26,7 +27,6 @@ import android.widget.ImageView;
 
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
-import com.aashreys.walls.utils.SchedulerProvider;
 import com.aashreys.walls.application.helpers.ImageDownloader;
 import com.aashreys.walls.application.helpers.ImageInfoBuilder;
 import com.aashreys.walls.application.views.InfoView;
@@ -39,6 +39,7 @@ import com.aashreys.walls.domain.share.ShareDelegate;
 import com.aashreys.walls.domain.share.ShareDelegateFactory;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
 import com.aashreys.walls.utils.LogWrapper;
+import com.aashreys.walls.utils.SchedulerProvider;
 import com.bumptech.glide.Priority;
 
 import java.util.List;
@@ -138,9 +139,12 @@ public class ImageActivityModel implements ViewModel {
     }
 
     int getFavoriteButtonIcon() {
-        return isFavorite ?
-                R.drawable.ic_favorite_black_24dp :
-                R.drawable.ic_favorite_border_black_24dp;
+        return isFavorite ? R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp;
+    }
+
+    @StringRes
+    int getFavoriteStatusText() {
+        return isFavorite ? R.string.action_unfavorite : R.string.action_favorite;
     }
 
     void onFavoriteButtonClicked() {
