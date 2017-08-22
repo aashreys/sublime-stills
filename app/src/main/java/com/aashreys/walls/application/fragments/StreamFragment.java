@@ -34,7 +34,6 @@ import com.aashreys.walls.application.activities.StreamActivity;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.application.views.LoadingView;
-import com.aashreys.walls.utils.LogWrapper;
 
 import static com.aashreys.walls.application.fragments.StreamFragment.LoadingViewStateManager.State.END_OF_COLLECTION;
 import static com.aashreys.walls.application.fragments.StreamFragment.LoadingViewStateManager.State.FAVORITE;
@@ -172,7 +171,6 @@ public class StreamFragment extends Fragment implements StreamFragmentModel.Even
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                LogWrapper.d(TAG, "Y-axis scroll: " + dy);
                 if (dy > 0) {
                     viewModel.notifyStreamScrollUp();
                 } else {
