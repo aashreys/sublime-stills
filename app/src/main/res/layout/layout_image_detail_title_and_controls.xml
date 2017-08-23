@@ -40,19 +40,19 @@
     <View
         style="@style/Sublime.Divider"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginLeft="@dimen/spacing_medium"
-        android:layout_marginRight="@dimen/spacing_medium"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/spacing_large"
+        android:layout_marginRight="@dimen/spacing_large"
         android:background="@color/black_87p"/>
 
     <FrameLayout
         android:id="@+id/parent_image_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_xl"
+        android:layout_marginBottom="@dimen/spacing_large"
         android:layout_marginLeft="@dimen/spacing_xl"
         android:layout_marginRight="@dimen/spacing_xl"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_medium"
         android:animateLayoutChanges="true"
         android:baselineAligned="false"
         android:gravity="center_horizontal"
