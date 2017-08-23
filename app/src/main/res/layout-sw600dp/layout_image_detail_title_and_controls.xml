@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright {2017} {Aashrey Kamal Sharma}
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:baselineAligned="false"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/text_title"
+                style="@style/Sublime.Text.PhotoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xxs"
+                android:layout_marginLeft="@dimen/spacing_xl"
+                android:layout_marginRight="@dimen/spacing_large"
+                android:layout_marginTop="@dimen/spacing_xl"/>
+
+            <TextView
+                android:id="@+id/text_subtitle"
+                style="@style/Sublime.Text.PhotoMetaText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xl"
+                android:layout_marginLeft="@dimen/spacing_xl"
+                android:layout_marginRight="@dimen/spacing_large"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/parent_action_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderlessCompat"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/spacing_medium"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/button_favorite"
+                style="@style/Sublime.Image.ActionButton"
+                android:layout_width="@dimen/image_button_size"
+                android:layout_height="@dimen/image_button_size"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_favorite_border_black_24dp"/>
+
+            <TextView
+                android:id="@+id/text_favorite_status"
+                style="@style/Sublime.Text.ActionButton"
+                android:layout_width="@dimen/height_large"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/action_favorite"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/parent_action_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderlessCompat"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="@dimen/image_button_size"
+                android:layout_height="@dimen/image_button_size">
+
+                <ImageView
+                    android:id="@+id/button_set_as"
+                    style="@style/Sublime.Image.ActionButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    app:srcCompat="@drawable/ic_wallpaper_black_24dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progress_set_as"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:indeterminate="true"
+                    android:padding="@dimen/spacing_small"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+            <TextView
+                style="@style/Sublime.Text.ActionButton"
+                android:layout_width="@dimen/height_large"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/action_set"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/parent_action_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderlessCompat"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_weight="1">
+
+            <FrameLayout
+                android:layout_width="@dimen/image_button_size"
+                android:layout_height="@dimen/image_button_size">
+
+                <ImageView
+                    android:id="@+id/button_share"
+                    style="@style/Sublime.Image.ActionButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    app:srcCompat="@drawable/ic_share_black_24dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progress_share"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:indeterminate="true"
+                    android:padding="@dimen/spacing_small"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+
+            <TextView
+                style="@style/Sublime.Text.ActionButton"
+                android:layout_width="@dimen/height_large"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/action_share"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</merge>

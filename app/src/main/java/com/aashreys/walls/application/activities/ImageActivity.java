@@ -89,7 +89,7 @@ public class ImageActivity extends BaseActivity<ImageActivityModel> implements
         final Image image = getIntent().getParcelableExtra(ARG_IMAGE);
         if (image != null) {
             getViewModel().setImage(image);
-            setContentView(R.layout.activity_image_detail);
+            setContentView(R.layout.activity_image);
             contentParent = (ViewGroup) findViewById(R.id.parent_content);
             imageView = (ImageView) findViewById(R.id.image);
             progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -169,6 +169,7 @@ public class ImageActivity extends BaseActivity<ImageActivityModel> implements
     private InfoView addInfoView(TableRow row, int height, int columnPosition, int numColumns) {
         InfoView infoView = new InfoView(this);
         TableRow.LayoutParams params = new TableRow.LayoutParams(0, height, 1);
+        params.weight = 1/numColumns;
         int margin = getResources().getDimensionPixelSize(R.dimen.spacing_small);
         if (columnPosition == 0) {
             params.setMargins(0, 0, margin, 0);
