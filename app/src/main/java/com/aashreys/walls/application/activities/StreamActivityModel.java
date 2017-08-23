@@ -23,6 +23,8 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.fragments.StreamFragmentModel;
 import com.aashreys.walls.application.views.StreamImageView;
+import com.aashreys.walls.domain.device.DeviceInfo;
+import com.aashreys.walls.domain.device.Orientation;
 import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
@@ -58,6 +60,8 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
 
     private final KeyValueStore keyValueStore;
 
+    private final DeviceInfo deviceInfo;
+
     @Nullable private EventListener eventListener;
 
     @Inject
@@ -65,12 +69,14 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
             FavoriteImageRepository favoriteImageRepository,
             CollectionRepository collectionRepository,
             CollectionFactory collectionFactory,
-            KeyValueStore keyValueStore
+            KeyValueStore keyValueStore,
+            DeviceInfo deviceInfo
     ) {
         this.favoriteImageRepository = favoriteImageRepository;
         this.collectionRepository = collectionRepository;
         this.collectionFactory = collectionFactory;
         this.keyValueStore = keyValueStore;
+        this.deviceInfo = deviceInfo;
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
         this.collectionsList.addAll(collectionRepository.getAll());
     }
@@ -227,6 +233,14 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
         if (eventListener != null) {
             eventListener.onStreamScrolledDown();
         }
+    }
+
+    boolean isInPortraitOrientation() {
+        return deviceInfo.getOrientation() == Orientation.PORTRAIT;
+    }
+
+    StreamFragmentModel.StreamScrollListener getStreamScrollListener() {
+        return this;
     }
 
     /**
