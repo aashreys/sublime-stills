@@ -17,9 +17,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Sublime.AppTheme.Default" parent="Sublime.AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="android:statusBarColor">@color/statusBarBackground</item>
+    <style name="Sublime.AppTheme" parent="Sublime.AppTheme.Base">
         <item name="selectableItemBackgroundBorderlessCompat">
             ?attr/selectableItemBackgroundBorderless
         </item>

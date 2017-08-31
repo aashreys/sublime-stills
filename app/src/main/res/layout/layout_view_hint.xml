@@ -21,10 +21,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="8dp"
-        android:layout_marginLeft="8dp"
+        style="@style/Sublime.Image.Icon"
+        android:layout_width="@dimen/height_small"
+        android:layout_height="@dimen/height_small"
+        android:padding="@dimen/spacing_small"
+        android:layout_marginLeft="@dimen/spacing_small"
         android:layout_gravity="center_vertical|left"
         app:srcCompat="@drawable/ic_info_outline_black_24dp"/>
 
@@ -34,16 +35,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|left"
-        android:layout_marginLeft="72dp"
-        android:layout_marginRight="72dp"/>
+        android:layout_marginLeft="@dimen/spacing_xxxl"
+        android:layout_marginRight="@dimen/spacing_xxxl"/>
 
     <ImageButton
+        style="@style/Sublime.Image.Icon"
         android:id="@+id/button_close"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="8dp"
+        android:layout_width="@dimen/height_small"
+        android:layout_height="@dimen/height_small"
+        android:padding="@dimen/spacing_small"
         android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="@dimen/spacing_small"
         android:background="?attr/selectableItemBackgroundBorderlessCompat"
         app:srcCompat="@drawable/ic_close_black_24dp"/>
 

@@ -18,18 +18,18 @@
 
     <style name="Sublime"/>
 
-    <style name="Sublime.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Sublime.AppTheme.Base" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="selectableItemBackgroundBorderlessCompat">?attr/selectableItemBackground</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="selectableItemBackgroundBorderlessCompat">?attr/selectableItemBackground</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="Sublime.AppTheme.Default" parent="Sublime.AppTheme"/>
+    <!-- Base application themes. -->
+    <style name="Sublime.AppTheme" parent="Sublime.AppTheme.Base"/>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
@@ -38,16 +38,14 @@
     <style name="Sublime.Divider">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/black_12p</item>
+        <item name="android:background">@color/dividerColor</item>
     </style>
 
     <style name="Sublime.Text" parent="TextAppearance.AppCompat"/>
 
     <style name="Sublime.TextAppearance.Tab" parent="TextAppearance.Design.Tab"/>
 
-    <style name="Sublime.Text.ToolbarTitle" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textColor">@color/black_87p</item>
-    </style>
+    <style name="Sublime.Text.ToolbarTitle" parent="TextAppearance.AppCompat.Title" />
 
     <style name="Sublime.Text.ToolbarTitle.Caps" parent="Sublime.Text.ToolbarTitle">
         <item name="android:textAllCaps">true</item>
@@ -60,51 +58,55 @@
     <style name="Sublime.Text.Subhead" parent="Sublime.Text">
         <item name="android:textSize">@dimen/font_medium</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">@color/black_54p</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">@dimen/spacing_medium</item>
         <item name="android:paddingRight">@dimen/spacing_medium</item>
     </style>
 
     <style name="Sublime.Text.Body1" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">@color/black_87p</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Sublime.Text.Body2" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">@color/black_87p</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Sublime.Text.PhotoTitle" parent="Sublime.Text">
         <item name="android:textSize">@dimen/font_xxxl</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textColor">@color/black_65p</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="Sublime.Text.Display1" parent="TextAppearance.AppCompat.Display1">
-        <item name="android:textColor">@color/black_65p</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="Sublime.Text.PhotoMetaText" parent="Sublime.Text">
         <item name="android:maxLines">2</item>
         <item name="android:textSize">@dimen/font_large</item>
         <item name="android:ellipsize">middle</item>
-        <item name="android:textColor">@color/black_87p</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Sublime.Text.SingleListItem" parent="Sublime.Text.Body1">
         <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:textColor">@color/black_87p</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Sublime.Text.ActionButton" parent="TextAppearance.AppCompat.Button">
         <item name="android:textSize">@dimen/font_xs</item>
-        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Sublime.Image" />
 
-    <style name="Sublime.Image.ActionButton" parent="Sublime.Image" >
+    <style name="Sublime.Image.Icon" parent="Sublime.Image">
+        <item name="android:tint">@color/iconColor</item>
+    </style>
+
+    <style name="Sublime.Image.ActionButton" parent="Sublime.Image.Icon" >
         <item name="android:padding">@dimen/spacing_small_medium</item>
     </style>
 

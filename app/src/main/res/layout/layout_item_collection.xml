@@ -20,34 +20,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
+        style="@style/Sublime.Image.Icon"
         android:id="@+id/image_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="8dp"
-        android:padding="10dp"/>
+        android:layout_width="@dimen/height_small"
+        android:layout_height="@dimen/height_small"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:padding="@dimen/spacing_small_medium"/>
 
     <TextView
         android:id="@+id/text_title"
         style="@style/Sublime.Text.SingleListItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/spacing_medium"
+        android:layout_marginRight="@dimen/spacing_medium"
         android:layout_weight="1"/>
 
     <ImageButton
+        style="@style/Sublime.Image.Icon"
         android:id="@+id/button_remove"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/height_small"
+        android:layout_height="@dimen/height_small"
         android:background="?attr/selectableItemBackgroundBorderlessCompat"
-        android:padding="12dp"/>
+        android:padding="@dimen/spacing_small_medium"/>
 
     <ImageView
+        style="@style/Sublime.Image.Icon"
         android:id="@+id/handle"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginRight="8dp"
-        android:padding="12dp"
+        android:layout_width="@dimen/height_small"
+        android:layout_height="@dimen/height_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:padding="@dimen/spacing_small_medium"
         app:srcCompat="@drawable/ic_swap_vert_black_24dp"/>
 
 </merge>

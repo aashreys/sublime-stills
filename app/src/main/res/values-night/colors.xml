@@ -15,16 +15,18 @@
   ~    limitations under the License.
   -->
 
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingTop="@dimen/spacing_xs"
-    android:paddingBottom="@dimen/spacing_xs"
-    android:paddingLeft="@dimen/spacing_xxs"
-    android:paddingRight="@dimen/spacing_xxs"
-    tools:context="com.aashreys.walls.application.fragments.StreamFragment"
-    tools:listitem="@layout/layout_item_stream_image"/>
+<resources>
+
+    <!--dark theme colors-->
+    <color name="colorPrimaryDark">#151515</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorAccent">@color/white</color>
+    <color name="windowBackground">#282828</color>
+    <color name="textColorPrimary">@color/white</color>
+    <color name="textColorSecondary">@color/white_70p</color>
+    <color name="textColorDisabled">@color/white_50p</color>
+    <color name="iconColor">@color/iconColorLightActive</color>
+    <color name="dividerColor">@color/white_12p</color>
+    <color name="chipCheckedAndBorderColor">@color/white</color>
+
+</resources>

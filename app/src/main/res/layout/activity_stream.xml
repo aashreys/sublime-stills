@@ -35,7 +35,7 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/appBarBackground">
+            android:background="?attr/colorPrimary">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -52,6 +52,7 @@
                     android:orientation="horizontal">
 
                     <ImageButton
+                        style="@style/Sublime.Image.Icon"
                         android:id="@+id/button_menu"
                         android:layout_width="@dimen/image_button_size"
                         android:layout_height="@dimen/image_button_size"
@@ -71,6 +72,7 @@
                         android:text="@string/title_sublime_stills"/>
 
                     <ImageButton
+                        style="@style/Sublime.Image.Icon"
                         android:id="@+id/button_add"
                         android:layout_width="@dimen/image_button_size"
                         android:layout_height="@dimen/image_button_size"
@@ -109,9 +111,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/navigationDrawerBackground"
+        android:background="?attr/colorPrimary"
         app:itemIconTint="@color/drawer_text_color"
         app:itemTextColor="@color/drawer_text_color"
-        app:menu="@menu/menu_nav_drawer" />
+        app:menu="@menu/menu_nav_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

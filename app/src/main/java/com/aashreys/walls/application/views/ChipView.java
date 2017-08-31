@@ -17,12 +17,14 @@
 package com.aashreys.walls.application.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 
-import com.aashreys.walls.domain.display.collections.Collection;
 import com.aashreys.walls.application.helpers.UiHelper;
+import com.aashreys.walls.domain.display.collections.Collection;
 
 import javax.inject.Inject;
 
@@ -56,7 +58,7 @@ public class ChipView extends AppCompatTextView implements ChipViewModel.EventCa
         int paddingHorizontal =
                 getResources().getDimensionPixelSize(viewModel.getHorizontalPaddingRes());
         setHeight(getResources().getDimensionPixelSize(viewModel.getHeightRes()));
-        setTextColor(UiHelper.getColor(getContext(), viewModel.getUncheckedTextColorRes()));
+        setTextColor(readColorFromAttrRes(viewModel.getUncheckedTextColorAttrRes()));
         setGravity(viewModel.getGravity());
         setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
         setBackgroundResource(viewModel.getUncheckedBackgroundDrawableRes());
@@ -88,13 +90,13 @@ public class ChipView extends AppCompatTextView implements ChipViewModel.EventCa
     @Override
     public void onChecked() {
         setBackgroundResource(viewModel.getCheckedBackgroundDrawableRes());
-        setTextColor(UiHelper.getColor(getContext(), viewModel.getCheckedTextColorRes()));
+        setTextColor(readColorFromAttrRes(viewModel.getCheckedTextColorAttrRes()));
     }
 
     @Override
     public void onUnchecked() {
         setBackgroundResource(viewModel.getUncheckedBackgroundDrawableRes());
-        setTextColor(UiHelper.getColor(getContext(), viewModel.getUncheckedTextColorRes()));
+        setTextColor(readColorFromAttrRes(viewModel.getUncheckedTextColorAttrRes()));
     }
 
     public interface OnCheckedListener {
@@ -103,5 +105,21 @@ public class ChipView extends AppCompatTextView implements ChipViewModel.EventCa
 
         void onChipViewUnchecked(Collection uncheckedCollection);
 
+    }
+
+    private int readColorFromAttrRes(int attrRes) {
+        TypedValue typedValue = new TypedValue();
+        int[] textSizeAttr = new int[] { attrRes };
+        int indexOfAttrTextSize = 0;
+        TypedArray a = null;
+        try {
+            a = getContext().obtainStyledAttributes(typedValue.data, textSizeAttr);
+            return a.getColor(indexOfAttrTextSize, -1);
+        }
+        finally {
+            if (a != null) {
+                a.recycle();
+            }
+        }
     }
 }

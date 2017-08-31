@@ -16,30 +16,35 @@
   -->
 
 <resources>
-    <!--theme colors-->
-    <color name="colorPrimary">@color/white</color>
-    <color name="colorPrimaryDark">@color/white</color>
+    <!--light theme colors-->
+    <color name="colorPrimary">#F5F5F5</color>
+    <color name="colorPrimaryDark">#E0E0E0</color>
     <color name="colorAccent">@color/black</color>
-    <color name="statusBarBackground">#E0E0E0</color>
-    <color name="appBarBackground">#F5F5F5</color>
-    <color name="navigationDrawerBackground">#F5F5F5</color>
     <color name="windowBackground">#FAFAFA</color>
     <color name="dialogBackground">@color/white</color>
     <color name="textColorPrimary">@color/black_87p</color>
-    <color name="textColorSecondary">@color/black_54p</color>
+    <color name="textColorSecondary">@color/black_65p</color>
+    <color name="textColorDisabled">@color/black_50p</color>
     <color name="iconColorDarkActive">@color/black_87p</color>
     <color name="iconColorDarkInactive">@color/black_26p</color>
     <color name="iconColorLightActive">@color/white</color>
     <color name="iconColorLightInactive">@color/white_30p</color>
+    <color name="iconColor">@color/iconColorDarkActive</color>
+    <color name="dividerColor">@color/black_12p</color>
+    <color name="chipCheckedAndBorderColor">@color/black</color>
 
     <!--palette-->
     <color name="white">#FFFFFF</color>
+    <color name="white_70p">#B3FFFFFF</color>
+    <color name="white_50p">#80FFFFFF</color>
     <color name="white_30p">#4CFFFFFF</color>
+    <color name="white_12p">#4CFFFFFF</color>
     <color name="black">#000000</color>
     <color name="black_87p">#DE000000</color>
     <color name="black_65p">#A6000000</color>
     <color name="black_75p">#BF000000</color>
     <color name="black_54p">#8A000000</color>
+    <color name="black_50p">#80000000</color>
     <color name="black_26p">#42000000</color>
     <color name="black_12p">#1F000000</color>
     <color name="transparent">#00000000</color>

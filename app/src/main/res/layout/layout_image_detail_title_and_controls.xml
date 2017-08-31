@@ -42,8 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="@dimen/spacing_large"
-        android:layout_marginRight="@dimen/spacing_large"
-        android:background="@color/black_87p"/>
+        android:layout_marginRight="@dimen/spacing_large"/>
 
     <FrameLayout
         android:id="@+id/parent_image_actions"

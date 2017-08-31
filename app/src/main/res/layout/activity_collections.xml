@@ -27,7 +27,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/appBarBackground">
+        android:background="?attr/colorPrimary">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -42,6 +42,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    style="@style/Sublime.Image.Icon"
                     android:id="@+id/button_close"
                     android:layout_width="@dimen/image_button_size"
                     android:layout_height="@dimen/image_button_size"
@@ -60,6 +61,7 @@
                     android:text="@string/title_collections"/>
 
                 <ImageButton
+                    style="@style/Sublime.Image.Icon"
                     android:id="@+id/button_add_collection"
                     android:layout_width="@dimen/image_button_size"
                     android:layout_height="@dimen/image_button_size"

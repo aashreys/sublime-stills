@@ -15,16 +15,16 @@
   ~    limitations under the License.
   -->
 
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingTop="@dimen/spacing_xs"
-    android:paddingBottom="@dimen/spacing_xs"
-    android:paddingLeft="@dimen/spacing_xxs"
-    android:paddingRight="@dimen/spacing_xxs"
-    tools:context="com.aashreys.walls.application.fragments.StreamFragment"
-    tools:listitem="@layout/layout_item_stream_image"/>
+<resources>
+
+    <style name="Sublime.AppTheme.Base" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="selectableItemBackgroundBorderlessCompat">?attr/selectableItemBackground</item>
+    </style>
+
+</resources>

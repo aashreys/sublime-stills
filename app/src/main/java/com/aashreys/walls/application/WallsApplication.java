@@ -17,6 +17,7 @@
 package com.aashreys.walls.application;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.aashreys.walls.BuildConfig;
 import com.aashreys.walls.di.ApplicationComponent;
@@ -41,6 +42,10 @@ public class WallsApplication extends Application {
     private ApplicationComponent applicationComponent;
 
     @Inject Migrator migrator;
+
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
 
     @Override
     public void onCreate() {

@@ -16,7 +16,7 @@
 
 package com.aashreys.walls.application.views;
 
-import android.support.annotation.ColorRes;
+import android.support.annotation.AttrRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -58,14 +58,14 @@ class ChipViewModel implements ViewModel {
         return R.dimen.spacing_small;
     }
 
-    @ColorRes
-    int getCheckedTextColorRes() {
-        return R.color.white;
+    @AttrRes
+    int getCheckedTextColorAttrRes() {
+        return android.R.attr.textColorPrimaryInverse;
     }
 
-    @ColorRes
-    int getUncheckedTextColorRes() {
-        return R.color.textColorPrimary;
+    @AttrRes
+    int getUncheckedTextColorAttrRes() {
+        return android.R.attr.textColorPrimary;
     }
 
     @DimenRes
@@ -79,12 +79,12 @@ class ChipViewModel implements ViewModel {
 
     @DrawableRes
     int getCheckedBackgroundDrawableRes() {
-        return R.drawable.chip_background_dark;
+        return R.drawable.chip_background_checked;
     }
 
     @DrawableRes
     int getUncheckedBackgroundDrawableRes() {
-        return R.drawable.chip_background_light;
+        return R.drawable.chip_background_unchecked;
     }
 
     boolean isChecked() {
