@@ -22,7 +22,6 @@ import android.support.annotation.Nullable;
 import com.aashreys.maestro.ViewModel;
 import com.aashreys.walls.R;
 import com.aashreys.walls.domain.display.collections.Collection;
-import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -55,19 +54,6 @@ public class CollectionViewModel implements ViewModel {
 
     String getCollectionName() {
         return collection != null ? WordUtils.capitalizeFully(collection.getName().value()) : null;
-    }
-
-    @DrawableRes
-    int getCollectionIcon() {
-        int iconRes = 0;
-        if (collection != null) {
-            if (collection instanceof FavoriteCollection) {
-                iconRes = R.drawable.ic_favorite_black_24dp;
-            } else {
-                iconRes = R.drawable.ic_camera_black_24dp;
-            }
-        }
-        return iconRes;
     }
 
     void setCollection(Collection collection) {

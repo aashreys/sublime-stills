@@ -25,6 +25,7 @@
         android:layout_width="@dimen/height_small"
         android:layout_height="@dimen/height_small"
         android:layout_marginLeft="@dimen/spacing_xs"
+        android:visibility="gone"
         android:padding="@dimen/spacing_small_medium"/>
 
     <TextView

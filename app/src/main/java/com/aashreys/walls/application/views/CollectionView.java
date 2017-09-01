@@ -40,8 +40,6 @@ public class CollectionView extends LinearLayout implements CollectionViewModel.
 
     @Inject CollectionViewModel viewModel;
 
-    private ImageView iconImage;
-
     private TextView titleText;
 
     private ImageButton removeButton;
@@ -78,7 +76,6 @@ public class CollectionView extends LinearLayout implements CollectionViewModel.
         UiHelper.getUiComponent(context).inject(this);
         viewModel.setEventCallback(this);
         LayoutInflater.from(context).inflate(R.layout.layout_item_collection, this, true);
-        iconImage = (ImageView) findViewById(R.id.image_icon);
         titleText = (TextView) findViewById(R.id.text_title);
         removeButton = (ImageButton) findViewById(R.id.button_remove);
         handleImage = (ImageView) findViewById(R.id.handle);
@@ -101,7 +98,6 @@ public class CollectionView extends LinearLayout implements CollectionViewModel.
     @Override
     public void onCollectionSet() {
         titleText.setText(viewModel.getCollectionName());
-        iconImage.setImageResource(viewModel.getCollectionIcon());
         removeButton.setImageResource(viewModel.getDeleteButtonIcon());
     }
 }
