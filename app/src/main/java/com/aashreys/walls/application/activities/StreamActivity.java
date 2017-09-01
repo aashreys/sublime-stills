@@ -35,7 +35,6 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.adapters.StreamViewPagerAdapter;
 import com.aashreys.walls.application.fragments.StreamFragmentModel;
-import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.domain.display.images.Image;
 
@@ -162,14 +161,12 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
                 R.string.title_snackbar_favorite_removed,
                 Snackbar.LENGTH_LONG
         );
-        snackbar.setActionTextColor(UiHelper.getColor(this, R.color.white));
         snackbar.setAction(R.string.action_undo, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getViewModel().onFavoriteRemovedUndoButtonClicked(image);
             }
         });
-
         snackbar.show();
     }
 

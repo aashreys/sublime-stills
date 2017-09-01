@@ -19,7 +19,7 @@
     <!--light theme colors-->
     <color name="colorPrimary">#F5F5F5</color>
     <color name="colorPrimaryDark">#E0E0E0</color>
-    <color name="colorAccent">@color/black</color>
+    <color name="colorAccent">#FC3159</color>
     <color name="windowBackground">#FAFAFA</color>
     <color name="dialogBackground">@color/white</color>
     <color name="textColorPrimary">@color/black_87p</color>

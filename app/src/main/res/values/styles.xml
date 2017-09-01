@@ -59,7 +59,7 @@
     <style name="Sublime.Text.Subhead" parent="Sublime.Text">
         <item name="android:textSize">@dimen/font_small</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">@color/textColorSubhead</item>
+        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:paddingLeft">@dimen/spacing_medium</item>
         <item name="android:paddingRight">@dimen/spacing_medium</item>
     </style>
