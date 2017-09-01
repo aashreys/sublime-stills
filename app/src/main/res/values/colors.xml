@@ -33,7 +33,8 @@
     <color name="iconColorActive">@color/iconColorDarkActive</color>
     <color name="iconColorInactive">@color/iconColorDarkInactive</color>
     <color name="dividerColor">@color/black_12p</color>
-    <color name="chipCheckedAndBorderColor">@color/black</color>
+    <color name="chipBorderColor">@color/black</color>
+    <color name="chipCheckedBackgroundColor">@color/colorAccent</color>
 
     <!--palette-->
     <color name="white">#FFFFFF</color>

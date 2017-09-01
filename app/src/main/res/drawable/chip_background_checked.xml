@@ -17,7 +17,7 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/chipCheckedAndBorderColor"/>
+    <solid android:color="@color/chipCheckedBackgroundColor"/>
     <corners android:radius="@dimen/spacing_large" />
 
 </shape>

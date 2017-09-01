@@ -29,6 +29,6 @@
     <color name="iconColorActive">@color/iconColorLightActive</color>
     <color name="iconColorInactive">@color/iconColorLightInactive</color>
     <color name="dividerColor">@color/white_12p</color>
-    <color name="chipCheckedAndBorderColor">@color/white</color>
+    <color name="chipBorderColor">@color/white</color>
 
 </resources>
