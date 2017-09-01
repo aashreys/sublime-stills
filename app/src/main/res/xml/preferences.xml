@@ -37,10 +37,6 @@
         android:title="@string/settings_title_user_tips">
 
         <Preference
-            android:key="@string/pref_show_tips"
-            android:title="@string/settings_show_tips_again"/>
-
-        <Preference
             android:key="@string/pref_show_onboarding"
             android:title="@string/settings_show_onboarding_again"/>
 

@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     private SettingsFragmentModel viewModel;
 
-    private String prefDarkModeKey, prefAutoDarkModeKey, prefShowTipsKey, prefShowOnboardingKey;
+    private String prefDarkModeKey, prefAutoDarkModeKey, prefShowOnboardingKey;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -54,20 +54,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void setupPreferenceKeys() {
         prefDarkModeKey = getActivity().getString(R.string.pref_use_dark_mode);
         prefAutoDarkModeKey = getActivity().getString(R.string.pref_auto_dark_mode);
-        prefShowTipsKey = getActivity().getString(R.string.pref_show_tips);
         prefShowOnboardingKey = getActivity().getString(R.string.pref_show_onboarding);
     }
 
     private void setupPreferences() {
         addPreferencesFromResource(R.xml.preferences);
-        findPreference(prefShowTipsKey).setOnPreferenceClickListener(new Preference
-                .OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                viewModel.onShowTipsPrefClicked();
-                return true;
-            }
-        });
         findPreference(prefShowOnboardingKey).setOnPreferenceClickListener(new Preference
                 .OnPreferenceClickListener() {
             @Override

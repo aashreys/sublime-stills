@@ -26,7 +26,6 @@ import com.aashreys.walls.application.fragments.SettingsFragmentModel;
 import com.aashreys.walls.application.fragments.StreamFragmentModel;
 import com.aashreys.walls.application.views.ChipView;
 import com.aashreys.walls.application.views.CollectionView;
-import com.aashreys.walls.application.views.HintView;
 import com.aashreys.walls.application.views.InfoView;
 import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.di.modules.ApplicationModule;
@@ -69,8 +68,6 @@ public interface UiComponent {
     void inject(CollectionView collectionView);
 
     void inject(StreamImageView streamImageView);
-
-    void inject(HintView hintView);
 
     void inject(ChipView chipView);
 

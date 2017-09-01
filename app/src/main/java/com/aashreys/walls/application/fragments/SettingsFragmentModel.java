@@ -16,7 +16,6 @@
 
 package com.aashreys.walls.application.fragments;
 
-import com.aashreys.walls.R;
 import com.aashreys.walls.application.activities.StreamActivityModel;
 import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.domain.device.ResourceProvider;
@@ -59,17 +58,6 @@ public class SettingsFragmentModel {
 
     public void setEventListener(EventListener eventListener) {
         this.eventListener = eventListener;
-    }
-
-    void onShowTipsPrefClicked() {
-        keyValueStore.putBoolean(resourceProvider.getString(R.string.tag_hint_collection), false);
-        keyValueStore.putBoolean(
-                resourceProvider.getString(R.string.tag_hint_image_actions),
-                false
-        );
-        if (eventListener != null) {
-            eventListener.onTipsReset();
-        }
     }
 
     void onShowOnboardingPrefClicked() {

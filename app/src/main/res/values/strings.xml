@@ -68,8 +68,6 @@
     <string name="title_find_a_collection">Find a Collection</string>
 
     <string name="hint_add_favorites">Your favorites are displayed here\nTap an empty heart on an photo to favorite it</string>
-    <string name="hint_collection">Collections are a set of photos which follow a common theme.</string>
-    <string name="hint_image_actions">You can favorite, set your wallpaper and share this photo by clicking the buttons below</string>
 
     <string name="title_snackbar_favorite_removed">Favorite removed</string>
 
