@@ -119,19 +119,21 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
     }
 
     boolean onNavigationItemSelected(int itemId) {
-        switch (itemId) {
+        if (eventListener != null) {
+            switch (itemId) {
 
-            case R.id.menu_item_settings:
-                if (eventListener != null) {
+                case R.id.menu_item_stream:
+                    eventListener.onStreamNavigationItemSelected();
+                    return true;
+
+                case R.id.menu_item_settings:
                     eventListener.onSettingsNavigationItemSelected();
                     return true;
-                }
 
-            case R.id.menu_item_collections:
-                if (eventListener != null) {
+                case R.id.menu_item_collections:
                     eventListener.onCollectionsNavigationItemSelected();
                     return true;
-                }
+            }
         }
         return false;
     }
@@ -257,6 +259,8 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
      */
 
     interface EventListener {
+
+        void onStreamNavigationItemSelected();
 
         void onSettingsNavigationItemSelected();
 

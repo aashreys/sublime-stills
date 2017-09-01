@@ -203,6 +203,11 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
     }
 
     @Override
+    public void onStreamNavigationItemSelected() {
+        drawerLayout.closeDrawers();
+    }
+
+    @Override
     public void onSettingsNavigationItemSelected() {
         drawerLayout.closeDrawers();
         openSettingsActivity();
