@@ -30,7 +30,8 @@
     <color name="iconColorDarkInactive">@color/black_26p</color>
     <color name="iconColorLightActive">@color/white</color>
     <color name="iconColorLightInactive">@color/white_30p</color>
-    <color name="iconColor">@color/iconColorDarkActive</color>
+    <color name="iconColorActive">@color/iconColorDarkActive</color>
+    <color name="iconColorInactive">@color/iconColorDarkInactive</color>
     <color name="dividerColor">@color/black_12p</color>
     <color name="chipCheckedAndBorderColor">@color/black</color>
 

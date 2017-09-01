@@ -71,7 +71,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="?attr/colorPrimary"
-        app:itemIconTint="@color/drawer_text_color"
+        app:itemIconTint="@color/drawer_icon_color"
         app:itemTextColor="@color/drawer_text_color"
         app:menu="@menu/menu_nav_drawer"/>
 

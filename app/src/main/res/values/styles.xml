@@ -103,7 +103,7 @@
     <style name="Sublime.Image" />
 
     <style name="Sublime.Image.Icon" parent="Sublime.Image">
-        <item name="android:tint">@color/iconColor</item>
+        <item name="android:tint">@color/iconColorActive</item>
     </style>
 
     <style name="Sublime.Image.ActionButton" parent="Sublime.Image.Icon" >

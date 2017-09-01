@@ -26,7 +26,8 @@
     <color name="textColorSecondary">@color/white_70p</color>
     <color name="textColorDisabled">@color/white_50p</color>
     <color name="textColorSubhead">#F4F4F4</color>
-    <color name="iconColor">@color/iconColorLightActive</color>
+    <color name="iconColorActive">@color/iconColorLightActive</color>
+    <color name="iconColorInactive">@color/iconColorLightInactive</color>
     <color name="dividerColor">@color/white_12p</color>
     <color name="chipCheckedAndBorderColor">@color/white</color>
 

@@ -15,7 +15,7 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="?android:attr/textColorSecondary" android:state_enabled="false"/>
-    <item android:color="?android:attr/textColorPrimary" android:state_checked="true"/>
-    <item android:color="?android:attr/textColorPrimary"/>
+    <item android:color="@color/textColorSecondary" android:state_enabled="false"/>
+    <item android:color="@color/textColorPrimary" android:state_enabled="true"/>
+    <item android:color="@color/textColorPrimary"/>
 </selector>
