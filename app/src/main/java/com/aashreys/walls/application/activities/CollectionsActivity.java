@@ -22,9 +22,10 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.application.adapters.CollectionsAdapter;
@@ -57,6 +58,7 @@ public class CollectionsActivity extends BaseActivity<CollectionsActivityModel> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
         getViewModel().setEventListener(this);
+        setupToolbar();
         collectionRecyclerView = (RecyclerView) findViewById(R.id.list_image_sources);
         collectionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CollectionsAdapter(getViewModel().getCollectionsAdapterModel());
@@ -73,25 +75,33 @@ public class CollectionsActivity extends BaseActivity<CollectionsActivityModel> 
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(collectionRecyclerView);
 
-        ImageButton closeButton = (ImageButton) findViewById(R.id.button_close);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        getViewModel().onActivityCreated();
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_collections);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 finish();
             }
         });
-
-        ImageButton addCollectionButton = (ImageButton) findViewById(R.id.button_add_collection);
-        addCollectionButton.setOnClickListener(new View.OnClickListener() {
+        toolbar.inflateMenu(R.menu.menu_add_collections);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(AddCollectionsActivity.createLaunchIntent(
-                        CollectionsActivity.this,
-                        false
-                ));
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.menu_add_collection) {
+                    startActivity(AddCollectionsActivity.createLaunchIntent(
+                            CollectionsActivity.this,
+                            false
+                    ));
+                    return true;
+                }
+                return false;
             }
         });
-        getViewModel().onActivityCreated();
     }
 
     @Override

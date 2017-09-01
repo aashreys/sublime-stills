@@ -24,7 +24,7 @@
         android:id="@+id/image_icon"
         android:layout_width="@dimen/height_small"
         android:layout_height="@dimen/height_small"
-        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginLeft="@dimen/spacing_xs"
         android:padding="@dimen/spacing_small_medium"/>
 
     <TextView
@@ -49,7 +49,7 @@
         android:id="@+id/handle"
         android:layout_width="@dimen/height_small"
         android:layout_height="@dimen/height_small"
-        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_xs"
         android:padding="@dimen/spacing_small_medium"
         app:srcCompat="@drawable/ic_swap_vert_black_24dp"/>
 

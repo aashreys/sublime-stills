@@ -26,9 +26,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 
 import com.aashreys.walls.R;
 import com.aashreys.walls.application.adapters.StreamAdapter;
@@ -66,6 +66,9 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
             startOnboardingAndFinish();
         } else {
             setContentView(R.layout.activity_stream);
+
+            setupToolbar();
+
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
             NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
             navigationView.setNavigationItemSelectedListener(this);
@@ -78,24 +81,31 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
                     getViewModel()
             );
             viewPager.setAdapter(viewPagerAdapter);
-
-            ImageButton menuButton = (ImageButton) findViewById(R.id.button_menu);
-            menuButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getViewModel().onMenuButtonClicked();
-                }
-            });
-
-            ImageButton addCollectionsButton = (ImageButton) findViewById(R.id.button_add);
-            addCollectionsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getViewModel().onAddCollectionButtonClicked();
-                }
-            });
             handleIntent(getIntent());
         }
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_sublime_stills);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getViewModel().onMenuButtonClicked();
+            }
+        });
+        toolbar.inflateMenu(R.menu.menu_add_collections);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.menu_add_collection) {
+                    getViewModel().onAddCollectionButtonClicked();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void startOnboardingAndFinish() {

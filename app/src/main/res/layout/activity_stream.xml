@@ -40,58 +40,17 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_medium"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_marginTop="@dimen/height_status_bar"
-                app:contentInsetStart="0dp"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        style="@style/Sublime.Image.Icon"
-                        android:id="@+id/button_menu"
-                        android:layout_width="@dimen/image_button_size"
-                        android:layout_height="@dimen/image_button_size"
-                        android:layout_marginLeft="@dimen/spacing_small"
-                        android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                        android:padding="@dimen/spacing_small"
-                        app:srcCompat="@drawable/ic_menu_black_24dp"/>
-
-                    <TextView
-                        android:id="@+id/text_toolbar_title"
-                        style="@style/Sublime.Text.ToolbarTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_medium"
-                        android:layout_marginRight="@dimen/spacing_small"
-                        android:layout_weight="1"
-                        android:text="@string/title_sublime_stills"/>
-
-                    <ImageButton
-                        style="@style/Sublime.Image.Icon"
-                        android:id="@+id/button_add"
-                        android:layout_width="@dimen/image_button_size"
-                        android:layout_height="@dimen/image_button_size"
-                        android:layout_marginRight="@dimen/spacing_small"
-                        android:background="?attr/selectableItemBackgroundBorderlessCompat"
-                        android:padding="@dimen/spacing_small"
-                        app:srcCompat="@drawable/ic_add_black_24dp"/>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.Toolbar>
+                app:layout_scrollFlags="scroll|enterAlways"/>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tablayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_small"
                 android:clipToPadding="false"
-                android:paddingLeft="@dimen/spacing_medium"
-                android:paddingRight="@dimen/spacing_medium"
+                android:paddingLeft="@dimen/spacing_xs"
+                android:paddingRight="@dimen/spacing_xs"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:tabMode="scrollable"
                 app:tabTextAppearance="@style/Sublime.TextAppearance.Tab"/>
