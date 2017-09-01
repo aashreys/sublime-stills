@@ -66,32 +66,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        style="@style/Sublime.Text.Subhead"
+    <FrameLayout
+        android:id="@+id/fragment_holder"
+        android:layout_marginTop="@dimen/spacing_small"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_small"
-        android:text="@string/title_user_tips"/>
-
-    <TextView
-        android:id="@+id/text_display_tips"
-        style="@style/Sublime.Text.SingleListItem"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_small"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/spacing_medium"
-        android:paddingRight="@dimen/spacing_medium"
-        android:text="@string/settings_show_tips_again"/>
-
-    <TextView
-        android:id="@+id/text_display_onboarding"
-        style="@style/Sublime.Text.SingleListItem"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_small"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/spacing_medium"
-        android:paddingRight="@dimen/spacing_medium"
-        android:text="@string/settings_show_onboarding_again"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -16,11 +16,16 @@
 
 package com.aashreys.walls.di.modules;
 
+import android.app.Application;
+
+import com.aashreys.walls.application.WallsApplication;
 import com.aashreys.walls.domain.display.collections.search.CollectionDiscoveryService;
 import com.aashreys.walls.domain.display.collections.search.CollectionDiscoveryServiceImpl;
 import com.aashreys.walls.domain.display.collections.search.UnsplashCollectionDiscoveryService;
 import com.aashreys.walls.domain.display.images.ImageService;
 import com.aashreys.walls.domain.display.images.ImageServiceImpl;
+import com.aashreys.walls.domain.preferences.PreferenceService;
+import com.aashreys.walls.domain.preferences.PreferenceServiceImpl;
 import com.aashreys.walls.network.unsplash.UnsplashApi;
 
 import dagger.Module;
@@ -33,7 +38,11 @@ import dagger.Provides;
 @Module
 public class ServiceModule {
 
-    public ServiceModule() {}
+    private final Application application;
+
+    public ServiceModule(WallsApplication application) {
+        this.application = application;
+    }
 
     @Provides
     public ImageService providesImageService(UnsplashApi unsplashApi) {
@@ -45,6 +54,11 @@ public class ServiceModule {
             UnsplashCollectionDiscoveryService unsplashCollectionSearchService
     ) {
         return new CollectionDiscoveryServiceImpl(unsplashCollectionSearchService);
+    }
+
+    @Provides
+    public PreferenceService providesPreferenceService() {
+        return new PreferenceServiceImpl(application);
     }
 
 }

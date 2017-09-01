@@ -14,19 +14,16 @@
  *    limitations under the License.
  */
 
-package com.aashreys.walls.application.activities;
-
-import com.aashreys.maestro.ViewModel;
-
-import javax.inject.Inject;
+package com.aashreys.walls.domain.preferences;
 
 /**
- * Created by aashreys on 17/04/17.
+ * Created by aashreys on 01/09/17.
  */
 
-public class SettingsActivityModel implements ViewModel {
+public interface PreferenceService {
 
-    @Inject
-    SettingsActivityModel() {}
+    boolean isDarkModeEnabled();
+
+    boolean isAutoDarkModeEnabled();
 
 }

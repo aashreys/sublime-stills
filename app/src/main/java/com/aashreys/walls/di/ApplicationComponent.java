@@ -21,6 +21,7 @@ import com.aashreys.walls.application.WallsApplication;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
 import com.aashreys.walls.di.modules.RepositoryModule;
+import com.aashreys.walls.di.modules.ServiceModule;
 import com.aashreys.walls.di.scopes.ApplicationScoped;
 
 import dagger.Component;
@@ -30,7 +31,7 @@ import dagger.Component;
  */
 
 @ApplicationScoped
-@Component(modules = {ApplicationModule.class, ApiModule.class, RepositoryModule.class})
+@Component(modules = {ApplicationModule.class, ApiModule.class, RepositoryModule.class, ServiceModule.class})
 public interface ApplicationComponent {
 
     void inject(WallsApplication application);

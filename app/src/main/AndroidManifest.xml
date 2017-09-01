@@ -26,8 +26,8 @@
         android:name=".application.WallsApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Sublime.AppTheme"
         tools:replace="android:allowBackup, android:supportsRtl">
@@ -37,13 +37,14 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name=".application.activities.CollectionsActivity"/>
         <activity android:name=".application.activities.ImageActivity"/>
         <activity android:name=".application.activities.SettingsActivity"/>
-        <activity android:name=".application.activities.OnboardingActivity" />
+        <activity android:name=".application.activities.OnboardingActivity"/>
         <activity android:name=".application.activities.AddCollectionsActivity"/>
 
         <provider
@@ -55,12 +56,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+
         <meta-data
             android:name="com.aashreys.walls.application.GlideConfiguration"
             android:value="GlideModule"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d1d9ded86a522d4ae7651fac61fdd2cba46ccc22"/>
+
     </application>
 
 </manifest>

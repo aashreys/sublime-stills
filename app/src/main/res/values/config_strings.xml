@@ -20,4 +20,9 @@
     <string name="tag_hint_collection">tag_hint_collection</string>
     <string name="tag_hint_image_actions">tag_hint_image_actions</string>
 
+    <string name="pref_use_dark_mode">pref_use_dark_theme</string>
+    <string name="pref_auto_dark_mode">pref_auto_dark_theme</string>
+    <string name="pref_show_tips">pref_show_tips</string>
+    <string name="pref_show_onboarding">pref_show_onboarding</string>
+
 </resources>

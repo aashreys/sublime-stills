@@ -26,6 +26,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
         <item name="selectableItemBackgroundBorderlessCompat">?attr/selectableItemBackground</item>
+
     </style>
 
     <!-- Base application themes. -->
@@ -56,10 +57,9 @@
     </style>
 
     <style name="Sublime.Text.Subhead" parent="Sublime.Text">
-        <item name="android:textSize">@dimen/font_medium</item>
+        <item name="android:textSize">@dimen/font_small</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/textColorSubhead</item>
         <item name="android:paddingLeft">@dimen/spacing_medium</item>
         <item name="android:paddingRight">@dimen/spacing_medium</item>
     </style>

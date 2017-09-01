@@ -25,6 +25,7 @@
     <color name="textColorPrimary">@color/black_87p</color>
     <color name="textColorSecondary">@color/black_65p</color>
     <color name="textColorDisabled">@color/black_50p</color>
+    <color name="textColorSubhead">@color/black</color>
     <color name="iconColorDarkActive">@color/black_87p</color>
     <color name="iconColorDarkInactive">@color/black_26p</color>
     <color name="iconColorLightActive">@color/white</color>

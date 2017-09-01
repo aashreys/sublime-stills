@@ -20,10 +20,13 @@ import android.app.Application;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.aashreys.walls.BuildConfig;
+import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.di.ApplicationComponent;
 import com.aashreys.walls.di.DaggerApplicationComponent;
 import com.aashreys.walls.di.modules.ApiModule;
 import com.aashreys.walls.di.modules.ApplicationModule;
+import com.aashreys.walls.di.modules.ServiceModule;
+import com.aashreys.walls.domain.preferences.PreferenceService;
 import com.aashreys.walls.utils.LogWrapper;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -39,12 +42,16 @@ import io.paperdb.Paper;
 
 public class WallsApplication extends Application {
 
+    private static final String TAG = WallsApplication.class.getSimpleName();
+
     private ApplicationComponent applicationComponent;
 
     @Inject Migrator migrator;
 
+    @Inject PreferenceService preferenceService;
+
     static {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
     @Override
@@ -57,9 +64,11 @@ public class WallsApplication extends Application {
                 .builder()
                 .applicationModule(new ApplicationModule(this))
                 .apiModule(new ApiModule(this))
+                .serviceModule(new ServiceModule(this))
                 .build();
         this.applicationComponent.inject(this);
         migrator.migrate();
+        configureDayNightMode();
     }
 
     private void setCrashReportingEnabled(boolean isProduction) {
@@ -71,6 +80,12 @@ public class WallsApplication extends Application {
 
     public ApplicationComponent getApplicationComponent() {
         return applicationComponent;
+    }
+
+    private void configureDayNightMode() {
+        boolean isDarkModeEnabled = preferenceService.isDarkModeEnabled();
+        boolean isAutoDarkModeEnabled = preferenceService.isAutoDarkModeEnabled();
+        UiHelper.configureDayNightMode(isDarkModeEnabled, isAutoDarkModeEnabled);
     }
 
 }

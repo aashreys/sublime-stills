@@ -17,25 +17,18 @@
 package com.aashreys.walls.application.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.aashreys.walls.R;
+import com.aashreys.walls.application.fragments.SettingsFragment;
 
-public class SettingsActivity extends BaseActivity<SettingsActivityModel> implements
-        SettingsActivityModel.EventListener {
-
-    private TextView resetTipsText;
-
-    private TextView resetOnboardingText;
+public class SettingsActivity extends BaseActivity<SettingsActivityModel> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getViewModel().setEventListener(this);
 
         ImageButton backButton = (ImageButton) findViewById(R.id.button_back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -45,43 +38,13 @@ public class SettingsActivity extends BaseActivity<SettingsActivityModel> implem
             }
         });
 
-        resetTipsText = (TextView) findViewById(R.id.text_display_tips);
-        resetTipsText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getViewModel().onResetTipsSettingClicked();
-            }
-        });
-
-        resetOnboardingText = (TextView) findViewById(R.id.text_display_onboarding);
-        resetOnboardingText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getViewModel().onResetOnboardingSettingClicked();
-            }
-        });
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_holder, new SettingsFragment())
+                .commit();
     }
 
     @Override
     protected SettingsActivityModel createViewModel() {
         return getUiComponent().createSettingsActivityModel();
-    }
-
-    @Override
-    public void onTipsReset() {
-        Snackbar.make(
-                resetTipsText,
-                R.string.confirmation_show_tips_again,
-                Snackbar.LENGTH_LONG
-        ).show();
-    }
-
-    @Override
-    public void onOnboardingReset() {
-        Snackbar.make(
-                resetTipsText,
-                R.string.confirmation_show_onboarding_again,
-                Snackbar.LENGTH_LONG
-        ).show();
     }
 }

@@ -16,23 +16,24 @@
 
 package com.aashreys.walls.di;
 
-import com.aashreys.walls.di.modules.ApplicationModule;
-import com.aashreys.walls.di.modules.FactoryModule;
-import com.aashreys.walls.di.modules.RepositoryModule;
-import com.aashreys.walls.di.modules.ServiceModule;
-import com.aashreys.walls.di.scopes.UiScoped;
 import com.aashreys.walls.application.activities.AddCollectionsActivityModel;
 import com.aashreys.walls.application.activities.CollectionsActivityModel;
 import com.aashreys.walls.application.activities.ImageActivityModel;
 import com.aashreys.walls.application.activities.OnboardingActivityModel;
 import com.aashreys.walls.application.activities.SettingsActivityModel;
 import com.aashreys.walls.application.activities.StreamActivityModel;
+import com.aashreys.walls.application.fragments.SettingsFragmentModel;
 import com.aashreys.walls.application.fragments.StreamFragmentModel;
 import com.aashreys.walls.application.views.ChipView;
 import com.aashreys.walls.application.views.CollectionView;
 import com.aashreys.walls.application.views.HintView;
 import com.aashreys.walls.application.views.InfoView;
 import com.aashreys.walls.application.views.StreamImageView;
+import com.aashreys.walls.di.modules.ApplicationModule;
+import com.aashreys.walls.di.modules.FactoryModule;
+import com.aashreys.walls.di.modules.RepositoryModule;
+import com.aashreys.walls.di.modules.ServiceModule;
+import com.aashreys.walls.di.scopes.UiScoped;
 
 import dagger.Subcomponent;
 
@@ -62,6 +63,8 @@ public interface UiComponent {
     AddCollectionsActivityModel createAddCollectionsActivityModel();
 
     StreamFragmentModel createStreamFragmentModel();
+
+    SettingsFragmentModel createSettingsFragmentModel();
 
     void inject(CollectionView collectionView);
 

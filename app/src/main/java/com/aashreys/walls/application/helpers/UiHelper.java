@@ -19,6 +19,7 @@ package com.aashreys.walls.application.helpers;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.ColorRes;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.aashreys.walls.application.WallsApplication;
 import com.aashreys.walls.di.UiComponent;
@@ -43,5 +44,17 @@ public class UiHelper {
 
     public static UiComponent getUiComponent(Context context) {
        return ((WallsApplication) context.getApplicationContext()).getApplicationComponent().getUiComponent();
+    }
+
+    public static void configureDayNightMode(boolean isDarkModeEnabled, boolean isAutoDarkModeEnabled) {
+        if (isDarkModeEnabled) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            if (isAutoDarkModeEnabled) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        }
     }
 }
