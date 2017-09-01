@@ -30,6 +30,7 @@ import com.aashreys.walls.domain.display.collections.CollectionFactory;
 import com.aashreys.walls.domain.display.collections.DiscoverCollection;
 import com.aashreys.walls.domain.display.collections.FavoriteCollection;
 import com.aashreys.walls.domain.display.images.Image;
+import com.aashreys.walls.domain.preferences.PreferenceService;
 import com.aashreys.walls.persistence.KeyValueStore;
 import com.aashreys.walls.persistence.collections.CollectionRepository;
 import com.aashreys.walls.persistence.favoriteimage.FavoriteImageRepository;
@@ -62,6 +63,8 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
 
     private final DeviceInfo deviceInfo;
 
+    private final PreferenceService preferenceService;
+
     @Nullable private EventListener eventListener;
 
     @Inject
@@ -70,13 +73,15 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
             CollectionRepository collectionRepository,
             CollectionFactory collectionFactory,
             KeyValueStore keyValueStore,
-            DeviceInfo deviceInfo
+            DeviceInfo deviceInfo,
+            PreferenceService preferenceService
     ) {
         this.favoriteImageRepository = favoriteImageRepository;
         this.collectionRepository = collectionRepository;
         this.collectionFactory = collectionFactory;
         this.keyValueStore = keyValueStore;
         this.deviceInfo = deviceInfo;
+        this.preferenceService = preferenceService;
         this.collectionsList = Collections.synchronizedList(new ArrayList<Collection>());
         this.collectionsList.addAll(collectionRepository.getAll());
     }
@@ -233,6 +238,10 @@ public class StreamActivityModel implements ViewModel, StreamImageView.Interacti
         if (eventListener != null) {
             eventListener.onStreamScrolledDown();
         }
+    }
+
+    boolean isDarkModeEnabled() {
+        return preferenceService.isDarkModeEnabled();
     }
 
     boolean isInPortraitOrientation() {

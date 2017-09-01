@@ -18,6 +18,7 @@ package com.aashreys.walls.application.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -235,9 +236,9 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
             flags = flags | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // hide nav bar
         }
-//        if (Build.VERSION.SDK_INT > 23) {
-//            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-//        }
+        if (!getViewModel().isDarkModeEnabled() && Build.VERSION.SDK_INT > 23) {
+            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
         getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
@@ -246,9 +247,9 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
         if (getViewModel().isInPortraitOrientation()) {
             flags = flags | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         }
-//        if (Build.VERSION.SDK_INT > 23) {
-//            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-//        }
+        if (!getViewModel().isDarkModeEnabled() && Build.VERSION.SDK_INT > 23) {
+            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
         getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
