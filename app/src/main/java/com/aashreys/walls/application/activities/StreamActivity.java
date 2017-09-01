@@ -35,6 +35,7 @@ import com.aashreys.walls.R;
 import com.aashreys.walls.application.adapters.StreamAdapter;
 import com.aashreys.walls.application.adapters.StreamViewPagerAdapter;
 import com.aashreys.walls.application.fragments.StreamFragmentModel;
+import com.aashreys.walls.application.helpers.UiHelper;
 import com.aashreys.walls.application.views.StreamImageView;
 import com.aashreys.walls.domain.display.images.Image;
 
@@ -235,27 +236,40 @@ public class StreamActivity extends BaseActivity<StreamActivityModel> implements
                 | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                 | View.SYSTEM_UI_FLAG_IMMERSIVE;
         if (getViewModel().isInPortraitOrientation()) {
-            flags = flags | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // hide nav bar
         }
-        if (!getViewModel().isDarkModeEnabled() && Build.VERSION.SDK_INT > 23) {
-            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-        }
+        flags = setSystemBarColorBits(flags);
         getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
     private void showSystemBars() {
         int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         if (getViewModel().isInPortraitOrientation()) {
-            flags = flags | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         }
-        if (!getViewModel().isDarkModeEnabled() && Build.VERSION.SDK_INT > 23) {
-            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-        }
+        flags = setSystemBarColorBits(flags);
         getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
     public StreamFragmentModel.StreamScrollListener getStreamScrollListener() {
         return getViewModel().getStreamScrollListener();
+    }
+
+    private int setSystemBarColorBits(int flags) {
+        if (!UiHelper.isNightModeActive(this)) {
+            flags = setLightSystemBarBits(flags);
+        }
+        return flags;
+    }
+
+    private int setLightSystemBarBits(int flags) {
+        if (Build.VERSION.SDK_INT > 23) {
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
+        if (Build.VERSION.SDK_INT > 26) {
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        }
+        return flags;
     }
 }

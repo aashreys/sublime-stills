@@ -17,6 +17,7 @@
 package com.aashreys.walls.application.helpers;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.v7.app.AppCompatDelegate;
@@ -55,6 +56,17 @@ public class UiHelper {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
+        }
+    }
+
+    public static boolean isNightModeActive(Context context) {
+        int currentNightMode = context.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                return true;
+            default:
+                return false;
         }
     }
 }
